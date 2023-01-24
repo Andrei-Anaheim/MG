@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>MG</title>
+</head>
+<body>
+    <div class="topnav" id="myTopnav">
+        <li id="visits" class="active">Выезды</li>
+        <li id="plans" >Планы</li>
+        <li id="problems" >Проблемы</li>
+        <li id="dxh800">DxH800</li>
+        <li id="dxh500">DxH500</li>
+        <li id="iq200">IQ200</li>
+        <li id="velocity">iChem Velocity</li>
+        <li id="ax4030">AX-4030</li>
+        <li class="icon" onclick="burgerMenu()">X</li>
+    </div>
+    <div id="visitsPage" class="visits main">
+        <div class="visits_nav">
+            <div class="button" id="add_visit"> Добавить выезд</div>
+            <div class="button" id="list_visits"> Журнал выездов</div>
+        </div>
+        <div id="visit_box" class="visits_box hide">
+            <div class="question">
+                <p class="text">Выберите дату с</p>
+                <input type="date" id="date">
+            </div>
+            <div class="question">
+                <p class="text">Выберите дату по</p>
+                <input type="date" id="date2">
+            </div>
+            <div class="question" id="select_application">
+                <p class="text">Выберите специалиста</p>
+            </div>
+            <div class="question" id="select_facility">
+                <p class="text">Выберите учреждение</p>
+            </div>
+            <div class="question" id="select_instrument">
+                <p class="text">Выберите прибор</p>
+            </div>
+            <div class="question">
+                <p class="text">Укажите S/N</p>
+                <input type="text" class="text" id="sn">
+            </div>
+            <div class="question">
+                <p class="text">Причина выезда</p>
+                <textarea class="textarea" id="reason"></textarea>
+            </div>
+            <div class="question">
+                <p class="text">Выполненные работы</p>
+                <textarea class="textarea" id="work"></textarea>
+            </div>
+            <div class="question">
+                <p class="text">Акт</p>
+                <select class="select" id="report">
+                    <option></option>
+                    <option>есть</option>
+                    <option>нет</option>
+                    <option>акт МТС</option>
+                    <option>акт BC</option>
+                </select>
+            </div>
+            <div class="question">
+                <p class="text">Тип визита</p>
+                <select class="select" id="visit_type">
+                    <option></option>
+                    <option>Обучение</option>
+                    <option>Настройка</option>
+                    <option>Ремонт</option>
+                    <option>Плановый</option>
+                    <option>Другое</option>
+                </select>
+            </div>
+        </div>
+        <div id="confirm_visit" class="button hide">Подтвердить выезд</div>
+        <p id="confirmation_status" class="red_status"></p>
+        <div id="visits_list" class="visits_list hide">
+            <div class="list_filters" id="list_filters">
+                <div class="question" id="select_application2">
+                    <p class="text">Фильтр по специалистам</p>
+                </div>
+                <div class="question" id="select_facility2">
+                    <p class="text">Фильтр по учреждениям</p>
+                </div>
+                <div class="question" id="select_instrument2">
+                    <p class="text">Фильтр по приборам</p>
+                </div>
+            </div>
+            <div class="list_filters_2" id="list_filters_2">
+                <div class="filter" id="week_filter">Неделя</div>
+                <div class="filter" id="learning_filter">Обучение</div>
+            </div>
+            <div class="table_field" id="table_field"></div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
