@@ -280,10 +280,12 @@ function getListVisits() {
                 if (i===0 && j!==0) td.appendChild(document.createTextNode(`${data2.table.cols[j-1].label}`));
                 if (j===0) {
                     td.className = 'ordercell';
+                    td.classList.add('hide_column');
                     if (i>0) td.appendChild(document.createTextNode(`${i}`))
                 } else {
                     td.className = 'supercell';
                     td.style.width = (j===1||j===2||j===4||j===5||j===6||j===9)? `${players_column_width*0.5}px`:  `${players_column_width*1.4}px`;
+                    if (j===2|| j===5||j===6|| j===8|| j===9) td.classList.add('hide_column');
                     if (j===1 && i>0) {
                         td.appendChild(document.createTextNode(`${new Date(date1[i-1].split(',')[0],date1[i-1].split(',')[1],date1[i-1].split(',')[2]).toLocaleString('ru-RU', {year: 'numeric', month: '2-digit', day: '2-digit'})}`))
                     } else if (j===2 && i>0) {
@@ -310,4 +312,210 @@ function getListVisits() {
     })
 }
 
+
+
+/* calc Dxh800 */
+document.getElementById('dxh800').addEventListener('click',DxH800Click);
+function DxH800Click() {
+    document.getElementById('myTopnav').querySelectorAll('.active').forEach((el)=>el.classList.remove('active'));
+    document.getElementById('dxh800').classList.add('active');
+    burgerMenu();
+    document.querySelectorAll('.main').forEach((el)=>el.classList.add('hide'));
+    document.getElementById('calcDxH800').classList.remove('hide');
+}
+document.getElementById('confirm_calc_dxh800').addEventListener('click',DxH800Calculate);
+document.getElementById('delete_calc_dxh800').addEventListener('click',DxH800Clear);
+document.getElementById('delete_form_calc_dxh800').addEventListener('click',DxH800FormClear);
+
+function DxH800Clear() {
+    document.getElementById('table_field_calc_dxh800').innerHTML='';
+}
+function DxH800FormClear() {
+    document.getElementById('hospital_800').value="";
+    document.getElementById('capacity800').value="";
+    document.getElementById('retic800').value=0;
+}
+
+function DxH800Calculate() {
+    const instruments = document.getElementById('dxh800_count').value;
+    const hospital = document.getElementById('hospital_800').value;
+    const potok = Number(document.getElementById('capacity800').value);
+    const days_per_week = document.getElementById('days_per_week800').value;
+    const months = document.getElementById('months800').value;
+    const calc_type = document.getElementById('calc_dxh800_type').value;
+    const type_6C = document.getElementById('6C_type800').value;
+    const retic = document.getElementById('retic800').value;
+    const controls = calc_type <= 1? 3 : 0;
+    const diluent = Math.ceil((months*30.5*days_per_week/7*(15+controls)*instruments+potok)/160);
+    const lysepack = Math.ceil((months*30.5*days_per_week/7*(16+controls)*instruments+potok)/4545*(calc_type<=1? 1.25 : 1));
+    const diffpack = Math.ceil((months*30.5*days_per_week/7*(26+controls)*instruments+potok)/2125);
+    const cleaner = Math.ceil((months*30.5*days_per_week/7*instruments)/28); /*Делим на 28, закладывая 2 доп промывки */
+    let reticpack = Math.ceil((months*30.5*days_per_week/7*(10+controls)*instruments+potok*retic/100)/904); /*Посмотреть где-нибудь расход ретика на шатдаун/дейличек, 20 от балды*/
+    reticpack = retic == 0 ? 0 : reticpack < months/4 ? Math.ceil(months/4) : reticpack;
+    const controls_6C_9 = type_6C == 2? 0 : calc_type == 1 ? Math.ceil(months*Math.ceil(instruments/2)/1.5) : calc_type == 2? Math.ceil(months*Math.ceil(instruments/2)/2) : Math.ceil(months*Math.ceil(instruments/2)/3);
+    const controls_6C_12 = type_6C == 1? 0 : calc_type == 1 ? Math.ceil(months*Math.ceil(instruments/2)/1.5) : calc_type == 2? Math.ceil(months*Math.ceil(instruments/2)/2.5) : Math.ceil(months*Math.ceil(instruments/2)/3.5);  
+    const latron = calc_type == 1 ? Math.ceil(months/4)*instruments : calc_type == 2 ? Math.ceil(months/6)*instruments : instruments;
+    const control_retic = retic == 0 ? 0 : calc_type == 1 ? Math.ceil(months/3)*Math.ceil(instruments/2) : calc_type == 2 ? Math.ceil(months/4)*Math.ceil(instruments/2) : Math.ceil(months/6)*Math.ceil(instruments/2);
+    const calibrator = calc_type == 1 ? 2*instruments : 1*instruments;
+    const table_length = retic > 0 ? 9 : 7;
+    const table = document.createElement('table');
+    table.className = 'supertable';
+    const width = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+    const column_width = (width - 50) / 5;
+    const headers = ['Реактив','Количество'];
+    const reactive_v1 = ['DxH Дилюент, 10 л','DxH Лизирующий раствор, 5 л','DxH Реагенты для дифференцировки лейкоцитов, 2,75 л.','DxH Реагенты для анализа ретикулоцитов','DxH Промывающий реагент, 10 л','Контроль 6С, 9x3.5 мл','Контроль для ретикулоцитов RETIC-X, 12x3.5 мл','Контроль Latron CP-X, 8х4 мл','Калибратор S-CAL, 1x3.3 ml'];
+    const reactive_v2 = ['DxH Дилюент, 10 л','DxH Лизирующий раствор, 5 л','DxH Реагенты для дифференцировки лейкоцитов, 2,75 л.','DxH Промывающий реагент, 10 л','Контроль 6С, 9x3.5 мл','Контроль Latron CP-X, 8х4 мл','Калибратор S-CAL, 1x3.3 ml'];
+    const reactive_v3 = ['DxH Дилюент, 10 л','DxH Лизирующий раствор, 5 л','DxH Реагенты для дифференцировки лейкоцитов, 2,75 л.','DxH Реагенты для анализа ретикулоцитов','DxH Промывающий реагент, 10 л','Контроль 6С, 12x3.5 мл','Контроль для ретикулоцитов RETIC-X, 12x3.5 мл','Контроль Latron CP-X, 8х4 мл','Калибратор S-CAL, 1x3.3 ml'];
+    const reactive_v4 = ['DxH Дилюент, 10 л','DxH Лизирующий раствор, 5 л','DxH Реагенты для дифференцировки лейкоцитов, 2,75 л.','DxH Промывающий реагент, 10 л','Контроль 6С, 12x3.5 мл','Контроль Latron CP-X, 8х4 мл','Калибратор S-CAL, 1x3.3 ml'];
+    const reactive_final = type_6C == 1 && retic == 0? reactive_v2: type_6C == 1 && retic !== 0? reactive_v1: retic==0? reactive_v4: reactive_v3;
+    const format_v1 = [diluent,lysepack,diffpack,reticpack,cleaner,controls_6C_9,control_retic,latron,calibrator];
+    const format_v2 = [diluent,lysepack,diffpack,cleaner,controls_6C_9,latron,calibrator];
+    const format_v3 = [diluent,lysepack,diffpack,reticpack,cleaner,controls_6C_12,control_retic,latron,calibrator];
+    const format_v4 = [diluent,lysepack,diffpack,cleaner,controls_6C_12,latron,calibrator];
+    const format_final = type_6C == 1 && retic == 0? format_v2: type_6C == 1 && retic !== 0? format_v1: retic==0? format_v4: format_v3;
+    for (let i=0; i<table_length+1; i+=1) {
+        const tr = table.insertRow();
+        tr.className = 'superrow';
+        for (let j=0; j<=headers.length; j+=1) {
+            const td = tr.insertCell();
+            if (j===0) {
+                td.className = 'ordercell';
+                if (i>0) td.appendChild(document.createTextNode(`${i}`))
+            } else {
+                td.className = 'supercell';
+                td.style.width = `${column_width}px`;
+                if (i===0) {
+                    td.appendChild(document.createTextNode(`${headers[j-1]}`));
+                }
+                if (j===1 && i!==0) td.appendChild(document.createTextNode(`${reactive_final[i-1]}`));
+                if (j===2 && i!==0) td.appendChild(document.createTextNode(`${format_final[i-1]}`));
+            };
+        }
+    }
+    document.getElementById('table_field_calc_dxh800').appendChild(table);
+    downloadCalcDxH800ToDatabase(hospital, potok, days_per_week, months,diluent, lysepack, diffpack, reticpack, cleaner, controls_6C_9, controls_6C_12, control_retic, latron, calibrator);
+}
+
+function downloadCalcDxH800ToDatabase(facility, capacity, days_per_week, months, diluent, lysepack, diffpack, reticpack, cleaner, controls_6C_9, controls_6C_12, control_retic, latron, calibrator) {
+    fetch('https://sheetdb.io/api/v1/tkhtt2o9c61js?sheet=dxh800', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            data: [
+                {
+                    'date': `${new Date()}`,
+                    'facility': `${facility}`,
+                    'capacity': `${capacity}`,
+                    'days_per_week': `${days_per_week}`,
+                    'month': `${months}`,
+                    'diluent': `${diluent}`,
+                    'lyse': `${lysepack}`,
+                    'diff': `${diffpack}`,
+                    'retic': `${reticpack}`,
+                    'cleaner': `${cleaner}`,
+                    '6c_9': `${controls_6C_9}`,
+                    '6c_12': `${controls_6C_12}`,
+                    'retic_control': `${control_retic}`,
+                    'latron': `${latron}`,
+                    's-cal': `${calibrator}`,
+                }
+            ]
+        })
+    }) 
+}
+
+/* calc Dxh500 */
+document.getElementById('dxh500').addEventListener('click',DxH500Click);
+function DxH500Click() {
+    document.getElementById('myTopnav').querySelectorAll('.active').forEach((el)=>el.classList.remove('active'));
+    document.getElementById('dxh500').classList.add('active');
+    burgerMenu();
+    document.querySelectorAll('.main').forEach((el)=>el.classList.add('hide'));
+    document.getElementById('calcDxH500').classList.remove('hide');
+}
+document.getElementById('confirm_calc_dxh500').addEventListener('click',DxH500Calculate);
+document.getElementById('delete_calc_dxh500').addEventListener('click',DxH500Clear);
+document.getElementById('delete_form_calc_dxh500').addEventListener('click',DxH500FormClear);
+
+function DxH500Clear() {
+    document.getElementById('table_field_calc_dxh500').innerHTML='';
+}
+function DxH500FormClear() {
+    document.getElementById('hospital_500').value="";
+    document.getElementById('capacity500').value="";
+    document.getElementById('retic500').value=0;
+}
+
+function DxH500Calculate() {
+    const instruments = document.getElementById('dxh500_count').value;
+    const hospital = document.getElementById('hospital_500').value;
+    const potok = Number(document.getElementById('capacity500').value);
+    const days_per_week = document.getElementById('days_per_week500').value;
+    const months = document.getElementById('months500').value;
+    const calc_type = document.getElementById('calc_dxh500_type').value;
     
+    const controls = calc_type <= 1? 3 : 0;
+    const diluent = Math.ceil((months*30.5*days_per_week/7*(13+controls)*instruments+potok+potok/50)/750);
+    const lysepack = Math.ceil((months*30.5*days_per_week/7*(8+controls)*instruments+potok+potok/50)/750);
+    const cleaner = Math.ceil((months*30.5*days_per_week/7*(100+controls)*instruments+potok+6*potok/50)/1180);
+    const controls_6C_9 = calc_type == 1 ? Math.ceil(months*Math.ceil(instruments/2)/1.5) : calc_type == 2? Math.ceil(months*Math.ceil(instruments/2)/2) : Math.ceil(months*Math.ceil(instruments/2)/3);
+    const calibrator = calc_type == 1 ? 2*instruments : 1*instruments;
+    const table_length = 5;
+    const table = document.createElement('table');
+    table.className = 'supertable';
+    const width = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+    const column_width = (width - 50) / 5;
+    const headers = ['Реактив','Количество'];
+    const reactive_final = ['DxH500 Series Diluent','DxH500 Series Lyse','DxH500 Series Cleaner','DxH 500 Series Control','DxH 500 Series Calibrator'];
+    const format_final = [diluent,lysepack,cleaner,controls_6C_9,calibrator];
+    for (let i=0; i<table_length+1; i+=1) {
+        const tr = table.insertRow();
+        tr.className = 'superrow';
+        for (let j=0; j<=headers.length; j+=1) {
+            const td = tr.insertCell();
+            if (j===0) {
+                td.className = 'ordercell';
+                if (i>0) td.appendChild(document.createTextNode(`${i}`))
+            } else {
+                td.className = 'supercell';
+                td.style.width = `${column_width}px`;
+                if (i===0) {
+                    td.appendChild(document.createTextNode(`${headers[j-1]}`));
+                }
+                if (j===1 && i!==0) td.appendChild(document.createTextNode(`${reactive_final[i-1]}`));
+                if (j===2 && i!==0) td.appendChild(document.createTextNode(`${format_final[i-1]}`));
+            };
+        }
+    }
+    document.getElementById('table_field_calc_dxh500').appendChild(table);
+    downloadCalcDxH500ToDatabase(hospital, potok, days_per_week, months,diluent, lysepack, cleaner, controls_6C_9, calibrator);
+}
+
+function downloadCalcDxH500ToDatabase(facility, capacity, days_per_week, months, diluent, lysepack, cleaner, controls_6C_9, calibrator) {
+    fetch('https://sheetdb.io/api/v1/tkhtt2o9c61js?sheet=dxh500', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            data: [
+                {
+                    'date': `${new Date()}`,
+                    'facility': `${facility}`,
+                    'capacity': `${capacity}`,
+                    'days_per_week': `${days_per_week}`,
+                    'month': `${months}`,
+                    'diluent': `${diluent}`,
+                    'lyse': `${lysepack}`,
+                    'cleaner': `${cleaner}`,
+                    'control': `${controls_6C_9}`,
+                    'calibrator': `${calibrator}`,
+                }
+            ]
+        })
+    }) 
+}
