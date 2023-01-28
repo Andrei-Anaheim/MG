@@ -12,6 +12,7 @@
         <li id="visits" class="active">Выезды</li>
         <li id="plans" >Планы</li>
         <li id="problems" >Проблемы</li>
+        <li id="quantity">Потоки</li>
         <li id="dxh800">DxH800</li>
         <li id="dxh500">DxH500</li>
         <li id="iq200">IQ200</li>
@@ -19,6 +20,7 @@
         <li id="ax4030">AX-4030</li>
         <li class="icon" onclick="burgerMenu()">X</li>
     </div>
+    <!-- Страница выездов -->
     <div id="visitsPage" class="visits main">
         <div class="visits_nav">
             <div class="button" id="add_visit"> Добавить выезд</div>
@@ -97,6 +99,99 @@
             <div class="table_field" id="table_field"></div>
         </div>
     </div>
+    <!-- Конец страницы выездов -->
+    <!-- Калькулятор DxH800-->
+    <div id="calcDxH800" class="calc_dxh800 main hide">
+        <div id="calcDxH800_box" class="calcDxH800_box">
+            <div class="question">
+                <p class="text">Укажите учреждение</p>
+                <input type="text" id="hospital_800">
+            </div>
+            <div class="question">
+                <p class="text">Укажите число приборов</p>
+                <input type="number" id="dxh800_count" min="1" max="10" value="1">
+            </div>
+            <div class="question">
+                <p class="text">Укажите поток</p>
+                <input type="number" id="capacity800">
+            </div>
+            <div class="question">
+                <p class="text">Укажите количество рабочих дней в неделе</p>
+                <input type="number" id="days_per_week800" min="1" max="7" value="5">
+            </div>
+            <div class="question">
+                <p class="text">Укажите количество месяцев для подсчета</p>
+                <input type="number" id="months800" min="1" max="24" value="12">
+            </div>
+            <div class="question">
+                <p class="text">Укажите % ретикулоцитов</p>
+                <input type="number" id="retic800" min="0" max="100" value="0">
+            </div>
+            <div class="question">
+                <p class="text">Тип Контроля 6С</p>
+                <select class="select" id="6C_type800">
+                    <option value="1" selected>9 (Обычная)</option>
+                    <option value="2">12 (Увеличенная)</option>
+                </select>
+            </div>
+            <div class="question">
+                <p class="text">Тип подсчета</p>
+                <select class="select" id="calc_dxh800_type">
+                    <option value="1" selected>Правильный</option>
+                    <option value="2">Сокращенный адекватно</option>
+                    <option value="3">Сокращенный максимально</option>
+                </select>
+            </div>
+        </div>
+        <div class="dxh800_buttons">
+            <div id="confirm_calc_dxh800" class="button">Рассчитать</div>
+            <div id="delete_form_calc_dxh800" class="button">Очистить форму</div>
+            <div id="delete_calc_dxh800" class="button">Очистить результат</div>    
+        </div>
+        <div class="table_field" id="table_field_calc_dxh800"></div>
+    </div>
+    <!-- Конец калькулятора DxH800-->
+    <!-- Калькулятор DxH500-->
+    <div id="calcDxH500" class="calc_dxh500 main hide">
+        <div id="calcDxH500_box" class="calcDxH500_box">
+            <div class="question">
+                <p class="text">Укажите учреждение</p>
+                <input type="text" id="hospital_500">
+            </div>
+            <div class="question">
+                <p class="text">Укажите число приборов</p>
+                <input type="number" id="dxh500_count" min="1" max="10" value="1">
+            </div>
+            <div class="question">
+                <p class="text">Укажите поток</p>
+                <input type="number" id="capacity500">
+            </div>
+            <div class="question">
+                <p class="text">Укажите количество рабочих дней в неделе</p>
+                <input type="number" id="days_per_week500" min="1" max="7" value="5">
+            </div>
+            <div class="question">
+                <p class="text">Укажите количество месяцев для подсчета</p>
+                <input type="number" id="months500" min="1" max="24" value="12">
+            </div>
+            <div class="question">
+                <p class="text">Тип подсчета</p>
+                <select class="select" id="calc_dxh500_type">
+                    <option value="1" selected>Правильный</option>
+                    <option value="2">Сокращенный адекватно</option>
+                    <option value="3">Сокращенный максимально</option>
+                </select>
+            </div>
+        </div>
+        <div class="dxh500_buttons">
+            <div id="confirm_calc_dxh500" class="button">Рассчитать</div>
+            <div id="delete_form_calc_dxh500" class="button">Очистить форму</div>
+            <div id="delete_calc_dxh500" class="button">Очистить результат</div>    
+        </div>
+        <div class="table_field" id="table_field_calc_dxh500"></div>
+    </div>
+    <!-- Конец калькулятора DxH500-->
+
     <script src="script.js"></script>
 </body>
 </html>

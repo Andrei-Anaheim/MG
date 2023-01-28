@@ -156,6 +156,7 @@ body {
 .list_filters, .list_filters_2 {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     justify-content: center;
 }
 .table_field {
@@ -205,7 +206,35 @@ body {
 @media screen and (max-width: 600px) {
     .supercell {
         max-width: 150px;
+        font: normal normal 10px/10px Arial;
     }
+
+    .hide_column {
+        display:none;
+    }
+}
+
+/*Калькулятор DxH800*/
+.calc_dxh800, .calc_dxh500 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.calcDxH800_box, .calcDxH500_box {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.dxh800_buttons, .dxh500_buttons {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 50%;
+    margin: 0 auto;
 }
 
 
