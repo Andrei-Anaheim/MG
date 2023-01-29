@@ -519,3 +519,232 @@ function downloadCalcDxH500ToDatabase(facility, capacity, days_per_week, months,
         })
     }) 
 }
+
+/* calc IQ200 */
+document.getElementById('iq200').addEventListener('click',IQ200Click);
+function IQ200Click() {
+    document.getElementById('myTopnav').querySelectorAll('.active').forEach((el)=>el.classList.remove('active'));
+    document.getElementById('iq200').classList.add('active');
+    burgerMenu();
+    document.querySelectorAll('.main').forEach((el)=>el.classList.add('hide'));
+    document.getElementById('calcIQ200').classList.remove('hide');
+}
+document.getElementById('confirm_calc_IQ200').addEventListener('click',IQ200Calculate);
+document.getElementById('delete_calc_IQ200').addEventListener('click',IQ200Clear);
+document.getElementById('delete_form_calc_IQ200').addEventListener('click',IQ200FormClear);
+
+function IQ200Clear() {
+    document.getElementById('table_field_calc_IQ200').innerHTML='';
+}
+function IQ200FormClear() {
+    document.getElementById('hospital_IQ200').value="";
+    document.getElementById('capacityIQ200').value="";
+}
+
+function IQ200Calculate() {
+    const instruments = document.getElementById('IQ200_count').value;
+    const hospital = document.getElementById('hospital_IQ200').value;
+    const potok = Number(document.getElementById('capacityIQ200').value);
+    const days_per_week = document.getElementById('days_per_weekIQ200').value;
+    const months = document.getElementById('monthsIQ200').value;
+    const calc_type = document.getElementById('calc_IQ200_type').value;
+    
+    const controls = calc_type <= 2? 5 : 0;
+    const lamina = Math.ceil((months*30.5*days_per_week/7*(10+controls)*instruments+potok)/485/2);
+    const calibrator = Math.ceil(Math.ceil(months/4)*Math.ceil(instruments/4));
+    const control = calc_type <= 2 ? 12*Math.ceil(instruments/2) : 12;
+    const diluent = Math.ceil(months/12)*instruments;
+    const cleanser = Math.ceil(months/12)*instruments;
+    const table_length = 5;
+    const table = document.createElement('table');
+    table.className = 'supertable';
+    const width = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+    const column_width = (width - 50) / 5;
+    const headers = ['Реактив','Количество'];
+    const reactive_final = ['IQ Ламина, 2x7 л','IQ Calibrator Pack, 4 * 125 мл ','IQ Control/Focus Pack, 4 * 125 мл','Iris Diluent Pack, 4 * 475 мл','Iris System Cleanser Pack, 4 * 425 мл'];
+    const format_final = [lamina, calibrator, control, diluent, cleanser];
+    for (let i=0; i<table_length+1; i+=1) {
+        const tr = table.insertRow();
+        tr.className = 'superrow';
+        for (let j=0; j<=headers.length; j+=1) {
+            const td = tr.insertCell();
+            if (j===0) {
+                td.className = 'ordercell';
+                if (i>0) td.appendChild(document.createTextNode(`${i}`))
+            } else {
+                td.className = 'supercell';
+                td.style.width = `${column_width}px`;
+                if (i===0) {
+                    td.appendChild(document.createTextNode(`${headers[j-1]}`));
+                }
+                if (j===1 && i!==0) td.appendChild(document.createTextNode(`${reactive_final[i-1]}`));
+                if (j===2 && i!==0) td.appendChild(document.createTextNode(`${format_final[i-1]}`));
+            };
+        }
+    }
+    document.getElementById('table_field_calc_IQ200').appendChild(table);
+    downloadCalcIQ200ToDatabase(hospital, potok, days_per_week, months, lamina, calibrator, control, diluent, cleanser);
+}
+
+function downloadCalcIQ200ToDatabase(facility, capacity, days_per_week, months, lamina, calibrator, control, diluent, cleanser) {
+    fetch('https://sheetdb.io/api/v1/tkhtt2o9c61js?sheet=iq200', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            data: [
+                {
+                    'date': `${new Date()}`,
+                    'facility': `${facility}`,
+                    'capacity': `${capacity}`,
+                    'days_per_week': `${days_per_week}`,
+                    'month': `${months}`,
+                    'lamina': `${lamina}`,
+                    'calibrator': `${calibrator}`,
+                    'control': `${control}`,
+                    'diluent': `${diluent}`,
+                    'cleanser': `${cleanser}`,
+                }
+            ]
+        })
+    }) 
+}
+
+/* calc Velocity */
+document.getElementById('velocity').addEventListener('click',VelocityClick);
+function VelocityClick() {
+    document.getElementById('myTopnav').querySelectorAll('.active').forEach((el)=>el.classList.remove('active'));
+    document.getElementById('velocity').classList.add('active');
+    burgerMenu();
+    document.querySelectorAll('.main').forEach((el)=>el.classList.add('hide'));
+    document.getElementById('calcVelocity').classList.remove('hide');
+}
+document.getElementById('confirm_calc_Velocity').addEventListener('click',VelocityCalculate);
+document.getElementById('delete_calc_Velocity').addEventListener('click',VelocityClear);
+document.getElementById('delete_form_calc_Velocity').addEventListener('click',VelocityFormClear);
+
+function VelocityClear() {
+    document.getElementById('table_field_calc_Velocity').innerHTML='';
+}
+function VelocityFormClear() {
+    document.getElementById('hospital_Velocity').value="";
+    document.getElementById('capacityVelocity').value="";
+}
+
+function VelocityCalculate() {
+    const instruments = document.getElementById('Velocity_count').value;
+    const hospital = document.getElementById('hospital_Velocity').value;
+    const potok = Number(document.getElementById('capacityVelocity').value);
+    const days_per_week = document.getElementById('days_per_weekVelocity').value;
+    const months = document.getElementById('monthsVelocity').value;
+    const calc_type = document.getElementById('calc_Velocity_type').value;
+    
+    const controls = calc_type <= 2? 3 : 0;
+    const strips = Math.ceil((months*30.5*days_per_week/7*controls*instruments+potok+20*instruments*(calc_type<=2 ? 12 : 0))/100);
+    const wash = Math.ceil((months*30.5*days_per_week/7*(20+controls)*instruments+potok)/850/2);
+    const calibrator = Math.ceil(Math.ceil(months/3)*Math.ceil(instruments/3));
+    const control = calc_type <= 2 ? 8 : 6;
+    const diluent = Math.ceil(months/12)*instruments;
+    const cleanser = Math.ceil(months/12)*instruments;
+    const table_length = 6;
+    const table = document.createElement('table');
+    table.className = 'supertable';
+    const width = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+    const column_width = (width - 50) / 5;
+    const headers = ['Реактив','Количество'];
+    const reactive_final = ['Тест-полоски iChem 100 шт','iChem Промывающий раствор, 2x7 л','CA/CB/CC для iChem, 3x3x100 мл','Набор для калибровки iChem, 10x100 мл, 2x5 полосок)','Iris Diluent Pack, 4 * 475 мл','Iris System Cleanser Pack, 4 * 425 мл'];
+    const format_final = [strips,wash, control, calibrator, diluent, cleanser];
+    for (let i=0; i<table_length+1; i+=1) {
+        const tr = table.insertRow();
+        tr.className = 'superrow';
+        for (let j=0; j<=headers.length; j+=1) {
+            const td = tr.insertCell();
+            if (j===0) {
+                td.className = 'ordercell';
+                if (i>0) td.appendChild(document.createTextNode(`${i}`))
+            } else {
+                td.className = 'supercell';
+                td.style.width = `${column_width}px`;
+                if (i===0) {
+                    td.appendChild(document.createTextNode(`${headers[j-1]}`));
+                }
+                if (j===1 && i!==0) td.appendChild(document.createTextNode(`${reactive_final[i-1]}`));
+                if (j===2 && i!==0) td.appendChild(document.createTextNode(`${format_final[i-1]}`));
+            };
+        }
+    }
+    document.getElementById('table_field_calc_Velocity').appendChild(table);
+    downloadCalcVelocityToDatabase(hospital, potok, days_per_week, months, strips,wash, control, calibrator, diluent, cleanser);
+}
+
+function downloadCalcVelocityToDatabase(facility, capacity, days_per_week, months, strips,wash, control, calibrator, diluent, cleanser) {
+    fetch('https://sheetdb.io/api/v1/tkhtt2o9c61js?sheet=velocity', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            data: [
+                {
+                    'date': `${new Date()}`,
+                    'facility': `${facility}`,
+                    'capacity': `${capacity}`,
+                    'days_per_week': `${days_per_week}`,
+                    'month': `${months}`,
+                    'strips': `${strips}`,
+                    'wash': `${wash}`,
+                    'calibrator': `${calibrator}`,
+                    'control': `${control}`,
+                    'diluent': `${diluent}`,
+                    'cleanser': `${cleanser}`,
+                }
+            ]
+        })
+    }) 
+}
+
+
+/* Генератор */
+document.getElementById('generator').addEventListener('click',GeneratorClick);
+function GeneratorClick() {
+    document.getElementById('myTopnav').querySelectorAll('.active').forEach((el)=>el.classList.remove('active'));
+    document.getElementById('generator').classList.add('active');
+    burgerMenu();
+    document.querySelectorAll('.main').forEach((el)=>el.classList.add('hide'));
+    document.getElementById('pass_generator').classList.remove('hide');
+}
+document.getElementById('confirm_calc_generator').addEventListener('click',GeneratorCalculate);
+document.getElementById('delete_form_generator').addEventListener('click',GeneratorFormClear);
+
+function GeneratorFormClear() {
+    document.getElementById('generator_sn').value="";
+    document.getElementById('password_answer').innerHTML = '';
+}
+
+function GeneratorCalculate() {
+    const symbol=['!','"','#','$','%','&',"'",'(',')','*','+',',','-','.','/','0','1','2','3','4','5','6','7','8','9',':',';','<','=','>','?','@','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','[',"\\",']','^','_','`','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','{','|','}','~'];
+    const sn = document.getElementById('generator_sn').value;
+    const sn_arr = sn.toLowerCase().split('');
+    const sn_length = sn_arr.length;
+    const sdvig = [0,0,0,0,1771561,161051,14641,1331,121,11,1];
+    const base = [981176888,981176888,981176888,981176888,1039638401,1044953084,1045436237,1045480160,1045484153,1045484516,1045484549];
+    const daygap = 28561;
+    const baseday = new Date ('2023/01/29');
+    const day_difference = Math.floor(Math.abs(new Date() - baseday)/1000/60/60/24);
+    let password = 0;
+    if (sn_length<5) {
+        password = base[0]+day_difference*daygap;
+    } else {
+        password = Number(base[sn_length-1]);
+        for (let i=0; i<sn_length-4; i+=1) {
+            password = Number(password) + Number(sdvig[i+4])*Number(symbol.indexOf(sn_arr[i+4]));
+        }
+    } 
+    const final_result = password.toString(16).toLowerCase();
+    document.getElementById('password_answer').innerHTML = `Пароль: ${final_result}`;
+    
+
+}
