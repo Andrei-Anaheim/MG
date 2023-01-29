@@ -13,6 +13,7 @@
         <li id="plans" >Планы</li>
         <li id="problems" >Проблемы</li>
         <li id="quantity">Потоки</li>
+        <li id="generator">Генератор</li>
         <li id="dxh800">DxH800</li>
         <li id="dxh500">DxH500</li>
         <li id="iq200">IQ200</li>
@@ -100,6 +101,19 @@
         </div>
     </div>
     <!-- Конец страницы выездов -->
+    <!-- Генератор паролей-->
+    <div id="pass_generator" class="generator main hide">
+        <div class="only_question">
+            <p class="text">Введите SN</p>
+            <input type="text" id="generator_sn">
+        </div> 
+        <div class="generator_buttons">
+            <div id="confirm_calc_generator" class="button">Сгенерировать</div>
+            <div id="delete_form_generator" class="button">Очистить</div>    
+        </div>
+        <div class="pass_result" id="password_answer"></div>
+    </div>
+    <!-- Конец генератора паролей-->
     <!-- Калькулятор DxH800-->
     <div id="calcDxH800" class="calc_dxh800 main hide">
         <div id="calcDxH800_box" class="calcDxH800_box">
@@ -191,7 +205,86 @@
         <div class="table_field" id="table_field_calc_dxh500"></div>
     </div>
     <!-- Конец калькулятора DxH500-->
-
+    <!-- Калькулятор IQ200-->
+    <div id="calcIQ200" class="calc_IQ200 main hide">
+        <div id="calcIQ200_box" class="calcIQ200_box">
+            <div class="question">
+                <p class="text">Укажите учреждение</p>
+                <input type="text" id="hospital_IQ200">
+            </div>
+            <div class="question">
+                <p class="text">Укажите число приборов</p>
+                <input type="number" id="IQ200_count" min="1" max="10" value="1">
+            </div>
+            <div class="question">
+                <p class="text">Укажите поток</p>
+                <input type="number" id="capacityIQ200">
+            </div>
+            <div class="question">
+                <p class="text">Укажите количество рабочих дней в неделе</p>
+                <input type="number" id="days_per_weekIQ200" min="1" max="7" value="5">
+            </div>
+            <div class="question">
+                <p class="text">Укажите количество месяцев для подсчета</p>
+                <input type="number" id="monthsIQ200" min="1" max="24" value="12">
+            </div>
+            <div class="question">
+                <p class="text">Тип подсчета</p>
+                <select class="select" id="calc_IQ200_type">
+                    <option value="1" selected>Правильный</option>
+                    <option value="2">Сокращенный адекватно</option>
+                    <option value="3">Сокращенный максимально</option>
+                </select>
+            </div>
+        </div>
+        <div class="IQ200_buttons">
+            <div id="confirm_calc_IQ200" class="button">Рассчитать</div>
+            <div id="delete_form_calc_IQ200" class="button">Очистить форму</div>
+            <div id="delete_calc_IQ200" class="button">Очистить результат</div>    
+        </div>
+        <div class="table_field" id="table_field_calc_IQ200"></div>
+    </div>
+    <!-- Конец калькулятора IQ200-->
+    <!-- Калькулятор Velocity-->
+    <div id="calcVelocity" class="calc_Velocity main hide">
+        <div id="calcVelocity_box" class="calcVelocity_box">
+            <div class="question">
+                <p class="text">Укажите учреждение</p>
+                <input type="text" id="hospital_Velocity">
+            </div>
+            <div class="question">
+                <p class="text">Укажите число приборов</p>
+                <input type="number" id="Velocity_count" min="1" max="10" value="1">
+            </div>
+            <div class="question">
+                <p class="text">Укажите поток</p>
+                <input type="number" id="capacityVelocity">
+            </div>
+            <div class="question">
+                <p class="text">Укажите количество рабочих дней в неделе</p>
+                <input type="number" id="days_per_weekVelocity" min="1" max="7" value="5">
+            </div>
+            <div class="question">
+                <p class="text">Укажите количество месяцев для подсчета</p>
+                <input type="number" id="monthsVelocity" min="1" max="24" value="12">
+            </div>
+            <div class="question">
+                <p class="text">Тип подсчета</p>
+                <select class="select" id="calc_Velocity_type">
+                    <option value="1" selected>Правильный</option>
+                    <option value="2">Сокращенный адекватно</option>
+                    <option value="3">Сокращенный максимально</option>
+                </select>
+            </div>
+        </div>
+        <div class="Velocity_buttons">
+            <div id="confirm_calc_Velocity" class="button">Рассчитать</div>
+            <div id="delete_form_calc_Velocity" class="button">Очистить форму</div>
+            <div id="delete_calc_Velocity" class="button">Очистить результат</div>    
+        </div>
+        <div class="table_field" id="table_field_calc_Velocity"></div>
+    </div>
+    <!-- Конец калькулятора Velocity-->
     <script src="script.js"></script>
 </body>
 </html>
