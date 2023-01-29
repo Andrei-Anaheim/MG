@@ -727,8 +727,10 @@ function GeneratorFormClear() {
 function GeneratorCalculate() {
     const symbol=['!','"','#','$','%','&',"'",'(',')','*','+',',','-','.','/','0','1','2','3','4','5','6','7','8','9',':',';','<','=','>','?','@','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','[',"\\",']','^','_','`','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','{','|','}','~'];
     const sn = document.getElementById('generator_sn').value;
-    const sn_arr = sn.toLowerCase().split('');
+    let sn_arr = sn.toLowerCase().split('');
+    if (sn_arr.length >11) sn_arr=sn_arr.slice(0,11);
     const sn_length = sn_arr.length;
+    console.log(sn_arr, sn_length);
     const sdvig = [0,0,0,0,1771561,161051,14641,1331,121,11,1];
     const base = [981176888,981176888,981176888,981176888,1039638401,1044953084,1045436237,1045480160,1045484153,1045484516,1045484549];
     const daygap = 28561;
