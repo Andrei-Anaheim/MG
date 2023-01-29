@@ -71,6 +71,27 @@ function getFacilities() {
             facilities2.appendChild(option);
         }
         document.getElementById('facility2').addEventListener('change',getListVisits);
+        const facilities3 = document.createElement('select');
+        facilities3.className = 'select';
+        facilities3.id = 'facility3';
+        document.getElementById('select_facility3').appendChild(facilities3);
+        for (let i=0; i<hospitals.length; i+=1) {
+            let option = document.createElement('option');
+            option.value = hospitals[i];
+            option.text = hospitals[i];
+            facilities3.appendChild(option);
+        }
+        const facilities4 = document.createElement('select');
+        facilities4.className = 'select';
+        facilities4.id = 'facility4';
+        document.getElementById('select_facility4').appendChild(facilities4);
+        for (let i=0; i<hospitals.length; i+=1) {
+            let option = document.createElement('option');
+            option.value = hospitals[i];
+            option.text = hospitals[i];
+            facilities4.appendChild(option);
+        }
+        document.getElementById('facility4').addEventListener('change',getListProductivity);
         const instrument = document.createElement('select');
         instrument.className = 'select';
         instrument.multiple='multiple';
@@ -93,6 +114,27 @@ function getFacilities() {
             instrument2.appendChild(option);
         }
         document.getElementById('instrument2').addEventListener('change',getListVisits);
+        const instrument3 = document.createElement('select');
+        instrument3.className = 'select';
+        instrument3.id = 'instrument3';
+        document.getElementById('select_instrument3').appendChild(instrument3);
+        for (let i=0; i<instruments2.length; i+=1) {
+            let option = document.createElement('option');
+            option.value = instruments2[i];
+            option.text = instruments2[i];
+            instrument3.appendChild(option);
+        }
+        const instrument4 = document.createElement('select');
+        instrument4.className = 'select';
+        instrument4.id = 'instrument4';
+        document.getElementById('select_instrument4').appendChild(instrument4);
+        for (let i=0; i<instruments2.length; i+=1) {
+            let option = document.createElement('option');
+            option.value = instruments2[i];
+            option.text = instruments2[i];
+            instrument4.appendChild(option);
+        }
+        document.getElementById('instrument4').addEventListener('change',getListProductivity);
     })
 }
 window.onload = getFacilities();
@@ -748,5 +790,157 @@ function GeneratorCalculate() {
     const final_result = password.toString(16).toLowerCase();
     document.getElementById('password_answer').innerHTML = `Пароль: ${final_result}`;
     
+}
 
+
+/*Потоки */
+document.getElementById('quantity').addEventListener('click',productivityClick);
+function productivityClick() {
+    document.getElementById('myTopnav').querySelectorAll('.active').forEach((el)=>el.classList.remove('active'));
+    document.getElementById('quantity').classList.add('active');
+    burgerMenu();
+    document.querySelectorAll('.main').forEach((el)=>el.classList.add('hide'));
+    document.getElementById('productivity_box').classList.add('hide');
+    document.getElementById('confirm_productivity').classList.add('hide');
+    document.getElementById('productivity_list').classList.add('hide');
+    document.getElementById('productivityPage').classList.remove('hide');
+    document.getElementById('productivity_nav').classList.remove('hide');
+}
+
+document.getElementById('add_productivity').addEventListener('click',addProductivityClick);
+function addProductivityClick() {
+    document.getElementById('productivity_box').classList.remove('hide');
+    document.getElementById('confirm_productivity').classList.remove('hide');
+    document.getElementById('table_field_productivity').innerHTML='';
+    document.getElementById('productivity_list').classList.add('hide');
+}
+
+document.getElementById('confirm_productivity').addEventListener('click',confirmProductivityClick);
+function confirmProductivityClick() {
+    const date = document.getElementById('date_product').value;
+    const date2 = document.getElementById('date2_product').value;
+    const facility = document.getElementById('facility3').value;
+    const instrument = document.getElementById('instrument3').value;
+    const productivity_number = document.getElementById('productivity_number').value;
+    const comment = document.getElementById('productivity_comment').value;
+    if (date === "") document.getElementById('confirmation_productivity_status').innerText='Выберите дату начала';
+    else if (date2 === "") document.getElementById('confirmation_productivity_status').innerText='Выберите дату конца визита';
+    else if (facility === "") document.getElementById('confirmation_productivity_status').innerText='Выберите учреждение';
+    else if (instrument === "") document.getElementById('confirmation_productivity_status').innerText='Выберите прибор';
+    else if (productivity_number === "") document.getElementById('confirmation_productivity_status').innerText='Укажите поток за указанный период';
+    else {
+        document.getElementById('confirmation_productivity_status').classList.remove('red_status');
+        document.getElementById('confirmation_productivity_status').classList.add('green_status');
+        document.getElementById('confirmation_productivity_status').innerText='Поток добавляется в базу';
+        downloadProductuvityToDatabase(date, date2, facility, instrument, productivity_number, comment);
+    }
+}
+function downloadProductuvityToDatabase(date, date2, facility, instrument, productivity_number, comment) {
+    fetch('https://sheetdb.io/api/v1/tkhtt2o9c61js?sheet=potoki', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            data: [
+                {
+                    'Дата с': `${date}`,
+                    'Дата по': `${date2}`,
+                    'Учреждение': `${facility}`,
+                    'Прибор': `${instrument}`,
+                    'Поток': `${productivity_number}`,
+                    'Примечание': `${comment}`,
+                }
+            ]
+        })
+    }) 
+    .then(res => res.text())
+    .then(rep => {
+        document.getElementById('confirmation_productivity_status').innerText='Поток добавлен в базу';
+        setTimeout(()=>{
+            document.getElementById('date_product').value = "";
+            document.getElementById('date2_product').value = "";
+            document.getElementById('facility3').value = "";
+            document.getElementById('instrument3').value = "";
+            document.getElementById('productivity_number').value = "";
+            document.getElementById('productivity_comment').value = "";
+        },1500)
+        setTimeout(()=>{
+            document.getElementById('confirmation_productivity_status').innerText='';
+        },2000)
+    })
+}
+
+document.getElementById('list_productivity').addEventListener('click',listProductivityClick);
+function listProductivityClick() {
+    document.getElementById('productivity_box').classList.add('hide');
+    document.getElementById('confirm_productivity').classList.add('hide');
+    document.getElementById('productivity_list').classList.remove('hide');
+    getListProductivity();
+}
+
+function getListProductivity() {
+    document.getElementById('table_field_productivity').innerHTML='';
+    const url = `https://docs.google.com/spreadsheets/d/16ABEN54Ykbej-PhrbBjGlaHSXzNbD4PA8ecbpWc5QHQ/gviz/tq?gid=298086266`;
+    const date1 = [];
+    const date2 = [];
+    const place = [];
+    const machine = [];
+    const potoki = [];
+    const comment = [];
+    const filter_hospital = document.getElementById('facility4').value;
+    const filter_instrument = document.getElementById('instrument4').value;
+    fetch(url)
+    .then(res => res.text())
+    .then(rep => {
+        const data2 = JSON.parse(rep.substr(47).slice(0,-2));
+        let data3=data2;
+        data3 = filter_hospital !=="" ? data3.table.rows.filter((el)=>el.c[2].v===filter_hospital): data3.table.rows.filter((el)=>el.c[2].v!=="zaty4ka");
+        data3 = filter_instrument !==""? data3.filter((el)=>el.c[3].v.includes(filter_instrument)): data3.filter((el)=>el.c[3].v!=='zaty4ka');
+        const length = data3.length;
+        for (let i=0; i<length; i+=1) {
+            (data3[i].c[0] && data3[i].c[0].v != null) ? date1.push(data3[i].c[0].v.split('Date(')[1].split(')')[0]) : date1.push('');
+            (data3[i].c[1] && data3[i].c[1].v != null) ? date2.push(data3[i].c[1].v.split('Date(')[1].split(')')[0]) : date2.push('');
+            (data3[i].c[2] && data3[i].c[2].v != null) ? place.push(data3[i].c[2].v) : place.push('');
+            (data3[i].c[3] && data3[i].c[3].v != null) ? machine.push(data3[i].c[3].v) : machine.push('');
+            (data3[i].c[4] && data3[i].c[4].v != null) ? potoki.push(data3[i].c[4].v) : potoki.push('');
+            (data3[i].c[5] && data3[i].c[5].v != null) ? comment.push(data3[i].c[5].v) : comment.push('');
+        }
+        const table = document.createElement('table');
+        table.className = 'supertable';
+        const width = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+        const players_column_width = (width - 50) / 7;
+        for (let i=0; i<length+1; i+=1) {
+            const tr = table.insertRow();
+            tr.className = 'superrow';
+            for (let j=0; j<=6; j+=1) {
+                const td = tr.insertCell();
+                if (i===0 && j!==0) td.appendChild(document.createTextNode(`${data2.table.cols[j-1].label}`));
+                if (j===0) {
+                    td.className = 'ordercell';
+                    td.classList.add('hide_column');
+                    if (i>0) td.appendChild(document.createTextNode(`${i}`))
+                } else {
+                    td.className = 'supercell';
+                    td.style.width = (j===1||j===2||j===4||j===5||j===6)? `${players_column_width*0.9}px`:  `${players_column_width*1.4}px`;
+                    if (j===2|| j===6) td.classList.add('hide_column');
+                    if (j===1 && i>0) {
+                        td.appendChild(document.createTextNode(`${new Date(date1[i-1].split(',')[0],date1[i-1].split(',')[1],date1[i-1].split(',')[2]).toLocaleString('ru-RU', {year: 'numeric', month: '2-digit', day: '2-digit'})}`))
+                    } else if (j===2 && i>0) {
+                        td.appendChild(document.createTextNode(`${new Date(date2[i-1].split(',')[0],date2[i-1].split(',')[1],date2[i-1].split(',')[2]).toLocaleString('ru-RU', {year: 'numeric', month: '2-digit', day: '2-digit'})}`))
+                    } else if (j===3 && i>0) {
+                        td.appendChild(document.createTextNode(`${place[i-1]}`))
+                    } else if (j===4 && i>0) {
+                        td.appendChild(document.createTextNode(`${machine[i-1]}`))
+                    } else if (j===5 && i>0) {
+                        td.appendChild(document.createTextNode(`${potoki[i-1]}`))
+                    } else if (j===6 && i>0) {
+                        td.appendChild(document.createTextNode(`${comment[i-1]}`))
+                    }
+                };
+            }
+        }
+        document.getElementById('table_field_productivity').appendChild(table);
+    })
 }

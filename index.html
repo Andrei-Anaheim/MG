@@ -10,15 +10,15 @@
 <body>
     <div class="topnav" id="myTopnav">
         <li id="visits" class="active">Выезды</li>
-        <li id="plans" >Планы</li>
-        <li id="problems" >Проблемы</li>
+        <li id="plans" >Планы(WIP)</li>
+        <li id="problems" >Проблемы(WIP)</li>
         <li id="quantity">Потоки</li>
         <li id="generator">Генератор</li>
         <li id="dxh800">DxH800</li>
         <li id="dxh500">DxH500</li>
         <li id="iq200">IQ200</li>
         <li id="velocity">iChem Velocity</li>
-        <li id="ax4030">AX-4030</li>
+        <li id="ax4030">AX-4030(WIP)</li>
         <li class="icon" onclick="burgerMenu()">X</li>
     </div>
     <!-- Страница выездов -->
@@ -101,6 +101,51 @@
         </div>
     </div>
     <!-- Конец страницы выездов -->
+    <!-- Потоки-->
+    <div id="productivityPage" class="productivity main">
+        <div id="productivity_nav" class="productivity_nav hide">
+            <div class="button" id="add_productivity"> Добавить потоки</div>
+            <div class="button" id="list_productivity"> Журнал потоков</div>
+        </div>
+        <div id="productivity_box" class="productivity_box hide">
+            <div class="question">
+                <p class="text">Выберите дату с</p>
+                <input type="date" id="date_product">
+            </div>
+            <div class="question">
+                <p class="text">Выберите дату по</p>
+                <input type="date" id="date2_product">
+            </div>
+            <div class="question" id="select_facility3">
+                <p class="text">Выберите учреждение</p>
+            </div>
+            <div class="question" id="select_instrument3">
+                <p class="text">Выберите прибор</p>
+            </div>
+            <div class="question">
+                <p class="text">Укажите поток</p>
+                <input type="number" id="productivity_number">
+            </div>
+            <div class="question">
+                <p class="text">Примечания</p>
+                <input type="text" id="productivity_comment">
+            </div>
+        </div>
+        <div id="confirm_productivity" class="button hide">Внести данные</div>
+        <p id="confirmation_productivity_status" class="red_status"></p>
+        <div id="productivity_list" class="productivity_list hide">
+            <div class="list_filters" id="list_filters_productivity">
+                <div class="question" id="select_facility4">
+                    <p class="text">Фильтр по учреждениям</p>
+                </div>
+                <div class="question" id="select_instrument4">
+                    <p class="text">Фильтр по приборам</p>
+                </div>
+            </div>
+            <div class="table_field" id="table_field_productivity"></div>
+        </div>
+    </div>
+    <!-- Конец потоков-->
     <!-- Генератор паролей-->
     <div id="pass_generator" class="generator main hide">
         <div class="only_question">
