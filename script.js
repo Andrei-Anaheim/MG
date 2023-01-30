@@ -769,7 +769,7 @@ function GeneratorFormClear() {
 function GeneratorCalculate() {
     const symbol=['!','"','#','$','%','&',"'",'(',')','*','+',',','-','.','/','0','1','2','3','4','5','6','7','8','9',':',';','<','=','>','?','@','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','[',"\\",']','^','_','`','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','{','|','}','~'];
     const sn = document.getElementById('generator_sn').value;
-    let sn_arr = sn.toLowerCase().split('');
+    let sn_arr = sn.split('');
     if (sn_arr.length >11) sn_arr=sn_arr.slice(0,11);
     const sn_length = sn_arr.length;
     console.log(sn_arr, sn_length);
@@ -782,7 +782,7 @@ function GeneratorCalculate() {
     if (sn_length<5) {
         password = base[0]+day_difference*daygap;
     } else {
-        password = Number(base[sn_length-1]);
+        password = Number(base[sn_length-1])+day_difference*daygap;
         for (let i=0; i<sn_length-4; i+=1) {
             password = Number(password) + Number(sdvig[i+4])*Number(symbol.indexOf(sn_arr[i+4]));
         }
