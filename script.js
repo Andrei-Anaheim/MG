@@ -973,6 +973,13 @@ function QRGeneratorCalculate() {
     box.classList="qr_pass_result";
     const text = document.createElement('p');
     box.appendChild(text);
+    const download = document.createElement('span');
+    download.innerText = '🡻';
+    download.classList = "download";
+    download.addEventListener('click',(e)=>{
+        downloadImg(e.target.parentElement);
+    })
+    box.appendChild(download);
     document.getElementById('qr_box').appendChild(box);
     const barcode = document.createElementNS("http://www.w3.org/2000/svg",'svg');
     barcode.id = `qr_answer${document.getElementById('qr_box').children.length}_1`;
@@ -1035,6 +1042,20 @@ function QRGeneratorCalculate() {
             document.getElementById('qr_box').removeChild(box);
         }
     },100)
-    
-    
+      
 }
+
+function downloadImg(e) {
+    console.log(e);
+    html2canvas(e).then((canvas)=>{
+        console.log(canvas);
+        const base64image = canvas.toDataURL("image/png");
+        let anchor = document.createElement('a');
+        anchor.setAttribute('href', base64image);
+        anchor.setAttribute('download', 'my-image.png');
+        anchor.click();
+        anchor.remove();
+    })
+}
+
+//Latron 64606;1.0;103156110;2021-06-04;26.8;2.0;7.0;28.0;2.0;10.0;119.0;9.0;13.0;156.0;9.0;9.0;75.0;6.0;9.0;109.0;6.0;9.0;144.0;8.0;9.0;25.9;2.0;7.0;25.2;2.0;10.0;158.0;12.0;13.0;156.0;9.0;9.0;204.0;10.0;9.0;204.0;10.0;9.0;204.0;10.0;9.0;34.4;2.5;7.0;34.4;2.5;10.0;119.0;9.0;13.0;156.0;9.0;9.0;209.0;11.0;9.0;209.0;11.0;9.0;209.0;11.0;9.0;26.8;1.0;7.0;033;D13;

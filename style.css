@@ -261,6 +261,7 @@ body {
 }
 
 .qr_pass_result {
+    position: relative;
     border: 1px solid red;
     display: flex;
     flex-direction: column;
@@ -268,6 +269,16 @@ body {
     background-color: white;
     align-items: center;
     margin: 20px auto;
+}
+
+.download {
+    position: absolute;
+    left: 92%;
+    top: 3%;
+    font: normal normal 30px/30px Arial;
+    cursor: pointer;
+    color: red;
+    border-bottom: 4px solid red;
 }
 
 
