@@ -1046,6 +1046,8 @@ function QRGeneratorCalculate() {
 }
 
 function downloadImg(e) {
+    e.querySelector('.download').classList.add('download_invisible');
+    e.querySelector('.download').classList.remove('download');
     console.log(e);
     html2canvas(e).then((canvas)=>{
         console.log(canvas);
@@ -1055,6 +1057,8 @@ function downloadImg(e) {
         anchor.setAttribute('download', 'my-image.png');
         anchor.click();
         anchor.remove();
+        document.querySelector('.download_invisible').classList.add('download');
+        document.querySelector('.download_invisible').classList.remove('download_invisible');
     })
 }
 
