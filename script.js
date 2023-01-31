@@ -772,7 +772,6 @@ function GeneratorCalculate() {
     let sn_arr = sn.split('');
     if (sn_arr.length >11) sn_arr=sn_arr.slice(0,11);
     const sn_length = sn_arr.length;
-    console.log(sn_arr, sn_length);
     const sdvig = [0,0,0,0,1771561,161051,14641,1331,121,11,1];
     const base = [981176888,981176888,981176888,981176888,1039638401,1044953084,1045436237,1045480160,1045484153,1045484516,1045484549];
     const daygap = 28561;
@@ -924,7 +923,7 @@ function getListProductivity() {
                 } else {
                     td.className = 'supercell';
                     td.style.width = (j===1||j===2||j===4||j===5||j===6)? `${players_column_width*0.9}px`:  `${players_column_width*1.4}px`;
-                    if (j===2|| j===6) td.classList.add('hide_column');
+                    if (j===6) td.classList.add('hide_column');
                     if (j===1 && i>0) {
                         td.appendChild(document.createTextNode(`${new Date(date1[i-1].split(',')[0],date1[i-1].split(',')[1],date1[i-1].split(',')[2]).toLocaleString('ru-RU', {year: 'numeric', month: '2-digit', day: '2-digit'})}`))
                     } else if (j===2 && i>0) {
@@ -934,7 +933,8 @@ function getListProductivity() {
                     } else if (j===4 && i>0) {
                         td.appendChild(document.createTextNode(`${machine[i-1]}`))
                     } else if (j===5 && i>0) {
-                        td.appendChild(document.createTextNode(`${potoki[i-1]}`))
+                        const days_gap = Math.round((new Date(date2[i-1].split(',')[0],date2[i-1].split(',')[1],date2[i-1].split(',')[2]) -  new Date(date1[i-1].split(',')[0],date1[i-1].split(',')[1],date1[i-1].split(',')[2]))/1000/60/60/24/7*5);
+                        td.appendChild(document.createTextNode(`${potoki[i-1]} / (${Math.floor(potoki[i-1]/days_gap)} в день)`));
                     } else if (j===6 && i>0) {
                         td.appendChild(document.createTextNode(`${comment[i-1]}`))
                     }
@@ -986,7 +986,6 @@ function QRGeneratorCalculate() {
             const yearLot = '240404163714';
             const random = Math.ceil(Math.random()*9998).toString().padStart(4,'0');
             const controlsum = (yearLot+random).split('').reduce(function(a,b) {return +a + +b})
-            console.log(yearLot, random, controlsum);
             const last_symbol = symbol[(controlsum-2)%43];
             qr1 = '+H6286280171D'
             qr2 = `+$$3${yearLot}KF1${random}D${last_symbol}`;
@@ -997,7 +996,6 @@ function QRGeneratorCalculate() {
             const yearLot = '2311262705010';
             const random = Math.ceil(Math.random()*9998).toString().padStart(4,'0');
             const controlsum = (yearLot+random).split('').reduce(function(a,b) {return +a + +b})
-            console.log(yearLot, random, controlsum);
             const last_symbol = symbol[(controlsum-14)%43];
             qr1 = '+H6286280191F'
             qr2 = `+$$3${yearLot}G3${random}F${last_symbol}`;
@@ -1008,7 +1006,6 @@ function QRGeneratorCalculate() {
             const yearLot = '2305083612790';
             const random = Math.ceil(Math.random()*9998).toString().padStart(4,'0');
             const controlsum = (yearLot+random).split('').reduce(function(a,b) {return +a + +b})
-            console.log(yearLot, random, controlsum);
             const last_symbol = symbol[(controlsum-23)%43];
             qr1 = '+H62862802017'
             qr2 = `+$$3${yearLot}K0${random}7${last_symbol}`;
@@ -1019,7 +1016,6 @@ function QRGeneratorCalculate() {
             const yearLot = '2309143910425';
             const random = Math.ceil(Math.random()*9998).toString().padStart(4,'0');
             const controlsum = (yearLot+random).split('').reduce(function(a,b) {return +a + +b})
-            console.log(yearLot, random, controlsum);
             const last_symbol = symbol[(controlsum-21)%43];
             qr1 = '+H6286280231A'
             qr2 = `+$$3${yearLot}J0${random}A${last_symbol}`;
@@ -1030,7 +1026,6 @@ function QRGeneratorCalculate() {
             const yearLot = '2307053712400';
             const random = Math.ceil(Math.random()*9998).toString().padStart(4,'0');
             const controlsum = (yearLot+random).split('').reduce(function(a,b) {return +a + +b})
-            console.log(yearLot, random, controlsum);
             const last_symbol = symbol[(controlsum-21)%43];
             qr1 = '+H62862802118'
             qr2 = `+$$3${yearLot}J0${random}A${last_symbol}`;
