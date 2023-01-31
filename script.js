@@ -944,3 +944,102 @@ function getListProductivity() {
         document.getElementById('table_field_productivity').appendChild(table);
     })
 }
+
+
+/* Генератор штрихов*/
+document.getElementById('qr').addEventListener('click',QRGeneratorClick);
+function QRGeneratorClick() {
+    document.getElementById('myTopnav').querySelectorAll('.active').forEach((el)=>el.classList.remove('active'));
+    document.getElementById('qr').classList.add('active');
+    burgerMenu();
+    document.querySelectorAll('.main').forEach((el)=>el.classList.add('hide'));
+    document.getElementById('qr_generator').classList.remove('hide');
+}
+document.getElementById('confirm_calc_qr_generator').addEventListener('click',QRGeneratorCalculate);
+document.getElementById('delete_form_qr_generator').addEventListener('click',QRGeneratorFormClear);
+
+function QRGeneratorFormClear() {
+    document.getElementById('liquid_type').value= "1";
+    document.getElementById('qr_box').innerHTML = '';
+}
+
+function QRGeneratorCalculate() {
+    const symbol=['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','-','.','*','$','/','+','%']; /* *понять что вместо звездочки! */
+    const sn = document.getElementById('liquid_type').value;
+    let qr1 = '';
+    let qr2 = '';
+    const box = document.createElement('div');
+    box.id = `qr_answer${document.getElementById('qr_box').children.length+1}`
+    box.classList="qr_pass_result";
+    const text = document.createElement('p');
+    box.appendChild(text);
+    document.getElementById('qr_box').appendChild(box);
+    const barcode = document.createElementNS("http://www.w3.org/2000/svg",'svg');
+    barcode.id = `qr_answer${document.getElementById('qr_box').children.length}_1`;
+    box.appendChild(barcode);
+    const barcode2 = document.createElementNS("http://www.w3.org/2000/svg",'svg');
+    barcode2.id = `qr_answer${document.getElementById('qr_box').children.length}_2`;
+    box.appendChild(barcode2);
+    setTimeout(()=> {
+        if (sn==2) {
+            text.innerText = 'Dil800: Годен до 04.04.2024';
+            const yearLot = '240404163714';
+            const random = Math.ceil(Math.random()*9998).toString().padStart(4,'0');
+            const controlsum = (yearLot+random).split('').reduce(function(a,b) {return +a + +b})
+            console.log(yearLot, random, controlsum);
+            const last_symbol = symbol[(controlsum-2)%43];
+            qr1 = '+H6286280171D'
+            qr2 = `+$$3${yearLot}KF1${random}D${last_symbol}`;
+            JsBarcode(`#qr_answer${document.getElementById('qr_box').children.length}_1`, `${qr1}`, {height:80});
+            JsBarcode(`#qr_answer${document.getElementById('qr_box').children.length}_2`, `${qr2}`, {height:80});
+        } else if (sn==3) {
+            text.innerText = 'Lyse800: Годен до 26.11.2023';
+            const yearLot = '2311262705010';
+            const random = Math.ceil(Math.random()*9998).toString().padStart(4,'0');
+            const controlsum = (yearLot+random).split('').reduce(function(a,b) {return +a + +b})
+            console.log(yearLot, random, controlsum);
+            const last_symbol = symbol[(controlsum-14)%43];
+            qr1 = '+H6286280191F'
+            qr2 = `+$$3${yearLot}G3${random}F${last_symbol}`;
+            JsBarcode(`#qr_answer${document.getElementById('qr_box').children.length}_1`, `${qr1}`, {height:80});
+            JsBarcode(`#qr_answer${document.getElementById('qr_box').children.length}_2`, `${qr2}`, {height:80});
+        } else if (sn==4) {
+            text.innerText = 'Diff800: Годен до 08.05.2023';
+            const yearLot = '2305083612790';
+            const random = Math.ceil(Math.random()*9998).toString().padStart(4,'0');
+            const controlsum = (yearLot+random).split('').reduce(function(a,b) {return +a + +b})
+            console.log(yearLot, random, controlsum);
+            const last_symbol = symbol[(controlsum-23)%43];
+            qr1 = '+H62862802017'
+            qr2 = `+$$3${yearLot}K0${random}7${last_symbol}`;
+            JsBarcode(`#qr_answer${document.getElementById('qr_box').children.length}_1`, `${qr1}`, {height:80});
+            JsBarcode(`#qr_answer${document.getElementById('qr_box').children.length}_2`, `${qr2}`, {height:80});
+        } else if (sn==5) {
+            text.innerText = 'Clean800: Годен до 14.09.2023';
+            const yearLot = '2309143910425';
+            const random = Math.ceil(Math.random()*9998).toString().padStart(4,'0');
+            const controlsum = (yearLot+random).split('').reduce(function(a,b) {return +a + +b})
+            console.log(yearLot, random, controlsum);
+            const last_symbol = symbol[(controlsum-21)%43];
+            qr1 = '+H6286280231A'
+            qr2 = `+$$3${yearLot}J0${random}A${last_symbol}`;
+            JsBarcode(`#qr_answer${document.getElementById('qr_box').children.length}_1`, `${qr1}`, {height:80});
+            JsBarcode(`#qr_answer${document.getElementById('qr_box').children.length}_2`, `${qr2}`, {height:80});
+        } else if (sn==6) {
+            text.innerText = 'Ret800: Годен до 05.07.2023';
+            const yearLot = '2307053712400';
+            const random = Math.ceil(Math.random()*9998).toString().padStart(4,'0');
+            const controlsum = (yearLot+random).split('').reduce(function(a,b) {return +a + +b})
+            console.log(yearLot, random, controlsum);
+            const last_symbol = symbol[(controlsum-21)%43];
+            qr1 = '+H62862802118'
+            qr2 = `+$$3${yearLot}J0${random}A${last_symbol}`;
+            JsBarcode(`#qr_answer${document.getElementById('qr_box').children.length}_1`, `${qr1}`, {height:80});
+            JsBarcode(`#qr_answer${document.getElementById('qr_box').children.length}_2`, `${qr2}`, {height:80});
+        } else {
+            document.getElementById('qr_box').removeChild(box);
+        }
+    },100)
+    
+    
+}

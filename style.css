@@ -128,6 +128,7 @@ body {
 
 .text, .select {
     text-align: center;
+    margin: 0 auto;
 }
 
 .textarea {
@@ -229,10 +230,11 @@ body {
 }
 
 /*Калькулятор DxH800*/
-.calc_dxh800, .calc_dxh500, .calc_IQ200, .calc_Velocity, .generator {
+.calc_dxh800, .calc_dxh500, .calc_IQ200, .calc_Velocity, .generator, qr_generator {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    margin: 0 auto;
 }
 
 .calcDxH800_box, .calcDxH500_box, .calcIQ200_box, .calcVelocity_box {
@@ -242,13 +244,30 @@ body {
     justify-content: center;
 }
 
-.dxh800_buttons, .dxh500_buttons, .IQ200_buttons, .Velocity_buttons, .generator_buttons {
+.dxh800_buttons, .dxh500_buttons, .IQ200_buttons, .Velocity_buttons, .generator_buttons, .qr_generator_buttons {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
     width: 50%;
     margin: 0 auto;
+    text-align: center;
+}
+
+.qr_box {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.qr_pass_result {
+    border: 1px solid red;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    background-color: white;
+    align-items: center;
+    margin: 20px auto;
 }
 
 

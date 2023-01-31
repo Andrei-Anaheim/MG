@@ -14,6 +14,7 @@
         <li id="problems" >Проблемы(WIP)</li>
         <li id="quantity">Потоки</li>
         <li id="generator">Генератор</li>
+        <li id="qr">Штрих-кода</li>
         <li id="dxh800">DxH800</li>
         <li id="dxh500">DxH500</li>
         <li id="iq200">IQ200</li>
@@ -159,6 +160,29 @@
         <div class="pass_result" id="password_answer"></div>
     </div>
     <!-- Конец генератора паролей-->
+    <!-- Генератор штрихов-->
+    <div id="qr_generator" class="qr_generator main hide">
+        <div class="question">
+            <p class="text">Выберите реактив</p>
+            <select class="select" id="liquid_type">
+                <option value="1" selected></option>
+                <option value="2">Dil800</option>
+                <option value="3">Lyse800</option>
+                <option value="4">Diff800</option>
+                <option value="5">Clean800</option>
+                <option value="6">Ret800</option>
+            </select>
+        </div> 
+        <p class="red_status"> *Данный генератор случайных штрих-кодов не несет смысловой нагрузки, все совпадения случайны</p>
+        <div class="qr_generator_buttons">
+            <div id="confirm_calc_qr_generator" class="button">Сгенерировать</div>
+            <div id="delete_form_qr_generator" class="button">Очистить</div>    
+        </div>
+        <div class="qr_box" id="qr_box">
+        </div>
+        
+    </div>
+    <!-- Конец генератора штрихов-->
     <!-- Калькулятор DxH800-->
     <div id="calcDxH800" class="calc_dxh800 main hide">
         <div id="calcDxH800_box" class="calcDxH800_box">
@@ -331,5 +355,6 @@
     </div>
     <!-- Конец калькулятора Velocity-->
     <script src="script.js"></script>
+    <script src="JsBarcode.all.min.js"></script>
 </body>
 </html>
