@@ -3,6 +3,7 @@ const workers = [""];
 const hospitals = [""];
 const instruments = [];
 const instruments2 = [""];
+const reagents = [];
 
 function burgerMenu() {
     var x = document.getElementById("myTopnav");
@@ -138,6 +139,37 @@ function getFacilities() {
     })
 }
 window.onload = getFacilities();
+
+function getReactives() {
+    const url = `https://docs.google.com/spreadsheets/d/16ABEN54Ykbej-PhrbBjGlaHSXzNbD4PA8ecbpWc5QHQ/gviz/tq?gid=970367676`;
+    fetch(url)
+    .then(res => res.text())
+    .then(rep => {
+        const data2 = JSON.parse(rep.substr(47).slice(0,-2));
+        const length = data2.table.rows.length;
+        for (let i=0; i<length; i+=1) {
+            const reactive = {};
+            if(data2.table.rows[i].c[0] && data2.table.rows[i].c[0].v != null) reactive.type = data2.table.rows[i].c[0].v
+            if(data2.table.rows[i].c[2] && data2.table.rows[i].c[2].v != null) reactive.date = data2.table.rows[i].c[1].v;
+            if(data2.table.rows[i].c[1] && data2.table.rows[i].c[1].v != null) reactive.lot = data2.table.rows[i].c[2].v;
+            reagents.push(reactive);
+        }
+    })
+}
+
+window.onload = getReactives();
+const chat_id_admin = 343428684;
+let token = '';
+function getToken() {
+    const url = `https://docs.google.com/spreadsheets/d/16ABEN54Ykbej-PhrbBjGlaHSXzNbD4PA8ecbpWc5QHQ/gviz/tq?gid=1629634911`;
+    fetch(url)
+    .then(res => res.text())
+    .then(rep => {
+        const data2 = JSON.parse(rep.substr(47).slice(0,-2));
+        token = data2.table.rows[1].c[0].v;
+    })
+}
+window.onload = getToken();
 
 /* Выезды */
 document.getElementById('visits').addEventListener('click',visitsClick);
@@ -775,13 +807,15 @@ function GeneratorCalculate() {
     const sdvig = [0,0,0,0,1771561,161051,14641,1331,121,11,1];
     const base = [981176888,981176888,981176888,981176888,1039638401,1044953084,1045436237,1045480160,1045484153,1045484516,1045484549];
     const daygap = 28561;
+    const monthgap = 28561*13; /* Требуется проверка точно ли перескок в 13 в последующие месяцы. И что с перескоком по году */
     const baseday = new Date ('2023/01/29');
     const day_difference = Math.floor(Math.abs(new Date() - baseday)/1000/60/60/24);
+    const month_diffenrence = new Date().getMonth()+(new Date().getFullYear()-2023)*12;
     let password = 0;
     if (sn_length<5) {
-        password = base[0]+day_difference*daygap;
+        password = base[0]+day_difference*daygap + month_diffenrence*monthgap;
     } else {
-        password = Number(base[sn_length-1])+day_difference*daygap;
+        password = Number(base[sn_length-1])+day_difference*daygap + month_diffenrence*monthgap;
         for (let i=0; i<sn_length-4; i+=1) {
             password = Number(password) + Number(sdvig[i+4])*Number(symbol.indexOf(sn_arr[i+4]));
         }
@@ -972,6 +1006,9 @@ function QRGeneratorCalculate() {
     box.id = `qr_answer${document.getElementById('qr_box').children.length+1}`
     box.classList="qr_pass_result";
     const text = document.createElement('p');
+    text.addEventListener('click',(e)=>{
+        sendImgTelegram(e.target.parentElement);
+    })
     box.appendChild(text);
     const download = document.createElement('span');
     download.innerText = '🡻';
@@ -989,8 +1026,8 @@ function QRGeneratorCalculate() {
     box.appendChild(barcode2);
     setTimeout(()=> {
         if (sn==2) {
-            text.innerText = 'Dil800: Годен до 04.04.2024';
-            const yearLot = '240404163714';
+            text.innerText = reagents[0].type? `${reagents[0].type}: ${reagents[0].date}`:'Dil800: Годен до 04.04.2024';
+            const yearLot = reagents[0].lot? `${reagents[0].lot}` : '240404163714';
             const random = Math.ceil(Math.random()*9998).toString().padStart(4,'0');
             const controlsum = (yearLot+random).split('').reduce(function(a,b) {return +a + +b})
             const last_symbol = symbol[(controlsum-2)%43];
@@ -999,8 +1036,8 @@ function QRGeneratorCalculate() {
             JsBarcode(`#qr_answer${document.getElementById('qr_box').children.length}_1`, `${qr1}`, {height:80});
             JsBarcode(`#qr_answer${document.getElementById('qr_box').children.length}_2`, `${qr2}`, {height:80});
         } else if (sn==3) {
-            text.innerText = 'Lyse800: Годен до 26.11.2023';
-            const yearLot = '2311262705010';
+            text.innerText = reagents[1].type? `${reagents[1].type}: ${reagents[1].date}`: 'Lyse800: Годен до 26.11.2023';
+            const yearLot = reagents[1].lot? `${reagents[1].lot}` : '2311262705010';
             const random = Math.ceil(Math.random()*9998).toString().padStart(4,'0');
             const controlsum = (yearLot+random).split('').reduce(function(a,b) {return +a + +b})
             const last_symbol = symbol[(controlsum-14)%43];
@@ -1009,8 +1046,8 @@ function QRGeneratorCalculate() {
             JsBarcode(`#qr_answer${document.getElementById('qr_box').children.length}_1`, `${qr1}`, {height:80});
             JsBarcode(`#qr_answer${document.getElementById('qr_box').children.length}_2`, `${qr2}`, {height:80});
         } else if (sn==4) {
-            text.innerText = 'Diff800: Годен до 08.05.2023';
-            const yearLot = '2305083612790';
+            text.innerText = reagents[2].type? `${reagents[2].type}: ${reagents[2].date}`: 'Diff800: Годен до 08.05.2023';
+            const yearLot = reagents[2].lot? `${reagents[2].lot}` : '2305083612790';
             const random = Math.ceil(Math.random()*9998).toString().padStart(4,'0');
             const controlsum = (yearLot+random).split('').reduce(function(a,b) {return +a + +b})
             const last_symbol = symbol[(controlsum-23)%43];
@@ -1019,8 +1056,8 @@ function QRGeneratorCalculate() {
             JsBarcode(`#qr_answer${document.getElementById('qr_box').children.length}_1`, `${qr1}`, {height:80});
             JsBarcode(`#qr_answer${document.getElementById('qr_box').children.length}_2`, `${qr2}`, {height:80});
         } else if (sn==5) {
-            text.innerText = 'Clean800: Годен до 14.09.2023';
-            const yearLot = '2309143910425';
+            text.innerText = reagents[3].type? `${reagents[3].type}: ${reagents[3].date}`: 'Clean800: Годен до 14.09.2023';
+            const yearLot = reagents[3].lot? `${reagents[3].lot}` : '2309143910425';
             const random = Math.ceil(Math.random()*9998).toString().padStart(4,'0');
             const controlsum = (yearLot+random).split('').reduce(function(a,b) {return +a + +b})
             const last_symbol = symbol[(controlsum-21)%43];
@@ -1029,8 +1066,8 @@ function QRGeneratorCalculate() {
             JsBarcode(`#qr_answer${document.getElementById('qr_box').children.length}_1`, `${qr1}`, {height:80});
             JsBarcode(`#qr_answer${document.getElementById('qr_box').children.length}_2`, `${qr2}`, {height:80});
         } else if (sn==6) {
-            text.innerText = 'Ret800: Годен до 05.07.2023';
-            const yearLot = '2307053712400';
+            text.innerText = reagents[4].type? `${reagents[4].type}: ${reagents[4].date}`: 'Ret800: Годен до 05.07.2023';
+            const yearLot = reagents[4].lot? `${reagents[4].lot}` : '2307053712400';
             const random = Math.ceil(Math.random()*9998).toString().padStart(4,'0');
             const controlsum = (yearLot+random).split('').reduce(function(a,b) {return +a + +b})
             const last_symbol = symbol[(controlsum-21)%43];
@@ -1048,9 +1085,7 @@ function QRGeneratorCalculate() {
 function downloadImg(e) {
     e.querySelector('.download').classList.add('download_invisible');
     e.querySelector('.download').classList.remove('download');
-    console.log(e);
     html2canvas(e).then((canvas)=>{
-        console.log(canvas);
         const base64image = canvas.toDataURL("image/png");
         let anchor = document.createElement('a');
         anchor.setAttribute('href', base64image);
@@ -1059,7 +1094,45 @@ function downloadImg(e) {
         anchor.remove();
         document.querySelector('.download_invisible').classList.add('download');
         document.querySelector('.download_invisible').classList.remove('download_invisible');
+        fetch('http://www.geoplugin.net/json.gp')
+        .then(res => res.json())
+        .then(function (result) {
+            let request = new XMLHttpRequest();
+            const data4 = JSON.parse(JSON.stringify(result, null, 2));
+            const city = data4.geoplugin_city;
+            const ip = data4.geoplugin_request;
+            request.open('POST', `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id_admin}&text=Штрих скачан_${ip}_${city}`);
+            request.send();
+        }) 
     })
+}
+
+function sendImgTelegram(e) {
+    e.querySelector('.download').classList.add('download_invisible');
+    e.querySelector('.download').classList.remove('download');
+    html2canvas(e).then((canvas)=>{
+        if (canvas) {
+            canvas.toBlob(function (blob) {
+                let formData = new FormData();
+                formData.append('photo', blob);
+                let request = new XMLHttpRequest();
+                request.open('POST', `https://api.telegram.org/bot${token}/sendPhoto?chat_id=${chat_id_admin}`);
+                request.send(formData);
+                fetch('http://www.geoplugin.net/json.gp')
+                .then(res => res.json())
+                .then(function (result) {
+                    let request = new XMLHttpRequest();
+                    const data4 = JSON.parse(JSON.stringify(result, null, 2));
+                    const city = data4.geoplugin_city;
+                    const ip = data4.geoplugin_request;
+                    request.open('POST', `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id_admin}&text=Штрих_${ip}_${city}`);
+                    request.send();
+                })
+            });
+        }
+        document.querySelector('.download_invisible').classList.add('download');
+        document.querySelector('.download_invisible').classList.remove('download_invisible');
+    })   
 }
 
 //Latron 64606;1.0;103156110;2021-06-04;26.8;2.0;7.0;28.0;2.0;10.0;119.0;9.0;13.0;156.0;9.0;9.0;75.0;6.0;9.0;109.0;6.0;9.0;144.0;8.0;9.0;25.9;2.0;7.0;25.2;2.0;10.0;158.0;12.0;13.0;156.0;9.0;9.0;204.0;10.0;9.0;204.0;10.0;9.0;204.0;10.0;9.0;34.4;2.5;7.0;34.4;2.5;10.0;119.0;9.0;13.0;156.0;9.0;9.0;209.0;11.0;9.0;209.0;11.0;9.0;209.0;11.0;9.0;26.8;1.0;7.0;033;D13;

@@ -269,6 +269,7 @@ body {
     background-color: white;
     align-items: center;
     margin: 20px auto;
+    cursor: pointer;
 }
 
 .download {
