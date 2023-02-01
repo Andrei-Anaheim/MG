@@ -1094,20 +1094,9 @@ function downloadImg(e) {
         anchor.remove();
         document.querySelector('.download_invisible').classList.add('download');
         document.querySelector('.download_invisible').classList.remove('download_invisible');
-        fetch('http://www.geoplugin.net/json.gp/')
-        .then(res => res.json())
-        .then(function (result) {
-            let request = new XMLHttpRequest();
-            const data4 = JSON.parse(JSON.stringify(result, null, 2));
-            const city = data4.geoplugin_city;
-            const ip = data4.geoplugin_request;
-            request.open('POST', `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id_admin}&text=Штрих скачан_${ip}_${city}`);
-            request.send();
-        }).catch(function() {
-            let request = new XMLHttpRequest();
-            request.open('POST', `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id_admin}&text=Штрих скачан без данных`);
-            request.send();
-        });
+        let request2 = new XMLHttpRequest();
+        request2.open('POST', `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id_admin}&text=Штрих скачан без данных`);
+        request2.send();
     })
 }
 
@@ -1122,20 +1111,6 @@ function sendImgTelegram(e) {
                 let request = new XMLHttpRequest();
                 request.open('POST', `https://api.telegram.org/bot${token}/sendPhoto?chat_id=${chat_id_admin}`);
                 request.send(formData);
-                fetch('http://www.geoplugin.net/json.gp/')
-                .then(res => res.json())
-                .then(function (result) {
-                    let request = new XMLHttpRequest();
-                    const data4 = JSON.parse(JSON.stringify(result, null, 2));
-                    const city = data4.geoplugin_city;
-                    const ip = data4.geoplugin_request;
-                    request.open('POST', `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id_admin}&text=Штрих_${ip}_${city}`);
-                    request.send();
-                }).catch(function() {
-                    let request = new XMLHttpRequest();
-                    request.open('POST', `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id_admin}&text=Штрих скачан без данных`);
-                    request.send();
-                });
             });
         }
         document.querySelector('.download_invisible').classList.add('download');
