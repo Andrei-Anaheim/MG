@@ -1072,7 +1072,7 @@ function QRGeneratorCalculate() {
             const controlsum = (yearLot+random).split('').reduce(function(a,b) {return +a + +b})
             const last_symbol = symbol[(controlsum-21)%43];
             qr1 = '+H62862802118'
-            qr2 = `+$$3${yearLot}J0${random}A${last_symbol}`;
+            qr2 = `+$$3${yearLot}L0${random}8${last_symbol}`;
             JsBarcode(`#qr_answer${document.getElementById('qr_box').children.length}_1`, `${qr1}`, {height:80});
             JsBarcode(`#qr_answer${document.getElementById('qr_box').children.length}_2`, `${qr2}`, {height:80});
         } else {
