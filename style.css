@@ -66,7 +66,7 @@ body {
     }
   }
 
-.visits, .productivity {
+.visits, .productivity, .problem {
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
@@ -75,7 +75,7 @@ body {
     overflow-x: hidden;
 }
 
-.visits_nav, .productivity_nav {
+.visits_nav, .productivity_nav, .problem_nav {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
@@ -105,7 +105,7 @@ body {
     background-color: rgb(196, 135, 86);
 }
 
-.visits_box , .productivity_box{
+.visits_box , .productivity_box, .problems_box{
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -116,7 +116,7 @@ body {
     border: 1px solid red;
 }
 
-.visits_list {
+.visits_list, .problem_list {
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;

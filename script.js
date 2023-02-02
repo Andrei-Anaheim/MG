@@ -1030,7 +1030,7 @@ function QRGeneratorCalculate() {
             const yearLot = reagents[0].lot? `${reagents[0].lot}` : '240404163714';
             const random = Math.ceil(Math.random()*9998).toString().padStart(4,'0');
             const controlsum = (yearLot+random).split('').reduce(function(a,b) {return +a + +b})
-            const last_symbol = symbol[(controlsum-2)%43];
+            const last_symbol = symbol[(controlsum-1)%43];
             qr1 = '+H6286280171D'
             qr2 = `+$$3${yearLot}KF1${random}D${last_symbol}`;
             JsBarcode(`#qr_answer${document.getElementById('qr_box').children.length}_1`, `${qr1}`, {height:80});
@@ -1040,7 +1040,7 @@ function QRGeneratorCalculate() {
             const yearLot = reagents[1].lot? `${reagents[1].lot}` : '2311262705010';
             const random = Math.ceil(Math.random()*9998).toString().padStart(4,'0');
             const controlsum = (yearLot+random).split('').reduce(function(a,b) {return +a + +b})
-            const last_symbol = symbol[(controlsum-14)%43];
+            const last_symbol = symbol[(controlsum-16)%43];
             qr1 = '+H6286280191F'
             qr2 = `+$$3${yearLot}G3${random}F${last_symbol}`;
             JsBarcode(`#qr_answer${document.getElementById('qr_box').children.length}_1`, `${qr1}`, {height:80});
