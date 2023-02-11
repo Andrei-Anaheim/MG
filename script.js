@@ -14,6 +14,50 @@ function burgerMenu() {
     }
 }
 
+window.onload = checkAuth();
+function checkAuth() {
+    if (localStorage.getItem('user')) {
+        document.getElementById('myTopnav').classList.remove('disabled');
+        document.getElementById('auth').classList.add('hide');
+        document.getElementById('negative_response').innerText = "";
+    }
+}
+
+document.getElementById('exit').addEventListener('click', ()=>{
+    localStorage.removeItem('user');
+    setTimeout(()=> {window.location.reload()}, 100);
+})
+
+document.getElementById('login').addEventListener('click', checkUsers);
+function checkUsers() {
+    const url = `https://docs.google.com/spreadsheets/d/16ABEN54Ykbej-PhrbBjGlaHSXzNbD4PA8ecbpWc5QHQ/gviz/tq?gid=1496055382`;
+    fetch(url)
+    .then(res => res.text())
+    .then(rep => {
+        const data2 = JSON.parse(rep.substr(47).slice(0,-2));
+        const user = document.getElementById('user').value;
+        const pass = document.getElementById('pass').value;
+        const length = data2.table.rows.length;
+        const users=[];
+        const passwords=[];
+        for (let i=1; i<length; i+=1) {
+            if(data2.table.rows[i].c[0] && data2.table.rows[i].c[0].v != null) users.push(data2.table.rows[i].c[0].v)
+            if(data2.table.rows[i].c[1] && data2.table.rows[i].c[1].v != null) passwords.push(data2.table.rows[i].c[1].v);
+        }
+        if (users.indexOf(user)!==-1) {
+            if (passwords[[users.indexOf(user)]]== pass) {
+                localStorage.setItem('user', `${user}`);
+                checkAuth();
+            } else {
+                document.getElementById('negative_response').innerText = 'Неверный пароль'
+            }
+        } else {
+            document.getElementById('negative_response').innerText = 'Неверный логин. Обратитесь к администратору'
+        }
+    })
+    
+}
+
 /*Отрисовска при загрузке */
 function getFacilities() {
     const url = `https://docs.google.com/spreadsheets/d/16ABEN54Ykbej-PhrbBjGlaHSXzNbD4PA8ecbpWc5QHQ/gviz/tq?gid=178416067`;
@@ -243,6 +287,8 @@ function downloadVisitToDatabase(date, date2, application, facility, instrument,
                         'Прибор': `${instrument}`,
                         'SN': `${sn}`,
                         'Аппликатор': `${application}`,
+                        'Автор': `${localStorage.getItem('user')}`,
+                        'id': `${date}_${date2}_${facility}_${instrument}_${application}`
                     }
                 ]
             })
@@ -267,6 +313,8 @@ function downloadVisitToDatabase(date, date2, application, facility, instrument,
                     'Выполненные работы': `${work}`,
                     'Акт': `${report}`,
                     'Тип работ': `${type}`,
+                    'Автор': `${localStorage.getItem('user')}`,
+                    'id': `${date}_${date2}_${facility}_${instrument}_${application}`
                 }
             ]
         })
@@ -315,6 +363,7 @@ function getListVisits() {
     const why = [];
     const done = [];
     const file = [];
+    const deleteRow = [];
     const filter_man = document.getElementById('application2').value;
     const filter_hospital = document.getElementById('facility2').value;
     const filter_instrument = document.getElementById('instrument2').value;
@@ -331,6 +380,7 @@ function getListVisits() {
         data3 = filter_week !==""? data3.filter((el)=>new Date(el.c[1].v.split('Date(')[1].split(')')[0].split(',')[0],el.c[1].v.split('Date(')[1].split(')')[0].split(',')[1],el.c[1].v.split('Date(')[1].split(')')[0].split(',')[2])>filter_week): data3;
         data3 = filter_learning !==""? data3.filter((el)=>el.c[9].v===filter_learning): data3.filter((el)=>el.c[9].v!=='zaty4ka');
         const length = data3.length;
+        const localUser = localStorage.getItem('user');
         for (let i=0; i<length; i+=1) {
             (data3[i].c[0] && data3[i].c[0].v != null) ? date1.push(data3[i].c[0].v.split('Date(')[1].split(')')[0]) : date1.push('');
             (data3[i].c[1] && data3[i].c[1].v != null) ? date2.push(data3[i].c[1].v.split('Date(')[1].split(')')[0]) : date2.push('');
@@ -341,6 +391,7 @@ function getListVisits() {
             (data3[i].c[6] && data3[i].c[6].v != null) ? why.push(data3[i].c[6].v) : why.push('');
             (data3[i].c[7] && data3[i].c[7].v != null) ? done.push(data3[i].c[7].v) : done.push('');
             (data3[i].c[8] && data3[i].c[8].v != null) ? file.push(data3[i].c[8].v) : file.push('');
+            (data3[i].c[10] && (data3[i].c[10].v == localUser) || localUser=='admin') ? deleteRow.push("X") : deleteRow.push('');
         }
         const table = document.createElement('table');
         table.className = 'supertable';
@@ -349,16 +400,17 @@ function getListVisits() {
         for (let i=0; i<length+1; i+=1) {
             const tr = table.insertRow();
             tr.className = 'superrow';
-            for (let j=0; j<=9; j+=1) {
+            for (let j=0; j<=10; j+=1) {
                 const td = tr.insertCell();
-                if (i===0 && j!==0) td.appendChild(document.createTextNode(`${data2.table.cols[j-1].label}`));
+                if (i===0 && j>0 && j<10) td.appendChild(document.createTextNode(`${data2.table.cols[j-1].label}`));
+                if (i===0 && j==10) td.appendChild(document.createTextNode('Удаление'));
                 if (j===0) {
                     td.className = 'ordercell';
                     td.classList.add('hide_column');
                     if (i>0) td.appendChild(document.createTextNode(`${i}`))
                 } else {
                     td.className = 'supercell';
-                    td.style.width = (j===1||j===2||j===4||j===5||j===6||j===9)? `${players_column_width*0.5}px`:  `${players_column_width*1.4}px`;
+                    td.style.width = (j===1||j===2||j===4||j===5||j===6||j===9||j===10)? `${players_column_width*0.5}px`:  `${players_column_width*1.4}px`;
                     if (j===2|| j===5||j===6|| j===8|| j===9) td.classList.add('hide_column');
                     if (j===1 && i>0) {
                         td.appendChild(document.createTextNode(`${new Date(date1[i-1].split(',')[0],date1[i-1].split(',')[1],date1[i-1].split(',')[2]).toLocaleString('ru-RU', {year: 'numeric', month: '2-digit', day: '2-digit'})}`))
@@ -378,11 +430,42 @@ function getListVisits() {
                         td.appendChild(document.createTextNode(`${done[i-1]}`))
                     } else if (j===9 && i>0) {
                         td.appendChild(document.createTextNode(`${file[i-1]}`))
+                    } else if (j===10 && i>0) {
+                        if(deleteRow[i-1]=='X') { 
+                            const deleteIcon = document.createElement('img');
+                            deleteIcon.src = './deleteIcon.png';
+                            deleteIcon.classList.add('clickable');
+                            deleteIcon.id = `img_${i}`;
+                            deleteIcon.width= 20;
+                            deleteIcon.addEventListener('click', (e)=>{deleteVisitRow(e)})
+                            td.appendChild(deleteIcon)
+                        }
                     }
                 };
             }
         }
         document.getElementById('table_field').appendChild(table);
+    })
+}
+
+function deleteVisitRow(e) {
+    const row_number = e.target.id.split('img_')[1];
+    const row_info = document.getElementById('table_field').querySelectorAll('.superrow')[row_number];
+    const date1 = new Date(`${row_info.querySelectorAll('.supercell')[0].innerText.split('.')[2]}`,`${row_info.querySelectorAll('.supercell')[0].innerText}`.split('.')[1]-1,`${Number(row_info.querySelectorAll('.supercell')[0].innerText.split('.')[0])+1}`).toISOString().split('T')[0];
+    const date2 = new Date(`${row_info.querySelectorAll('.supercell')[1].innerText.split('.')[2]}`,`${row_info.querySelectorAll('.supercell')[1].innerText}`.split('.')[1]-1,`${Number(row_info.querySelectorAll('.supercell')[1].innerText.split('.')[0])+1}`).toISOString().split('T')[0];
+    const id = `${date1.replace(/[\.]/gi,'-')}_${date2.replace(/[\.]/gi,'-')}_${row_info.querySelectorAll('.supercell')[2].innerText}_${row_info.querySelectorAll('.supercell')[3].innerText}_${row_info.querySelectorAll('.supercell')[5].innerText}`
+    fetch(`https://sheetdb.io/api/v1/tkhtt2o9c61js/id/${id}?sheet=visits`, {
+        method: 'DELETE',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(res => res.text())
+    .then(rep => {
+        setTimeout(()=>{
+           window.location.reload(); 
+        },1500)
     })
 }
 
@@ -428,7 +511,7 @@ function DxH800Calculate() {
     reticpack = retic == 0 ? 0 : reticpack < months/4 ? Math.ceil(months/4) : reticpack;
     const controls_6C_9 = type_6C == 2? 0 : calc_type == 1 ? Math.ceil(months*Math.ceil(instruments/2)/1.5) : calc_type == 2? Math.ceil(months*Math.ceil(instruments/2)/2) : Math.ceil(months*Math.ceil(instruments/2)/3);
     const controls_6C_12 = type_6C == 1? 0 : calc_type == 1 ? Math.ceil(months*Math.ceil(instruments/2)/1.5) : calc_type == 2? Math.ceil(months*Math.ceil(instruments/2)/2.5) : Math.ceil(months*Math.ceil(instruments/2)/3.5);  
-    const latron = calc_type == 1 ? Math.ceil(months/4)*instruments : calc_type == 2 ? Math.ceil(months/6)*instruments : instruments;
+    const latron = calc_type == 1 ? Math.ceil(months/4)*instruments : calc_type == 2 ? Math.ceil(months/4)*instruments : instruments;
     const control_retic = retic == 0 ? 0 : calc_type == 1 ? Math.ceil(months/3)*Math.ceil(instruments/2) : calc_type == 2 ? Math.ceil(months/4)*Math.ceil(instruments/2) : Math.ceil(months/6)*Math.ceil(instruments/2);
     const calibrator = calc_type == 1 ? 2*instruments : 1*instruments;
     const table_length = retic > 0 ? 9 : 7;
