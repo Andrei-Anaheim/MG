@@ -8,7 +8,7 @@
     <title>MG</title>
 </head>
 <body>
-    <div class="topnav" id="myTopnav">
+    <div class="topnav disabled" id="myTopnav">
         <li id="visits" class="active">Выезды</li>
         <li id="plans" >Планы(WIP)</li>
         <li id="problems" >Проблемы(WIP)</li>
@@ -20,10 +20,19 @@
         <li id="iq200">IQ200</li>
         <li id="velocity">iChem Velocity</li>
         <li id="ax4030">AX-4030(WIP)</li>
+        <li id="exit">Выход</li>
         <li class="icon" onclick="burgerMenu()">X</li>
     </div>
+    <div id="auth" class="auth">
+        <p>Введите логин</p>
+        <input type="text" id="user">
+        <p>Введите пароль</p>
+        <input type="password" id="pass">
+        <div class="login" id="login">Войти</div>
+        <p class="red_status" id="negative_response"></p>
+    </div>
     <!-- Страница выездов -->
-    <div id="visitsPage" class="visits main">
+    <div id="visitsPage" class="visits hide main">
         <div class="visits_nav">
             <div class="button" id="add_visit">Добавить выезд</div>
             <div class="button" id="list_visits">Журнал выездов</div>
