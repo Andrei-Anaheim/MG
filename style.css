@@ -32,13 +32,14 @@ body {
   }
   
   .topnav li:hover {
-    background-color: #ddd;
+    background: linear-gradient(#e66465, #f0f0f7);
     color: black;
   }
   
   .active {
-    background-color: #4CAF50;
+    background: linear-gradient(#4CAF50, #82e9ad);
     color: white;
+    font-weight: bold;
   }
   
   .topnav .icon {
@@ -87,7 +88,7 @@ body {
     cursor: pointer;
 }
 
-.visits, .productivity, .problem {
+.visits, .productivity {
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
@@ -110,6 +111,7 @@ body {
     padding: 5px;
     margin: 5px auto;
     cursor: pointer;
+    text-align: center;
 }
 
 .filter {
@@ -126,7 +128,7 @@ body {
     background-color: rgb(196, 135, 86);
 }
 
-.visits_box , .productivity_box, .problems_box{
+.visits_box , .productivity_box{
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -181,6 +183,13 @@ body {
 .green_status {
     color:green;
     text-align: center;
+}
+
+.white_status {
+    color:white;
+    text-align: center;
+    font: normal normal 20px/20px Arial;
+    padding: 5px;
 }
 
 .pass_result {
@@ -250,6 +259,32 @@ body {
     }
 }
 
+.map_box {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.map_svg {
+    max-width: 70vw;
+    max-height: 80vh;
+}
+
+.map_info {
+    width: 100%;
+    max-width: 30vw;
+    max-height: 80vh;
+}
+
+.region_name {
+    position: absolute;
+    color:rgb(255, 255, 255);
+    font: italic bold 25px/25px Arial;
+}
+
+
 /*Калькулятор DxH800*/
 .calc_dxh800, .calc_dxh500, .calc_IQ200, .calc_Velocity, .generator, qr_generator {
     display: flex;
@@ -312,7 +347,7 @@ body {
     border-bottom: 4px solid white;
 }
 
-.clickable {
+.clickable{
     cursor: pointer;
 }
 

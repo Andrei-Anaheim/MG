@@ -5,13 +5,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
+    
+    <!-- <script src='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css' rel='stylesheet' /> -->
     <title>MG</title>
 </head>
 <body>
     <div class="topnav disabled" id="myTopnav">
         <li id="visits" class="active">Выезды</li>
         <li id="plans" >Планы(WIP)</li>
-        <li id="problems" >Проблемы(WIP)</li>
+        <li id="maps" >Карта(WIP)</li>
         <li id="quantity">Потоки</li>
         <li id="generator">Генератор</li>
         <li id="qr">Штрих-код</li>
@@ -112,7 +115,29 @@
     </div>
     <!-- Конец страницы выездов -->
     <!-- Проблемы. Пока не начинать, возможно не надо-->
-
+    <div id="mapsPage" class="map main hide">
+        <div class="map_box">
+            <object id="map_svg" type="image/svg+xml" data="map2.svg" class="map_svg">
+            </object>
+            <div class="map_info">
+                <div class="button">Показать данные по всем регионам</div>
+                <p class="white_status">Информация по региону: <span class="white_status" id="region_title">Санкт-Петербург</span> </p>
+                <div class="table_field" id="table_field_map">
+                    <table class="supertable">
+                        <tbody>
+                            <tr class="superrow">
+                                <td class="ordercell" width="10%">№ п/п</td>
+                                <td class="supercell" width="50%" id="city_region">Город</td>
+                                <td class="supercell" width="20%">Учреждений</td>
+                                <td class="supercell" width="20%">Оборудования</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <p id="region_name" class="region_name"></p>
+        </div>
+    </div>
     <!-- Конец проблем-->
     <!-- Потоки-->
     <div id="productivityPage" class="productivity main hide">

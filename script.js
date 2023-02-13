@@ -433,7 +433,7 @@ function getListVisits() {
                     } else if (j===10 && i>0) {
                         if(deleteRow[i-1]=='X') { 
                             const deleteIcon = document.createElement('img');
-                            deleteIcon.src = './deleteIcon.png';
+                            deleteIcon.src = './deleteIcon2.png';
                             deleteIcon.classList.add('clickable');
                             deleteIcon.id = `img_${i}`;
                             deleteIcon.width= 20;
@@ -1201,4 +1201,43 @@ function sendImgTelegram(e) {
     })   
 }
 
+/*Map*/
+document.getElementById('maps').addEventListener('click',mapsClick);
+function mapsClick() {
+    document.getElementById('myTopnav').querySelectorAll('.active').forEach((el)=>el.classList.remove('active'));
+    document.getElementById('maps').classList.add('active');
+    burgerMenu();
+    document.querySelectorAll('.main').forEach((el)=>el.classList.add('hide'));
+    document.getElementById('mapsPage').classList.remove('hide');
+}
+
+setTimeout(()=>{
+    const svg = document.getElementById('map_svg');
+    svg.addEventListener('load',()=>{
+        const svgDoc = svg.contentDocument;
+        const areas = svgDoc.getElementsByTagName('path');
+        const texts = svgDoc.getElementsByTagName('text')
+        texts[0].addEventListener('mouseover',()=>{document.getElementById('map_svg').getSVGDocument().getElementById('Санкт-Петербург').setAttribute('fill', '#ff00ff')});
+        for(let i=0; i< areas.length; i+=1) {
+            areas[i].addEventListener('mouseover', (e)=>{
+                e.target.setAttribute('fill', '#ff00ff');
+            })
+            areas[i].addEventListener('mouseout', (e)=>{
+                e.target.classList == 'working' ? e.target.setAttribute('fill', '#32CD32'): e.target.setAttribute('fill', '#383431');;
+                document.getElementById('region_name').innerText = '';
+            })
+            areas[i].addEventListener('mousemove', (e)=>{
+                let x = e.clientX;
+                let y = e.clientY;
+                document.getElementById('region_name').innerText = e.target.id;
+                document.getElementById('region_name').style.position = 'absolute';
+                document.getElementById('region_name').style.left = `${x+20}px`;
+                document.getElementById('region_name').style.top = `${y+20}px`;
+            })  
+        }
+    })
+        
+},1500);
+/*Map end*/
 //Latron 64606;1.0;103156110;2021-06-04;26.8;2.0;7.0;28.0;2.0;10.0;119.0;9.0;13.0;156.0;9.0;9.0;75.0;6.0;9.0;109.0;6.0;9.0;144.0;8.0;9.0;25.9;2.0;7.0;25.2;2.0;10.0;158.0;12.0;13.0;156.0;9.0;9.0;204.0;10.0;9.0;204.0;10.0;9.0;204.0;10.0;9.0;34.4;2.5;7.0;34.4;2.5;10.0;119.0;9.0;13.0;156.0;9.0;9.0;209.0;11.0;9.0;209.0;11.0;9.0;209.0;11.0;9.0;26.8;1.0;7.0;033;D13;
+
