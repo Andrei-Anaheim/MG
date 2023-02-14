@@ -119,17 +119,29 @@
         <div class="map_box">
             <object id="map_svg" type="image/svg+xml" data="map2.svg" class="map_svg">
             </object>
-            <div class="map_info">
+            <div class="map_info" id="map_info">
                 <div class="button" id="all_regions_table">Показать данные по всем регионам</div>
                 <p class="white_status hide">Информация по региону: <span class="white_status" id="region_title">Санкт-Петербург</span> </p>
                 <div class="table_field" id="table_field_map">
                     <table class="supertable" id="table_map">
                         <tbody>
                             <tr class="superrow">
-                                <td class="ordercell hide_column" width="10%">№ п/п</td>
-                                <td class="supercell" width="50%" id="city_region">Регион</td>
-                                <td class="supercell" width="20%">Учреждений</td>
-                                <td class="supercell" width="20%">Оборудования</td>
+                                <td class="ordercell hide_column" width="5%">№ п/п</td>
+                                <td class="supercell" width="45%" id="city_region">Регион</td>
+                                <td class="supercell" width="25%">Учреждений</td>
+                                <td class="supercell" width="25%">Оборудования</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table_field hide" id="table_field_instruments">
+                    <table class="supertable" id="table_instruments">
+                        <tbody>
+                            <tr class="superrow">
+                                <td class="ordercell hide_column" width="5%">№ п/п</td>
+                                <td class="supercell" width="45%" id="city_region">Направление</td>
+                                <td class="supercell" width="25%">Всего приборов</td>
+                                <td class="supercell" width="25%">Детали</td>
                             </tr>
                         </tbody>
                     </table>
