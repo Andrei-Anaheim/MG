@@ -4,6 +4,7 @@ const hospitals = [""];
 const instruments = [];
 const instruments2 = [""];
 const reagents = [];
+const installBase=[];
 
 function burgerMenu() {
     var x = document.getElementById("myTopnav");
@@ -194,8 +195,8 @@ function getReactives() {
         for (let i=0; i<length; i+=1) {
             const reactive = {};
             if(data2.table.rows[i].c[0] && data2.table.rows[i].c[0].v != null) reactive.type = data2.table.rows[i].c[0].v
-            if(data2.table.rows[i].c[2] && data2.table.rows[i].c[2].v != null) reactive.date = data2.table.rows[i].c[1].v;
-            if(data2.table.rows[i].c[1] && data2.table.rows[i].c[1].v != null) reactive.lot = data2.table.rows[i].c[2].v;
+            if(data2.table.rows[i].c[1] && data2.table.rows[i].c[1].v != null) reactive.date = data2.table.rows[i].c[1].v;
+            if(data2.table.rows[i].c[2] && data2.table.rows[i].c[2].v != null) reactive.lot = data2.table.rows[i].c[2].v;
             reagents.push(reactive);
         }
     })
@@ -1218,6 +1219,7 @@ setTimeout(()=>{
         const areas = svgDoc.getElementsByTagName('path');
         const texts = svgDoc.getElementsByTagName('text')
         texts[0].addEventListener('mouseover',()=>{document.getElementById('map_svg').getSVGDocument().getElementById('Санкт-Петербург').setAttribute('fill', '#ff00ff')});
+        texts[0].addEventListener('click',()=>{showRegionTable('Санкт-Петербург')});
         for(let i=0; i< areas.length; i+=1) {
             areas[i].addEventListener('mouseover', (e)=>{
                 e.target.setAttribute('fill', '#ff00ff');
@@ -1231,13 +1233,157 @@ setTimeout(()=>{
                 let y = e.clientY;
                 document.getElementById('region_name').innerText = e.target.id;
                 document.getElementById('region_name').style.position = 'absolute';
-                document.getElementById('region_name').style.left = `${x+20}px`;
+                document.getElementById('region_name').style.left = `${x<window.innerWidth/2? x+10: x-60}px`;
                 document.getElementById('region_name').style.top = `${y+20}px`;
-            })  
+            })
+            areas[i].addEventListener('click',(e)=>{
+                if (areas[i].classList=='working') showRegionTable(e.target.id); 
+            }) 
         }
     })
         
 },1500);
+
+function getInstruments() {
+    const url = `https://docs.google.com/spreadsheets/d/16ABEN54Ykbej-PhrbBjGlaHSXzNbD4PA8ecbpWc5QHQ/gviz/tq?gid=1330505025`;
+    fetch(url)
+    .then(res => res.text())
+    .then(rep => {
+        const data2 = JSON.parse(rep.substr(47).slice(0,-2));
+        const length = data2.table.rows.length;
+        for (let i=0; i<length; i+=1) {
+            const instrumentsByUsers = {};
+            if(data2.table.rows[i].c[0] && data2.table.rows[i].c[0].v != null) instrumentsByUsers.region = data2.table.rows[i].c[0].v
+            if(data2.table.rows[i].c[1] && data2.table.rows[i].c[1].v != null) instrumentsByUsers.organization = data2.table.rows[i].c[1].v;
+            if(data2.table.rows[i].c[2] && data2.table.rows[i].c[2].v != null) instrumentsByUsers.instrument = data2.table.rows[i].c[2].v;
+            if(data2.table.rows[i].c[3] && data2.table.rows[i].c[3].v != null) instrumentsByUsers.quantity = data2.table.rows[i].c[3].v;
+            if(data2.table.rows[i].c[10] && data2.table.rows[i].c[10].v != null) instrumentsByUsers.city = data2.table.rows[i].c[10].v;
+            installBase.push(instrumentsByUsers);
+        }
+    })
+    .then(rep => {
+        if(document.getElementById('city_region').innerText=='Регион') {
+            showAllRegionsTable();
+        }
+    })
+}
+
+document.getElementById('all_regions_table').addEventListener('click', showAllRegionsTable);
+function showAllRegionsTable() {
+    document.getElementById('table_map').innerHTML = `
+    <tbody>
+        <tr class="superrow">
+            <td class="ordercell" width="10%">№ п/п</td>
+            <td class="supercell" width="50%" id="city_region">Регион</td>
+            <td class="supercell" width="20%">Учреждений</td>
+            <td class="supercell" width="20%">Оборудования</td>
+        </tr>
+    </tbody>`
+    const regions = ['Санкт-Петербург', 'Ленинградская область','Смоленская область','Вологодская область','Новгородская область','Республика Карелия','Мурманская область', 'Москва', 'Архангельская область','Псковская область','Калининградская область','Оренбургская область', 'Брянская область', 'Воронежская область','Тюменская область','Ставропольский край','Ненецкий АО','Ямало-Ненецкий АО','Ханты-Мансийский АО']
+    const regions_code = ['СПб','ЛО','СО','ВО','НО','РК','МО','МСК','АО','ПО','КО','ОО','БО','ВорО','ТО','СК','НАО','ЯНАО','ХМАО'];
+    const table = document.getElementById('table_map');
+    for(let i=0; i<regions.length; i+=1) {
+        const tr = table.insertRow();
+        tr.className = 'superrow_small';
+        for (let j=0; j<=4; j+=1) {
+            const td = tr.insertCell();
+            if (j===0) {
+                td.className = 'ordercell';
+                td.classList.add('hide_column');
+                td.appendChild(document.createTextNode(`${i+1}`))
+            } else {
+                td.className = 'supercell_small';
+                if (j===1) {
+                    td.appendChild(document.createTextNode(regions[i]))
+                } else if (j===2) {
+                    const instrument_rows = installBase.reduce((acc, rows) => {
+                        if (acc.map[rows.organization])
+                            return acc;                    
+                        acc.map[rows.organization] = true;
+                        acc.instrument_rows.push(rows);
+                        return acc;
+                        }, {
+                        map: {},
+                        instrument_rows: []
+                        })
+                        .instrument_rows;
+                    td.appendChild(document.createTextNode(instrument_rows.filter((e)=>e.region == regions_code[i]).length));
+                } else if (j===3) {
+                    const instrument_quantity = installBase.filter((e)=>e.region == regions_code[i]);
+                    const sum = instrument_quantity.reduce(function(p,c){return Number(p)+Number(c.quantity);},'')
+                    td.appendChild(document.createTextNode(sum));
+                }
+            }
+        }
+    }
+}
+
+function showRegionTable(region) {
+    document.getElementById('table_map').innerHTML = `
+    <tbody>
+        <tr class="superrow">
+            <td class="ordercell" width="10%">№ п/п</td>
+            <td class="supercell" width="50%" id="city_region">Город</td>
+            <td class="supercell" width="20%">Учреждений</td>
+            <td class="supercell" width="20%">Оборудования</td>
+        </tr>
+    </tbody>`
+    const regions = ['Санкт-Петербург', 'Ленинградская область','Смоленская область','Вологодская область','Новгородская область','Республика Карелия','Мурманская область', 'Москва', 'Архангельская область','Псковская область','Калининградская область','Оренбургская область', 'Брянская область', 'Воронежская область','Тюменская область','Ставропольский край','Ненецкий АО','Ямало-Ненецкий АО','Ханты-Мансийский АО']
+    const regions_code = ['СПб','ЛО','СО','ВО','НО','РК','МО','МСК','АО','ПО','КО','ОО','БО','ВорО','ТО','СК','НАО','ЯНАО','ХМАО'];
+    const region_code = regions_code[regions.indexOf(region)];
+    console.log(region_code);
+    const table = document.getElementById('table_map');
+    const city_rows = installBase.reduce((acc, rows) => {
+        if (acc.map[rows.city])
+            return acc;                    
+        acc.map[rows.city] = true;
+        acc.city_rows.push(rows);
+        return acc;
+        }, {
+        map: {},
+        city_rows: []
+        })
+        .city_rows;
+    const city_list = city_rows.filter((e)=>e.region == region_code);
+    for(let i=0; i<city_list.length; i+=1) {
+        const tr = table.insertRow();
+        tr.className = 'superrow_small';
+        for (let j=0; j<=4; j+=1) {
+            const td = tr.insertCell();
+            if (j===0) {
+                td.className = 'ordercell';
+                td.classList.add('hide_column');
+                td.appendChild(document.createTextNode(`${i+1}`))
+            } else {
+                td.className = 'supercell_small';
+                if (j===1) {
+                    td.appendChild(document.createTextNode(city_list[i].city))
+                } else if (j===2) {
+                    const facility_rows = installBase.filter((e)=>e.city == city_list[i].city).reduce((acc, rows) => {
+                        if (acc.map[rows.organization])
+                            return acc;                    
+                        acc.map[rows.organization] = true;
+                        acc.facility_rows.push(rows);
+                        return acc;
+                        }, {
+                        map: {},
+                        facility_rows: []
+                        })
+                        .facility_rows;
+                        console.log('facility_rows',i, facility_rows)
+                    td.appendChild(document.createTextNode(facility_rows.length));
+                } else if (j===3) {
+                    const instrument_quantity = installBase.filter((e)=>e.region == region_code&&e.city==city_list[i].city);
+                    const sum = instrument_quantity.reduce(function(p,c){return Number(p)+Number(c.quantity);},'')
+                    td.appendChild(document.createTextNode(sum));
+                }
+            }
+        }
+    } 
+
+}
+
+window.onload = getInstruments();
 /*Map end*/
 //Latron 64606;1.0;103156110;2021-06-04;26.8;2.0;7.0;28.0;2.0;10.0;119.0;9.0;13.0;156.0;9.0;9.0;75.0;6.0;9.0;109.0;6.0;9.0;144.0;8.0;9.0;25.9;2.0;7.0;25.2;2.0;10.0;158.0;12.0;13.0;156.0;9.0;9.0;204.0;10.0;9.0;204.0;10.0;9.0;204.0;10.0;9.0;34.4;2.5;7.0;34.4;2.5;10.0;119.0;9.0;13.0;156.0;9.0;9.0;209.0;11.0;9.0;209.0;11.0;9.0;209.0;11.0;9.0;26.8;1.0;7.0;033;D13;
 
