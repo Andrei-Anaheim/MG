@@ -1273,7 +1273,7 @@ function showAllRegionsTable() {
     document.getElementById('table_map').innerHTML = `
     <tbody>
         <tr class="superrow">
-            <td class="ordercell" width="10%">№ п/п</td>
+            <td class="ordercell hide_column" width="10%">№ п/п</td>
             <td class="supercell" width="50%" id="city_region">Регион</td>
             <td class="supercell" width="20%">Учреждений</td>
             <td class="supercell" width="20%">Оборудования</td>
@@ -1285,7 +1285,7 @@ function showAllRegionsTable() {
     for(let i=0; i<regions.length; i+=1) {
         const tr = table.insertRow();
         tr.className = 'superrow_small';
-        for (let j=0; j<=4; j+=1) {
+        for (let j=0; j<4; j+=1) {
             const td = tr.insertCell();
             if (j===0) {
                 td.className = 'ordercell';
@@ -1322,7 +1322,7 @@ function showRegionTable(region) {
     document.getElementById('table_map').innerHTML = `
     <tbody>
         <tr class="superrow">
-            <td class="ordercell" width="10%">№ п/п</td>
+            <td class="ordercell hide_column" width="10%">№ п/п</td>
             <td class="supercell" width="50%" id="city_region">Город</td>
             <td class="supercell" width="20%">Учреждений</td>
             <td class="supercell" width="20%">Оборудования</td>
@@ -1348,7 +1348,7 @@ function showRegionTable(region) {
     for(let i=0; i<city_list.length; i+=1) {
         const tr = table.insertRow();
         tr.className = 'superrow_small';
-        for (let j=0; j<=4; j+=1) {
+        for (let j=0; j<4; j+=1) {
             const td = tr.insertCell();
             if (j===0) {
                 td.className = 'ordercell';
