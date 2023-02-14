@@ -210,6 +210,7 @@ body {
     border: 1px solid yellow;
     height: 100%;
     width: 100%;
+    margin: 10px auto;
 }
 
 @media screen and (max-width: 800px) {
@@ -244,24 +245,27 @@ body {
 .supercell {
     border: 1px solid green;
     color: white;
-    font: normal normal 15px/15px Arial;
+    font: normal normal 15px/20px Arial;
     text-align: center;
     overflow-x: hidden;
     max-width: 200px;
     text-overflow: ellipsis;
-    white-space: wrap;
+    /* white-space: wrap; */
+    white-space: pre-wrap;
+    padding: 2px auto;
 }
 
 .supercell_small {
     border: 1px solid green;
     color: white;
-    font: normal normal 12px/12px Arial;
+    font: normal normal 12px/15px Arial;
     text-align: center;
     overflow-x: hidden;
     max-width: 200px;
     text-overflow: ellipsis;
     white-space: wrap;
     max-height: 15px;
+    padding: 2px auto;
 }
 
 .map_box {
@@ -279,7 +283,7 @@ body {
 }
 
 .map_info {
-    width: 100%;
+    width: 100%; 
     max-width: 30vw;
     max-height: 80vh;
 }

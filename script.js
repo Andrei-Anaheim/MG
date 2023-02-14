@@ -3,6 +3,12 @@ const workers = [""];
 const hospitals = [""];
 const instruments = [];
 const instruments2 = [""];
+const hematology = [];
+const biochemistry = [];
+const immuno = [];
+const urine = [];
+const automate = [];
+const microbiology = [];
 const reagents = [];
 const installBase=[];
 
@@ -72,6 +78,12 @@ function getFacilities() {
             if(data2.table.rows[i].c[2] && data2.table.rows[i].c[2].v != null) workers.push(data2.table.rows[i].c[2].v);
             if(data2.table.rows[i].c[1] && data2.table.rows[i].c[1].v != null) instruments.push(data2.table.rows[i].c[1].v);
             if(data2.table.rows[i].c[1] && data2.table.rows[i].c[1].v != null) instruments2.push(data2.table.rows[i].c[1].v);
+            if(data2.table.rows[i].c[3] && data2.table.rows[i].c[3].v != null) hematology.push(data2.table.rows[i].c[3].v.toLowerCase());
+            if(data2.table.rows[i].c[4] && data2.table.rows[i].c[4].v != null) biochemistry.push(data2.table.rows[i].c[4].v.toLowerCase());
+            if(data2.table.rows[i].c[5] && data2.table.rows[i].c[5].v != null) immuno.push(data2.table.rows[i].c[5].v.toLowerCase());
+            if(data2.table.rows[i].c[6] && data2.table.rows[i].c[6].v != null) urine.push(data2.table.rows[i].c[6].v.toLowerCase());
+            if(data2.table.rows[i].c[7] && data2.table.rows[i].c[7].v != null) automate.push(data2.table.rows[i].c[7].v.toLowerCase());
+            if(data2.table.rows[i].c[8] && data2.table.rows[i].c[8].v != null) microbiology.push(data2.table.rows[i].c[8].v.toLowerCase());
         }
     })
     .then(rep => {
@@ -1219,7 +1231,11 @@ setTimeout(()=>{
         const areas = svgDoc.getElementsByTagName('path');
         const texts = svgDoc.getElementsByTagName('text')
         texts[0].addEventListener('mouseover',()=>{document.getElementById('map_svg').getSVGDocument().getElementById('Санкт-Петербург').setAttribute('fill', '#ff00ff')});
-        texts[0].addEventListener('click',()=>{showRegionTable('Санкт-Петербург')});
+        texts[0].addEventListener('mouseout',()=>{document.getElementById('map_svg').getSVGDocument().getElementById('Санкт-Петербург').setAttribute('fill', '#32CD32')});
+        texts[0].addEventListener('click',()=>{
+            showRegionTable('Санкт-Петербург')
+            showRegionInstruments('Санкт-Петербург');
+        });
         for(let i=0; i< areas.length; i+=1) {
             areas[i].addEventListener('mouseover', (e)=>{
                 e.target.setAttribute('fill', '#ff00ff');
@@ -1237,7 +1253,10 @@ setTimeout(()=>{
                 document.getElementById('region_name').style.top = `${y+20}px`;
             })
             areas[i].addEventListener('click',(e)=>{
-                if (areas[i].classList=='working') showRegionTable(e.target.id); 
+                if (areas[i].classList=='working') {
+                    showRegionTable(e.target.id);
+                    showRegionInstruments(e.target.id);
+                } 
             }) 
         }
     })
@@ -1270,13 +1289,14 @@ function getInstruments() {
 
 document.getElementById('all_regions_table').addEventListener('click', showAllRegionsTable);
 function showAllRegionsTable() {
+    document.getElementById('table_field_instruments').classList.add('hide');
     document.getElementById('table_map').innerHTML = `
     <tbody>
         <tr class="superrow">
-            <td class="ordercell hide_column" width="10%">№ п/п</td>
-            <td class="supercell" width="50%" id="city_region">Регион</td>
-            <td class="supercell" width="20%">Учреждений</td>
-            <td class="supercell" width="20%">Оборудования</td>
+            <td class="ordercell hide_column" width="5%">№ п/п</td>
+            <td class="supercell" width="45%" id="city_region">Регион</td>
+            <td class="supercell" width="25%">Учреждений</td>
+            <td class="supercell" width="25%">Оборудования</td>
         </tr>
     </tbody>`
     const regions = ['Санкт-Петербург', 'Ленинградская область','Смоленская область','Вологодская область','Новгородская область','Республика Карелия','Мурманская область', 'Москва', 'Архангельская область','Псковская область','Калининградская область','Оренбургская область', 'Брянская область', 'Воронежская область','Тюменская область','Ставропольский край','Ненецкий АО','Ямало-Ненецкий АО','Ханты-Мансийский АО']
@@ -1322,16 +1342,15 @@ function showRegionTable(region) {
     document.getElementById('table_map').innerHTML = `
     <tbody>
         <tr class="superrow">
-            <td class="ordercell hide_column" width="10%">№ п/п</td>
-            <td class="supercell" width="50%" id="city_region">Город</td>
-            <td class="supercell" width="20%">Учреждений</td>
-            <td class="supercell" width="20%">Оборудования</td>
+            <td class="ordercell hide_column" width="5%">№ п/п</td>
+            <td class="supercell" width="45%" id="city_region">Город</td>
+            <td class="supercell" width="25%">Учреждений</td>
+            <td class="supercell" width="25%">Оборудования</td>
         </tr>
     </tbody>`
     const regions = ['Санкт-Петербург', 'Ленинградская область','Смоленская область','Вологодская область','Новгородская область','Республика Карелия','Мурманская область', 'Москва', 'Архангельская область','Псковская область','Калининградская область','Оренбургская область', 'Брянская область', 'Воронежская область','Тюменская область','Ставропольский край','Ненецкий АО','Ямало-Ненецкий АО','Ханты-Мансийский АО']
     const regions_code = ['СПб','ЛО','СО','ВО','НО','РК','МО','МСК','АО','ПО','КО','ОО','БО','ВорО','ТО','СК','НАО','ЯНАО','ХМАО'];
     const region_code = regions_code[regions.indexOf(region)];
-    console.log(region_code);
     const table = document.getElementById('table_map');
     const city_rows = installBase.reduce((acc, rows) => {
         if (acc.map[rows.city])
@@ -1370,7 +1389,6 @@ function showRegionTable(region) {
                         facility_rows: []
                         })
                         .facility_rows;
-                        console.log('facility_rows',i, facility_rows)
                     td.appendChild(document.createTextNode(facility_rows.length));
                 } else if (j===3) {
                     const instrument_quantity = installBase.filter((e)=>e.region == region_code&&e.city==city_list[i].city);
@@ -1380,6 +1398,78 @@ function showRegionTable(region) {
             }
         }
     } 
+}
+
+function showRegionInstruments(region) {
+    const map_info_table = document.getElementById('table_field_instruments');
+    map_info_table.innerHTML = `<table class="supertable" id="table_instruments">
+                                    <tbody>
+                                        <tr class="superrow">
+                                            <td class="ordercell hide_column" width="5%">№ п/п</td>
+                                            <td class="supercell" width="45%" id="city_region">Направление</td>
+                                            <td class="supercell" width="25%">Всего приборов</td>
+                                            <td class="supercell" width="25%">Детали</td>
+                                        </tr>
+                                    </tbody>
+                                </table>`
+    map_info_table.classList.remove('hide');
+    const analysis_type = ['Гематология', 'Биохимия', 'Иммунохимия','Анализ мочи','Автоматизация','Микробиология'];
+    const analyzers = [hematology,biochemistry, immuno, urine, automate, microbiology]
+    const total_instruments = [];
+    const details_instruments = [];
+    const regions = ['Санкт-Петербург', 'Ленинградская область','Смоленская область','Вологодская область','Новгородская область','Республика Карелия','Мурманская область', 'Москва', 'Архангельская область','Псковская область','Калининградская область','Оренбургская область', 'Брянская область', 'Воронежская область','Тюменская область','Ставропольский край','Ненецкий АО','Ямало-Ненецкий АО','Ханты-Мансийский АО']
+    const regions_code = ['СПб','ЛО','СО','ВО','НО','РК','МО','МСК','АО','ПО','КО','ОО','БО','ВорО','ТО','СК','НАО','ЯНАО','ХМАО'];
+    const region_code = regions_code[regions.indexOf(region)];
+    const actual_type = [];
+    const analyzers_details = [];
+    const summary = []
+    for (let i=0; i<analysis_type.length; i+=1) {
+        const total = installBase.filter((e)=>e.region == region_code&&analyzers[i].indexOf(e.instrument.toLowerCase())!==-1);
+        if(total.length>0) {
+            actual_type.push(analysis_type[i]);
+            summary.push(total);
+            const podsummary = [];
+            for(let j=0;j<total.length; j+=1) {
+                const object_instruments = {}
+                object_instruments.name = total[j].instrument;
+                object_instruments.quantity = total[j].quantity;
+                podsummary.push(object_instruments)
+            }
+            analyzers_details.push(podsummary) 
+        }
+    }
+    for (let i=0; i<actual_type.length; i+=1) {
+        const tr = document.getElementById('table_instruments').insertRow();
+        tr.className = 'superrow_small';
+        for (let j=0; j<4; j+=1) {
+            const td = tr.insertCell();
+            if (j===0) {
+                td.className = 'ordercell';
+                td.classList.add('hide_column');
+                td.appendChild(document.createTextNode(`${i+1}`))
+            } else {
+                td.className = 'supercell_small';
+                if (j===1) {
+                    td.appendChild(document.createTextNode(actual_type[i]))
+                } else if (j===2) {
+                    const sum = summary[i].reduce(function(p,c){return Number(p)+Number(c.quantity);},'')
+                    td.appendChild(document.createTextNode(sum))
+                } else if (j===3) {
+                    const current_analyzer_list = Array.from(new Set(analyzers_details[i].map(value => value.name)));
+                    let text = '';
+                    for (let k=0; k<current_analyzer_list.length; k+=1) {
+                        console.log(k, analyzers_details[i]);
+                        let current_count = 0;
+                        for (let l=0; l<analyzers_details[i].length; l+=1) {
+                            if (analyzers_details[i][l].name == current_analyzer_list[k]) current_count +=Number(analyzers_details[i][l].quantity);
+                        }
+                        text += (`${current_analyzer_list[k]}:${current_count}`+'<br>');
+                    };
+                    td.innerHTML = text;
+                }
+            }
+        }
+    }
 
 }
 
