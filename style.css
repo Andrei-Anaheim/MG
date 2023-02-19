@@ -361,6 +361,10 @@ body {
     cursor: pointer;
 }
 
+.icon {
+    margin: 0px 10px;
+}
+
 .disabled {
     pointer-events: none;
 }
