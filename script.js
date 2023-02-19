@@ -247,6 +247,8 @@ function addVisitsClick() {
     document.getElementById('confirm_visit').classList.remove('hide');
     document.getElementById('table_field').innerHTML='';
     document.getElementById('visits_list').classList.add('hide');
+    document.getElementById('save_edit_visit').classList.add('hide');
+    
 }
 
 document.getElementById('confirm_visit').addEventListener('click',confirmVisitsClick);
