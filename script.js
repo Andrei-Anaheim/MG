@@ -24,7 +24,6 @@ function burgerMenu() {
 window.onload = checkAuth();
 function checkAuth() {
     if (localStorage.getItem('user')) {
-        document.getElementById('myTopnav').classList.remove('disabled');
         document.getElementById('auth').classList.add('hide');
         document.getElementById('negative_response').innerText = "";
     }
@@ -55,6 +54,7 @@ function checkUsers() {
             if (passwords[[users.indexOf(user)]]== pass) {
                 localStorage.setItem('user', `${user}`);
                 checkAuth();
+                document.getElementById('myTopnav').classList.remove('disabled');
             } else {
                 document.getElementById('negative_response').innerText = 'Неверный пароль'
             }
@@ -247,6 +247,8 @@ function addVisitsClick() {
     document.getElementById('confirm_visit').classList.remove('hide');
     document.getElementById('table_field').innerHTML='';
     document.getElementById('visits_list').classList.add('hide');
+    document.getElementById('save_edit_visit').classList.add('hide');
+    
 }
 
 document.getElementById('confirm_visit').addEventListener('click',confirmVisitsClick);
@@ -294,13 +296,13 @@ function downloadVisitToDatabase(date, date2, application, facility, instrument,
             body: JSON.stringify({
                 data: [
                     {
-                        'Дата с': `${date}`,
-                        'Дата по': `${date2}`,
-                        'Учреждение': `${facility}`,
-                        'Прибор': `${instrument}`,
+                        'Date_from': `${date}`,
+                        'Date_to': `${date2}`,
+                        'Facility': `${facility}`,
+                        'Instrument': `${instrument}`,
                         'SN': `${sn}`,
-                        'Аппликатор': `${application}`,
-                        'Автор': `${localStorage.getItem('user')}`,
+                        'Application': `${application}`,
+                        'Author': `${localStorage.getItem('user')}`,
                         'id': `${date}_${date2}_${facility}_${instrument}_${application}`
                     }
                 ]
@@ -316,17 +318,17 @@ function downloadVisitToDatabase(date, date2, application, facility, instrument,
         body: JSON.stringify({
             data: [
                 {
-                    'Дата с': `${date}`,
-                    'Дата по': `${date2}`,
-                    'Учреждение': `${facility}`,
-                    'Прибор': `${instrument}`,
+                    'Date_from': `${date}`,
+                    'Date_to': `${date2}`,
+                    'Facility': `${facility}`,
+                    'Instrument': `${instrument}`,
                     'SN': `${sn}`,
-                    'Аппликатор': `${application}`,
-                    'Причина выезда': `${reason}`,
-                    'Выполненные работы': `${work}`,
-                    'Акт': `${report}`,
-                    'Тип работ': `${type}`,
-                    'Автор': `${localStorage.getItem('user')}`,
+                    'Application': `${application}`,
+                    'Reason': `${reason}`,
+                    'Works': `${work}`,
+                    'Report': `${report}`,
+                    'Work_type': `${type}`,
+                    'Author': `${localStorage.getItem('user')}`,
                     'id': `${date}_${date2}_${facility}_${instrument}_${application}`
                 }
             ]
@@ -416,7 +418,7 @@ function getListVisits() {
             for (let j=0; j<=10; j+=1) {
                 const td = tr.insertCell();
                 if (i===0 && j>0 && j<10) td.appendChild(document.createTextNode(`${data2.table.cols[j-1].label}`));
-                if (i===0 && j==10) td.appendChild(document.createTextNode('Удаление'));
+                if (i===0 && j==10) td.appendChild(document.createTextNode('Удаление / Изменение'));
                 if (j===0) {
                     td.className = 'ordercell';
                     td.classList.add('hide_column');
@@ -448,10 +450,19 @@ function getListVisits() {
                             const deleteIcon = document.createElement('img');
                             deleteIcon.src = './deleteIcon2.png';
                             deleteIcon.classList.add('clickable');
+                            deleteIcon.classList.add('icon');
                             deleteIcon.id = `img_${i}`;
                             deleteIcon.width= 20;
                             deleteIcon.addEventListener('click', (e)=>{deleteVisitRow(e)})
                             td.appendChild(deleteIcon)
+                            const editIcon = document.createElement('img');
+                            editIcon.src = './editIcon.png';
+                            editIcon.classList.add('clickable');
+                            editIcon.classList.add('icon');
+                            editIcon.id = `img_edit_${i}`;
+                            editIcon.width= 20;
+                            editIcon.addEventListener('click', (e)=>{editVisitRow(e)})
+                            td.appendChild(editIcon)
                         }
                     }
                 };
@@ -476,6 +487,151 @@ function deleteVisitRow(e) {
     })
     .then(res => res.text())
     .then(rep => {
+        setTimeout(()=>{
+           window.location.reload(); 
+        },1500)
+    })
+}
+
+function editVisitRow(e) {
+    const row_number = e.target.id.split('img_edit_')[1];
+    const row_info = document.getElementById('table_field').querySelectorAll('.superrow')[row_number];
+    const date1 = new Date(`${row_info.querySelectorAll('.supercell')[0].innerText.split('.')[2]}`,`${row_info.querySelectorAll('.supercell')[0].innerText}`.split('.')[1]-1,`${Number(row_info.querySelectorAll('.supercell')[0].innerText.split('.')[0])+1}`).toISOString().split('T')[0];
+    const date2 = new Date(`${row_info.querySelectorAll('.supercell')[1].innerText.split('.')[2]}`,`${row_info.querySelectorAll('.supercell')[1].innerText}`.split('.')[1]-1,`${Number(row_info.querySelectorAll('.supercell')[1].innerText.split('.')[0])+1}`).toISOString().split('T')[0];
+    const id = `${date1.replace(/[\.]/gi,'-')}_${date2.replace(/[\.]/gi,'-')}_${row_info.querySelectorAll('.supercell')[2].innerText}_${row_info.querySelectorAll('.supercell')[3].innerText}_${row_info.querySelectorAll('.supercell')[5].innerText}`
+    document.getElementById('visits_list').classList.add('hide');
+    document.getElementById('visit_box').classList.remove('hide');
+    document.getElementById('save_edit_visit').classList.remove('hide');
+    fetch(`https://sheetdb.io/api/v1/tkhtt2o9c61js/search?id=${id}`)
+    .then((response) => response.json())
+    .then((data) => {
+        document.getElementById('date').value = data[0].Date_from;
+        document.getElementById('date2').value = data[0].Date_to;
+        const applicator = document.getElementById('application');
+        const facility = document.getElementById('facility');
+        const instrument = document.getElementById('instrument');
+        for (let i=0; i< applicator.options.length; i+=1) {
+            if (applicator.options[i].value == data[0].Application) applicator.selectedIndex = i;
+        }
+        for (let i=0; i< facility.options.length; i+=1) {
+            if (facility.options[i].value == data[0].Facility) facility.selectedIndex = i;
+        }
+        for (let i=0; i< instrument.options.length; i+=1) {
+            if (data[0].Instrument.split(',').indexOf(instrument.options[i].value)!== -1) instrument.options[i].setAttribute('selected', 'selected');
+        }
+        document.getElementById('sn').value = data[0].SN;
+        document.getElementById('reason').value = data[0].Reason;
+        document.getElementById('work').value = data[0].Works;
+        const report = document.getElementById('report');
+        const visit_type = document.getElementById('visit_type');
+        for (let i=0; i< report.options.length; i+=1) {
+            if (report.options[i].value == data[0].Report) report.selectedIndex = i;
+        }
+        for (let i=0; i< visit_type.options.length; i+=1) {
+            if (visit_type.options[i].value == data[0].Work_type) visit_type.selectedIndex = i;
+        }
+        document.getElementById('id_info').innerText = data[0].id;
+    });
+    // fetch(`https://sheetdb.io/api/v1/tkhtt2o9c61js/id/${id}?sheet=visits`, {
+    //     method: 'PATCH',
+    //     headers: {
+    //         'Accept': 'application/json',
+    //         'Content-Type': 'application/json'
+    //     },
+    //     body: {
+    //         /* наполнение */
+    //     }
+    // })
+    // .then(res => res.text())
+    // .then(rep => {
+    //     setTimeout(()=>{
+    //        window.location.reload(); 
+    //     },1500)
+    // })
+}
+document.getElementById('save_edit_visit').addEventListener('click',confirmEditVisit);
+function confirmEditVisit() {
+    const id = document.getElementById('id_info').innerText;
+    const date = document.getElementById('date').value;
+    const date2 = document.getElementById('date2').value;
+    const application = document.getElementById('application').value;
+    const facility = document.getElementById('facility').value;
+    const instrument = [];
+    const x = document.getElementById('instrument');
+    for (let i=0; i<x.options.length; i++){
+        if(x.options[i].selected == true) {
+            instrument.push(x.options[i].value)
+        }
+    }
+    const sn = document.getElementById('sn').value;
+    const reason = document.getElementById('reason').value;
+    const work = document.getElementById('work').value;
+    const report = document.getElementById('report').value;
+    const type = document.getElementById('visit_type').value;
+    if (date === "") document.getElementById('confirmation_status').innerText='Выберите дату начала';
+    else if (date2 === "") document.getElementById('confirmation_status').innerText='Выберите дату конца визита';
+    else if (application === "") document.getElementById('confirmation_status').innerText='Выберите аппликатора';
+    else if (facility === "") document.getElementById('confirmation_status').innerText='Выберите учреждение';
+    else if (instrument.length === 0) document.getElementById('confirmation_status').innerText='Выберите прибор(ы)';
+    else if (reason === "") document.getElementById('confirmation_status').innerText='Укажите причину выезда';
+    else if (work === "") document.getElementById('confirmation_status').innerText='Укажите выполненные работы';
+    else if (report === "") document.getElementById('confirmation_status').innerText='Выберите статус акта';
+    else if (type === "") document.getElementById('confirmation_status').innerText='Выберите тип выезда';
+    else {
+        document.getElementById('confirmation_status').classList.remove('red_status');
+        document.getElementById('confirmation_status').classList.add('green_status');
+        document.getElementById('confirmation_status').innerText='Выезд добавляется в базу';
+        downloadEditedVisitToDatabase(date, date2, application, facility, instrument, sn, reason, work, report, type, id);
+    }
+}
+function downloadEditedVisitToDatabase(date, date2, application, facility, instrument, sn, reason, work, report, type, id) {
+    if (type=="Обучение") {
+        fetch(`https://sheetdb.io/api/v1/tkhtt2o9c61js/id/${id}?sheet=visits`, {
+        method: 'PATCH',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+            body: JSON.stringify({
+                data:{
+                    'Date_from': `${date}`,
+                    'Date_to': `${date2}`,
+                    'Facility': `${facility}`,
+                    'Instrument': `${instrument}`,
+                    'SN': `${sn}`,
+                    'Application': `${application}`,
+                    'Author': `${localStorage.getItem('user')}`,
+                    'id': `${date}_${date2}_${facility}_${instrument}_${application}`,
+                }
+            })
+        }) 
+    }
+    fetch(`https://sheetdb.io/api/v1/tkhtt2o9c61js/id/${id}?sheet=visits`, {
+        method: 'PATCH',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            data:{
+                'Date_from': `${date}`,
+                'Date_to': `${date2}`,
+                'Facility': `${facility}`,
+                'Instrument': `${instrument}`,
+                'SN': `${sn}`,
+                'Application': `${application}`,
+                'Reason': `${reason}`,
+                'Works': `${work}`,
+                'Report': `${report}`,
+                'Work_type': `${type}`,
+                'Author': `${localStorage.getItem('user')}`,
+                'id': `${date}_${date2}_${facility}_${instrument}_${application}`,
+            }  
+        })
+    })
+    .then(res => res.text())
+    .then(rep => {
+        document.getElementById('confirmation_status').innerText='Выезд добавлен в базу';
         setTimeout(()=>{
            window.location.reload(); 
         },1500)
@@ -974,12 +1130,12 @@ function downloadProductuvityToDatabase(date, date2, facility, instrument, produ
         body: JSON.stringify({
             data: [
                 {
-                    'Дата с': `${date}`,
-                    'Дата по': `${date2}`,
-                    'Учреждение': `${facility}`,
-                    'Прибор': `${instrument}`,
-                    'Поток': `${productivity_number}`,
-                    'Примечание': `${comment}`,
+                    'Date_from': `${date}`,
+                    'Date_to': `${date2}`,
+                    'Facility': `${facility}`,
+                    'Instrument': `${instrument}`,
+                    'Capacity': `${productivity_number}`,
+                    'Comments': `${comment}`,
                 }
             ]
         })
@@ -1260,7 +1416,9 @@ setTimeout(()=>{
             }) 
         }
     })
-        
+    if (localStorage.getItem('user')) {
+        document.getElementById('myTopnav').classList.remove('disabled');
+    }  
 },1500);
 
 function getInstruments() {
