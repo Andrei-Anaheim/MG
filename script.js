@@ -11,6 +11,9 @@ const automate = [];
 const microbiology = [];
 const reagents = [];
 const installBase=[];
+const coords = [];
+const region_map_center = [];
+const city_map_center = [];
 
 function burgerMenu() {
     var x = document.getElementById("myTopnav");
@@ -20,6 +23,19 @@ function burgerMenu() {
         x.className = "topnav";
     }
 }
+
+mapboxgl.accessToken = 'pk.eyJ1IjoiYW5haGVpbTIxIiwiYSI6ImNrdW4za3Z3ejF3OHcyb296d2o4eXF5YXcifQ.0jg4J4mSTwKKkYeDl8vgCQ';
+const map = new mapboxgl.Map({
+    container: 'region_map',
+    style: 'mapbox://styles/mapbox/streets-v11',
+    center: [65.2, 58.9],
+    zoom: 3,
+});
+const language = new MapboxLanguage();
+map.addControl(language);
+map.on('idle',function(){
+    map.resize()
+})
 
 window.onload = checkAuth();
 function checkAuth() {
@@ -61,9 +77,23 @@ function checkUsers() {
         } else {
             document.getElementById('negative_response').innerText = 'Неверный логин. Обратитесь к администратору'
         }
-    })
-    
+    })    
 }
+
+function getMapsCenter() {
+    const url = `https://docs.google.com/spreadsheets/d/16ABEN54Ykbej-PhrbBjGlaHSXzNbD4PA8ecbpWc5QHQ/gviz/tq?gid=1001193760`;
+    fetch(url)
+    .then(res => res.text())
+    .then(rep => {
+        const data2 = JSON.parse(rep.substr(47).slice(0,-2));
+        const length = data2.table.rows.length;
+        for (let i=0; i<length; i+=1) {
+            if(data2.table.rows[i].c[0] && data2.table.rows[i].c[0].v != null && data2.table.rows[i].c[1] && data2.table.rows[i].c[1].v != null && data2.table.rows[i].c[2] && data2.table.rows[i].c[2].v != null && data2.table.rows[i].c[3] && data2.table.rows[i].c[3].v != null) region_map_center.push({'region':data2.table.rows[i].c[0].v, 'latitude':data2.table.rows[i].c[1].v, 'longtitude':data2.table.rows[i].c[2].v, 'zoom':data2.table.rows[i].c[3].v})
+            if(data2.table.rows[i].c[4] && data2.table.rows[i].c[4].v != null && data2.table.rows[i].c[5] && data2.table.rows[i].c[5].v != null && data2.table.rows[i].c[6] && data2.table.rows[i].c[6].v != null && data2.table.rows[i].c[7] && data2.table.rows[i].c[7].v != null) city_map_center.push({'city':data2.table.rows[i].c[4].v, 'latitude':data2.table.rows[i].c[5].v, 'longtitude':data2.table.rows[i].c[6].v, 'zoom':data2.table.rows[i].c[7].v})
+        }
+    })
+}
+window.onload = getMapsCenter();
 
 /*Отрисовска при загрузке */
 function getFacilities() {
@@ -84,6 +114,7 @@ function getFacilities() {
             if(data2.table.rows[i].c[6] && data2.table.rows[i].c[6].v != null) urine.push(data2.table.rows[i].c[6].v.toLowerCase());
             if(data2.table.rows[i].c[7] && data2.table.rows[i].c[7].v != null) automate.push(data2.table.rows[i].c[7].v.toLowerCase());
             if(data2.table.rows[i].c[8] && data2.table.rows[i].c[8].v != null) microbiology.push(data2.table.rows[i].c[8].v.toLowerCase());
+            if(data2.table.rows[i].c[9] && data2.table.rows[i].c[9].v != null && data2.table.rows[i].c[10] && data2.table.rows[i].c[10].v != null && data2.table.rows[i].c[11] && data2.table.rows[i].c[11].v != null) coords.push({'facility':data2.table.rows[i].c[9].v, 'latitude':data2.table.rows[i].c[10].v, 'longtitude':data2.table.rows[i].c[11].v});
         }
     })
     .then(rep => {
@@ -193,6 +224,9 @@ function getFacilities() {
             instrument4.appendChild(option);
         }
         document.getElementById('instrument4').addEventListener('change',getListProductivity);
+    })
+    .then(rep => {
+        createMap();
     })
 }
 window.onload = getFacilities();
@@ -1473,6 +1507,8 @@ function showAllRegionsTable() {
                 td.className = 'supercell_small';
                 if (j===1) {
                     td.appendChild(document.createTextNode(regions[i]))
+                    td.classList.add('clickable')
+                    td.addEventListener('click', (e)=>{zoomToRegion(e)})
                 } else if (j===2) {
                     const instrument_rows = installBase.reduce((acc, rows) => {
                         if (acc.map[rows.organization])
@@ -1535,6 +1571,8 @@ function showRegionTable(region) {
                 td.className = 'supercell_small';
                 if (j===1) {
                     td.appendChild(document.createTextNode(city_list[i].city))
+                    td.classList.add('clickable')
+                    td.addEventListener('click', (e)=>{zoomToCity(e)})
                 } else if (j===2) {
                     const facility_rows = installBase.filter((e)=>e.city == city_list[i].city).reduce((acc, rows) => {
                         if (acc.map[rows.organization])
@@ -1616,7 +1654,6 @@ function showRegionInstruments(region) {
                     const current_analyzer_list = Array.from(new Set(analyzers_details[i].map(value => value.name)));
                     let text = '';
                     for (let k=0; k<current_analyzer_list.length; k+=1) {
-                        console.log(k, analyzers_details[i]);
                         let current_count = 0;
                         for (let l=0; l<analyzers_details[i].length; l+=1) {
                             if (analyzers_details[i][l].name == current_analyzer_list[k]) current_count +=Number(analyzers_details[i][l].quantity);
@@ -1631,7 +1668,41 @@ function showRegionInstruments(region) {
 
 }
 
+
+
+function createMap() {
+    for (let i=0; i<coords.length; i+=1) {
+        const marker = new mapboxgl.Marker({
+            color: 'gray',
+        }).setLngLat([`${coords[i].longtitude}`, `${coords[i].latitude}`])
+        .addTo(map);
+        marker._element.id = `marker_facility_${i}}`;
+    }
+}
+
+function zoomToRegion(e) {
+    document.getElementById('popup').classList.remove('hide');
+    const row = region_map_center.findIndex(object => { return object.region == e.target.innerText });
+    map.setZoom(region_map_center[row].zoom);
+    map.flyTo({center:[region_map_center[row].longtitude, region_map_center[row].latitude], essential: true, duration: 2000});
+    showRegionTable(e.target.innerText);
+    showRegionInstruments(e.target.innerText);
+}
+
+function zoomToCity(e) {
+    document.getElementById('popup').classList.remove('hide');
+    const row = city_map_center.findIndex(object => { return object.city == e.target.innerText });
+    map.setZoom(city_map_center[row].zoom);
+    map.flyTo({center:[city_map_center[row].longtitude, city_map_center[row].latitude], essential: true, duration: 2000});
+    // Показать таблицу по городу, а не региону со списком учреждений
+
+}
+
+document.getElementById('popup_close').addEventListener('click', ()=>{document.getElementById('popup').classList.add('hide')})
+document.getElementById('myTopnav').addEventListener('click', ()=>{document.getElementById('popup').classList.add('hide')})
+
 window.onload = getInstruments();
+// window.addEventListener('load', ()=>{document.getElementById('popup').classList.add('hide')})
 /*Map end*/
 //Latron 64606;1.0;103156110;2021-06-04;26.8;2.0;7.0;28.0;2.0;10.0;119.0;9.0;13.0;156.0;9.0;9.0;75.0;6.0;9.0;109.0;6.0;9.0;144.0;8.0;9.0;25.9;2.0;7.0;25.2;2.0;10.0;158.0;12.0;13.0;156.0;9.0;9.0;204.0;10.0;9.0;204.0;10.0;9.0;204.0;10.0;9.0;34.4;2.5;7.0;34.4;2.5;10.0;119.0;9.0;13.0;156.0;9.0;9.0;209.0;11.0;9.0;209.0;11.0;9.0;209.0;11.0;9.0;26.8;1.0;7.0;033;D13;
 
