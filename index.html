@@ -5,9 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    
-    <!-- <script src='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js'></script>
-    <link href='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css' rel='stylesheet' /> -->
+    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-language/v1.0.0/mapbox-gl-language.js'></script>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css' rel='stylesheet' />
     <title>MG</title>
 </head>
 <body>
@@ -116,7 +116,7 @@
         </div>
     </div>
     <!-- Конец страницы выездов -->
-    <!-- Проблемы. Пока не начинать, возможно не надо-->
+    <!-- Карта-->
     <div id="mapsPage" class="map main hide">
         <div class="map_box">
             <object id="map_svg" type="image/svg+xml" data="map2.svg" class="map_svg">
@@ -152,7 +152,16 @@
             <p id="region_name" class="region_name"></p>
         </div>
     </div>
-    <!-- Конец проблем-->
+    <!-- Конец карты-->
+    <!-- Popup карты -->
+    <div class="popup hide" id="popup">
+        <div class="popup_body" id="popup_body">
+            <p class="popup_close clickable" id="popup_close">X</p>
+            <div id="region_map" class="region_map"></div>
+        </div>   
+    </div>
+    
+    <!-- Конец popup -->
     <!-- Потоки-->
     <div id="productivityPage" class="productivity main hide">
         <div id="productivity_nav" class="productivity_nav hide">
@@ -225,6 +234,7 @@
             </select>
         </div> 
         <p class="red_status"> *Данный генератор случайных штрих-кодов не несет смысловой нагрузки, все совпадения случайны</p>
+        <p class="red_status"> **Штрихи, заканчивающиеся на * не работают. Сгенерируйте еще один</p>
         <div class="qr_generator_buttons">
             <div id="confirm_calc_qr_generator" class="button">Сгенерировать</div>
             <div id="delete_form_qr_generator" class="button">Очистить</div>    
