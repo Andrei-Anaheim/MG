@@ -1704,5 +1704,59 @@ document.getElementById('myTopnav').addEventListener('click', ()=>{document.getE
 window.onload = getInstruments();
 // window.addEventListener('load', ()=>{document.getElementById('popup').classList.add('hide')})
 /*Map end*/
+
+/*Колесо */
+document.getElementById('wheels').addEventListener('click',wheelsClick);
+function wheelsClick() {
+    document.getElementById('spin_result').innerText='';
+    document.getElementById('myTopnav').querySelectorAll('.active').forEach((el)=>el.classList.remove('active'));
+    document.getElementById('wheels').classList.add('active');
+    burgerMenu();
+    document.querySelectorAll('.main').forEach((el)=>el.classList.add('hide'));
+    document.getElementById('wheelFortune').classList.remove('hide');
+}
+document.getElementById('spin').addEventListener('click',spinWheel);
+let degree = 22.5 + 45*2*Math.random(0,20) + 45*Math.random() + 3600;
+function spinWheel() {
+    document.getElementById('spin_result').innerText='';
+    const container = document.querySelector(".container");
+    // degree = 22.5 + 45*2*Math.random(0,20) + 45*Math.random();
+    if (degree%22.5==0) degree -=5;
+    if (Math.floor((degree-22.5)/45)%2!==0) {
+        console.log('degree was', degree, 'vnesena popravka');
+        degree+=45;
+    }
+    container.style.transform = "rotate(" + degree + "deg)";
+    if((degree%360)<=22.5 || (degree%360)>337.5) {
+        document.querySelector('.one').classList.add('wheel_selected');
+        setTimeout(()=>{document.getElementById('spin_result').innerText=`Вы выиграли ${document.querySelector('.one').innerText}`;},5000)
+    } else if ((degree%360)<=337.5 && (degree%360)>292.5) {
+        document.querySelector('.two').classList.add('wheel_selected');
+        setTimeout(()=>{document.getElementById('spin_result').innerText=`Вы выиграли ${document.querySelector('.two').innerText}`;},5000)
+    } else if ((degree%360)<=292.5 && (degree%360)>247.5) {
+        document.querySelector('.three').classList.add('wheel_selected');
+        setTimeout(()=>{document.getElementById('spin_result').innerText=`Вы выиграли ${document.querySelector('.three').innerText}`;},5000)
+    } else if ((degree%360)<=247.5 && (degree%360)>202.5) {
+        document.querySelector('.four').classList.add('wheel_selected');
+        setTimeout(()=>{document.getElementById('spin_result').innerText=`Вы выиграли ${document.querySelector('.four').innerText}`;},5000)
+    } else if ((degree%360)<=202.5 && (degree%360)>157.5) {
+        document.querySelector('.five').classList.add('wheel_selected');
+        setTimeout(()=>{document.getElementById('spin_result').innerText=`Вы выиграли ${document.querySelector('.five').innerText}`;},5000)
+    } else if ((degree%360)<=157.5 && (degree%360)>112.5) {
+        document.querySelector('.six').classList.add('wheel_selected');
+        setTimeout(()=>{document.getElementById('spin_result').innerText=`Вы выиграли ${document.querySelector('.six').innerText}`;},5000)
+    } else if ((degree%360)<=112.5 && (degree%360)>67.5) {
+        document.querySelector('.seven').classList.add('wheel_selected');
+        setTimeout(()=>{document.getElementById('spin_result').innerText=`Вы выиграли ${document.querySelector('.seven').innerText}`;},5000)
+    } else if ((degree%360)<=67.5 && (degree%360)>22.5) {
+        document.querySelector('.eight').classList.add('wheel_selected');
+        setTimeout(()=>{document.getElementById('spin_result').innerText=`Вы выиграли ${document.querySelector('.eight').innerText}`;},5000)
+    }
+	degree += (22.5 + 45*2*Math.random(0,20) + 45*Math.random()+3600);
+    
+}
+/*Конец колеса */
+
+
 //Latron 64606;1.0;103156110;2021-06-04;26.8;2.0;7.0;28.0;2.0;10.0;119.0;9.0;13.0;156.0;9.0;9.0;75.0;6.0;9.0;109.0;6.0;9.0;144.0;8.0;9.0;25.9;2.0;7.0;25.2;2.0;10.0;158.0;12.0;13.0;156.0;9.0;9.0;204.0;10.0;9.0;204.0;10.0;9.0;204.0;10.0;9.0;34.4;2.5;7.0;34.4;2.5;10.0;119.0;9.0;13.0;156.0;9.0;9.0;209.0;11.0;9.0;209.0;11.0;9.0;209.0;11.0;9.0;26.8;1.0;7.0;033;D13;
 
