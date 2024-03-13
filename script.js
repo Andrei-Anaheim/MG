@@ -250,6 +250,7 @@ function getReactives() {
 
 window.onload = getReactives();
 const chat_id_admin = 343428684;
+const chat_id_admin_sasha = 54722461;
 let token = '';
 function getToken() {
     const url = `https://docs.google.com/spreadsheets/d/16ABEN54Ykbej-PhrbBjGlaHSXzNbD4PA8ecbpWc5QHQ/gviz/tq?gid=1629634911`;
@@ -371,6 +372,17 @@ function downloadVisitToDatabase(date, date2, application, facility, instrument,
     .then(res => res.text())
     .then(rep => {
         document.getElementById('confirmation_status').innerText='Выезд добавлен в базу';
+        console.log(["BC-20s", "BC-30s", "BC-700", "BC-720", "BC-760", "BC-780", "BC-5100", "ВС-5150", "BC-5300", "BC-5380", "BC-5800", "BC-6000", "BC-6200", "BC-6800Plus", "CAL-6000", "CAL-8000", "SC-120", "MC-80", "BS-240Pro", "BS-380", "BS-480", "BS-620", "BS-800M", "BS-2000M", "CL-1200i", "CL-2000i", "CL-6000i"].indexOf(instrument[0]), instrument)
+        if(["BC-20s", "BC-30s", "BC-700", "BC-720", "BC-760", "BC-780", "BC-5100", "ВС-5150", "BC-5300", "BC-5380", "BC-5800", "BC-6000", "BC-6200", "BC-6800Plus", "CAL-6000", "CAL-8000", "SC-120", "MC-80", "BS-240Pro", "BS-380", "BS-480", "BS-620", "BS-800M", "BS-2000M", "CL-1200i", "CL-2000i", "CL-6000i"].indexOf(instrument[0])!=-1) {
+            console.log('пошли отправлять')
+            let request2 = new XMLHttpRequest();
+            request2.open('POST', `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id_admin_sasha}&text={${application} добавил(а) новый выезд: ${date} - ${date2}: ${facility}- ${instrument}. Причина:${reason}. Работа: ${work}}`);
+            request2.send();
+            let request3 = new XMLHttpRequest();
+            request3.open('POST', `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id_admin}&text={${application} добавил(а) новый выезд: ${date} - ${date2}: ${facility}- ${instrument}. Причина:${reason}. Работа: ${work}}`);
+            request3.send();
+            console.log('закончили отправлять')
+        }
         setTimeout(()=>{
            window.location.reload(); 
         },1500)
@@ -1094,14 +1106,18 @@ function GeneratorCalculate() {
     const base = [981176888,981176888,981176888,981176888,1039638401,1044953084,1045436237,1045480160,1045484153,1045484516,1045484549];
     const daygap = 28561;
     const monthgap = 28561*13; /* Требуется проверка точно ли перескок в 13 в последующие месяцы. И что с перескоком по году */
+    const yeargap = 28561;
     const baseday = new Date ('2023/01/29');
     const day_difference = Math.floor(Math.abs(new Date() - baseday)/1000/60/60/24);
-    const month_diffenrence = new Date().getMonth()+(new Date().getFullYear()-2023)*12;
+    const month_diffenrence = new Date().getMonth()/*+(new Date().getFullYear()-2023)*12*/;
+    const year_diffenrence = (new Date().getFullYear()-2023)*365;
+    console.log(year_diffenrence);
+
     let password = 0;
     if (sn_length<5) {
-        password = base[0]+day_difference*daygap + month_diffenrence*monthgap;
+        password = base[0]+day_difference*daygap + month_diffenrence*monthgap - (-169+year_diffenrence)*yeargap;
     } else {
-        password = Number(base[sn_length-1])+day_difference*daygap + month_diffenrence*monthgap;
+        password = Number(base[sn_length-1])+day_difference*daygap + month_diffenrence*monthgap - (-169+year_diffenrence)*yeargap;
         for (let i=0; i<sn_length-4; i+=1) {
             password = Number(password) + Number(sdvig[i+4])*Number(symbol.indexOf(sn_arr[i+4]));
         }
