@@ -263,6 +263,27 @@ function getToken() {
 }
 window.onload = getToken();
 
+/* Шпаргалка */
+document.getElementById('posters').addEventListener('click',postersClick);
+function postersClick() {
+    document.getElementById('myTopnav').querySelectorAll('.active').forEach((el)=>el.classList.remove('active'));
+    document.getElementById('posters').classList.add('active');
+    burgerMenu();
+    document.querySelectorAll('.main').forEach((el)=>el.classList.add('hide'));
+    document.getElementById('postersPage').classList.remove('hide');
+}
+
+document.getElementById('instrument_type').addEventListener('change',PosterGenerator);
+function PosterGenerator() {
+    let instrument_poster_value = document.getElementById('instrument_type').value;
+    let instrument_poster = document.getElementById('instrument_type').innerText;
+    if (instrument_poster_value == 1) document.getElementById('posters_box').innerHTML = "";
+    else document.getElementById('posters_box').innerHTML = `
+        <div class="poster_img"><img width=${window.innerWidth-50}px src="/${instrument_poster}_poster.png"></div>    
+    `;      
+}
+/* Конец шпаргалки */
+
 /* Выезды */
 document.getElementById('visits').addEventListener('click',visitsClick);
 function visitsClick() {
@@ -372,16 +393,16 @@ function downloadVisitToDatabase(date, date2, application, facility, instrument,
     .then(res => res.text())
     .then(rep => {
         document.getElementById('confirmation_status').innerText='Выезд добавлен в базу';
-        console.log(["BC-20s", "BC-30s", "BC-700", "BC-720", "BC-760", "BC-780", "BC-5100", "ВС-5150", "BC-5300", "BC-5380", "BC-5800", "BC-6000", "BC-6200", "BC-6800Plus", "CAL-6000", "CAL-8000", "SC-120", "MC-80", "BS-240Pro", "BS-380", "BS-480", "BS-620", "BS-800M", "BS-2000M", "CL-1200i", "CL-2000i", "CL-6000i"].indexOf(instrument[0]), instrument)
+        // console.log(["BC-20s", "BC-30s", "BC-700", "BC-720", "BC-760", "BC-780", "BC-5100", "ВС-5150", "BC-5300", "BC-5380", "BC-5800", "BC-6000", "BC-6200", "BC-6800Plus", "CAL-6000", "CAL-8000", "SC-120", "MC-80", "BS-240Pro", "BS-380", "BS-480", "BS-620", "BS-800M", "BS-2000M", "CL-1200i", "CL-2000i", "CL-6000i"].indexOf(instrument[0]), instrument)
         if(["BC-20s", "BC-30s", "BC-700", "BC-720", "BC-760", "BC-780", "BC-5100", "ВС-5150", "BC-5300", "BC-5380", "BC-5800", "BC-6000", "BC-6200", "BC-6800Plus", "CAL-6000", "CAL-8000", "SC-120", "MC-80", "BS-240Pro", "BS-380", "BS-480", "BS-620", "BS-800M", "BS-2000M", "CL-1200i", "CL-2000i", "CL-6000i"].indexOf(instrument[0])!=-1) {
-            console.log('пошли отправлять')
+            // console.log('пошли отправлять')
             let request2 = new XMLHttpRequest();
             request2.open('POST', `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id_admin_sasha}&text={${application} добавил(а) новый выезд: ${date} - ${date2}: ${facility}- ${instrument}. Причина:${reason}. Работа: ${work}}`);
             request2.send();
             let request3 = new XMLHttpRequest();
             request3.open('POST', `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id_admin}&text={${application} добавил(а) новый выезд: ${date} - ${date2}: ${facility}- ${instrument}. Причина:${reason}. Работа: ${work}}`);
             request3.send();
-            console.log('закончили отправлять')
+            // console.log('закончили отправлять')
         }
         setTimeout(()=>{
            window.location.reload(); 
@@ -924,7 +945,7 @@ function IQ200Calculate() {
     const controls = calc_type <= 2? 5 : 0;
     const lamina = Math.ceil((months*30.5*days_per_week/7*(10+controls)*instruments+potok)/485/2);
     const calibrator = Math.ceil(Math.ceil(months/4)*Math.ceil(instruments/4));
-    const control = calc_type <= 2 ? 12*Math.ceil(instruments/2) : 12;
+    const control = calc_type <= 2 ? months*Math.ceil(instruments/2) : months;
     const diluent = Math.ceil(months/12)*instruments;
     const cleanser = Math.ceil(months/12)*instruments;
     const table_length = 5;
@@ -1014,7 +1035,7 @@ function VelocityCalculate() {
     const calc_type = document.getElementById('calc_Velocity_type').value;
     
     const controls = calc_type <= 2? 3 : 0;
-    const strips = Math.ceil((months*30.5*days_per_week/7*controls*instruments+potok+20*instruments*(calc_type<=2 ? 12 : 0))/100);
+    const strips = Math.ceil((months*30.5*days_per_week/7*controls*instruments+potok+20*instruments*(calc_type<=2 ? months : 0))/100);
     const wash = Math.ceil((months*30.5*days_per_week/7*(20+controls)*instruments+potok)/850/2);
     const calibrator = Math.ceil(Math.ceil(months/3)*Math.ceil(instruments/3));
     const control = calc_type <= 2 ? 8 : 6;
@@ -1111,7 +1132,6 @@ function GeneratorCalculate() {
     const day_difference = Math.floor(Math.abs(new Date() - baseday)/1000/60/60/24);
     const month_diffenrence = new Date().getMonth()/*+(new Date().getFullYear()-2023)*12*/;
     const year_diffenrence = (new Date().getFullYear()-2023)*365;
-    console.log(year_diffenrence);
 
     let password = 0;
     if (sn_length<5) {
@@ -1308,6 +1328,7 @@ function QRGeneratorCalculate() {
     box.id = `qr_answer${document.getElementById('qr_box').children.length+1}`
     box.classList="qr_pass_result";
     const text = document.createElement('p');
+    text.id="qr_info"
     text.addEventListener('click',(e)=>{
         sendImgTelegram(e.target.parentElement);
     })
@@ -1315,6 +1336,7 @@ function QRGeneratorCalculate() {
     const download = document.createElement('span');
     download.innerText = '🡻';
     download.classList = "download";
+    download.style.marginBottom='25px';
     download.addEventListener('click',(e)=>{
         downloadImg(e.target.parentElement);
     })
@@ -1326,6 +1348,14 @@ function QRGeneratorCalculate() {
     const barcode2 = document.createElementNS("http://www.w3.org/2000/svg",'svg');
     barcode2.id = `qr_answer${document.getElementById('qr_box').children.length}_2`;
     box.appendChild(barcode2);
+    const barcode3 = document.createElementNS("http://www.w3.org/2000/svg",'svg');
+    barcode3.id = `qr_answer${document.getElementById('qr_box').children.length}_3`;
+    box.appendChild(barcode3);
+    barcode3.style.height='5px';
+    const barcode4 = document.createElementNS("http://www.w3.org/2000/svg",'svg');
+    barcode4.id = `qr_answer${document.getElementById('qr_box').children.length}_4`;
+    barcode4.style.height='5px';
+    box.appendChild(barcode4);
     setTimeout(()=> {
         if (sn==2) {
             text.innerText = reagents[0].type? `${reagents[0].type}: ${reagents[0].date}`:'Dil800: Годен до 04.04.2024';
@@ -1377,6 +1407,21 @@ function QRGeneratorCalculate() {
             qr2 = `+$$3${yearLot}L0${random}8${last_symbol}`;
             JsBarcode(`#qr_answer${document.getElementById('qr_box').children.length}_1`, `${qr1}`, {height:80});
             JsBarcode(`#qr_answer${document.getElementById('qr_box').children.length}_2`, `${qr2}`, {height:80});
+        } else if (sn==7) {
+            const date_number = Math.floor((new Date()-new Date(new Date().getFullYear(), 0, 0))/1000/60/60/24)
+            const year_number = String(new Date().getFullYear()).split("20")[1];
+            let date_plus8month = new Date();
+            date_plus8month.setMonth(date_plus8month.getMonth() + 7);
+            date_plus8month.setDate(0);
+            text.innerText = `IQ200: Годен до ${date_plus8month.toLocaleDateString("ru-RU")}`;
+            qr1 = `FO${year_number}${date_number>3?String((date_number-3)).padStart(3, '0'):"003"}G1123000000`;
+            qr2 = `PC${year_number}${date_number>3?String((date_number-3)).padStart(3, '0'):"003"}G1018000000`;
+            qr3 = `NC${year_number}${date_number>3?String((date_number-3)).padStart(3, '0'):"003"}G0000200000`;
+            qr4 = `CA${year_number}${date_number>3?String((date_number-3)).padStart(3, '0'):"003"}G1224000000`;
+            JsBarcode(`#qr_answer${document.getElementById('qr_box').children.length}_4`, `${qr4}`, {height:60});
+            JsBarcode(`#qr_answer${document.getElementById('qr_box').children.length}_3`, `${qr3}`, {height:60});
+            JsBarcode(`#qr_answer${document.getElementById('qr_box').children.length}_2`, `${qr2}`, {height:60});
+            JsBarcode(`#qr_answer${document.getElementById('qr_box').children.length}_1`, `${qr1}`, {height:60});
         } else {
             document.getElementById('qr_box').removeChild(box);
         }
@@ -1387,7 +1432,12 @@ function QRGeneratorCalculate() {
 function downloadImg(e) {
     e.querySelector('.download').classList.add('download_invisible');
     e.querySelector('.download').classList.remove('download');
-    html2canvas(e).then((canvas)=>{
+    let info = e.children[0].innerText.split(':')[0];
+    html2canvas(e,{
+        width: 508,
+        height: 426,
+        scale: 0.7
+    }).then((canvas)=>{
         const base64image = canvas.toDataURL("image/png");
         let anchor = document.createElement('a');
         anchor.setAttribute('href', base64image);
@@ -1397,7 +1447,7 @@ function downloadImg(e) {
         document.querySelector('.download_invisible').classList.add('download');
         document.querySelector('.download_invisible').classList.remove('download_invisible');
         let request2 = new XMLHttpRequest();
-        request2.open('POST', `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id_admin}&text=Штрих скачан без данных`);
+        request2.open('POST', `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id_admin}&text=Штрих ${info} скачан без данных`);
         request2.send();
     })
 }
@@ -1722,55 +1772,55 @@ window.onload = getInstruments();
 /*Map end*/
 
 /*Колесо */
-document.getElementById('wheels').addEventListener('click',wheelsClick);
-function wheelsClick() {
-    document.getElementById('spin_result').innerText='';
-    document.getElementById('myTopnav').querySelectorAll('.active').forEach((el)=>el.classList.remove('active'));
-    document.getElementById('wheels').classList.add('active');
-    burgerMenu();
-    document.querySelectorAll('.main').forEach((el)=>el.classList.add('hide'));
-    document.getElementById('wheelFortune').classList.remove('hide');
-}
-document.getElementById('spin').addEventListener('click',spinWheel);
-let degree = 22.5 + 45*2*Math.random(0,20) + 45*Math.random() + 3600;
-function spinWheel() {
-    document.getElementById('spin_result').innerText='';
-    const container = document.querySelector(".container");
-    // degree = 22.5 + 45*2*Math.random(0,20) + 45*Math.random();
-    if (degree%22.5==0) degree -=5;
-    if (Math.floor((degree-22.5)/45)%2!==0) {
-        console.log('degree was', degree, 'vnesena popravka');
-        degree+=45;
-    }
-    container.style.transform = "rotate(" + degree + "deg)";
-    if((degree%360)<=22.5 || (degree%360)>337.5) {
-        document.querySelector('.one').classList.add('wheel_selected');
-        setTimeout(()=>{document.getElementById('spin_result').innerText=`Вы выиграли ${document.querySelector('.one').innerText}`;},5000)
-    } else if ((degree%360)<=337.5 && (degree%360)>292.5) {
-        document.querySelector('.two').classList.add('wheel_selected');
-        setTimeout(()=>{document.getElementById('spin_result').innerText=`Вы выиграли ${document.querySelector('.two').innerText}`;},5000)
-    } else if ((degree%360)<=292.5 && (degree%360)>247.5) {
-        document.querySelector('.three').classList.add('wheel_selected');
-        setTimeout(()=>{document.getElementById('spin_result').innerText=`Вы выиграли ${document.querySelector('.three').innerText}`;},5000)
-    } else if ((degree%360)<=247.5 && (degree%360)>202.5) {
-        document.querySelector('.four').classList.add('wheel_selected');
-        setTimeout(()=>{document.getElementById('spin_result').innerText=`Вы выиграли ${document.querySelector('.four').innerText}`;},5000)
-    } else if ((degree%360)<=202.5 && (degree%360)>157.5) {
-        document.querySelector('.five').classList.add('wheel_selected');
-        setTimeout(()=>{document.getElementById('spin_result').innerText=`Вы выиграли ${document.querySelector('.five').innerText}`;},5000)
-    } else if ((degree%360)<=157.5 && (degree%360)>112.5) {
-        document.querySelector('.six').classList.add('wheel_selected');
-        setTimeout(()=>{document.getElementById('spin_result').innerText=`Вы выиграли ${document.querySelector('.six').innerText}`;},5000)
-    } else if ((degree%360)<=112.5 && (degree%360)>67.5) {
-        document.querySelector('.seven').classList.add('wheel_selected');
-        setTimeout(()=>{document.getElementById('spin_result').innerText=`Вы выиграли ${document.querySelector('.seven').innerText}`;},5000)
-    } else if ((degree%360)<=67.5 && (degree%360)>22.5) {
-        document.querySelector('.eight').classList.add('wheel_selected');
-        setTimeout(()=>{document.getElementById('spin_result').innerText=`Вы выиграли ${document.querySelector('.eight').innerText}`;},5000)
-    }
-	degree += (22.5 + 45*2*Math.random(0,20) + 45*Math.random()+3600);
+// document.getElementById('wheels').addEventListener('click',wheelsClick);
+// function wheelsClick() {
+//     document.getElementById('spin_result').innerText='';
+//     document.getElementById('myTopnav').querySelectorAll('.active').forEach((el)=>el.classList.remove('active'));
+//     document.getElementById('wheels').classList.add('active');
+//     burgerMenu();
+//     document.querySelectorAll('.main').forEach((el)=>el.classList.add('hide'));
+//     document.getElementById('wheelFortune').classList.remove('hide');
+// }
+// document.getElementById('spin').addEventListener('click',spinWheel);
+// let degree = 22.5 + 45*2*Math.random(0,20) + 45*Math.random() + 3600;
+// function spinWheel() {
+//     document.getElementById('spin_result').innerText='';
+//     const container = document.querySelector(".container");
+//     // degree = 22.5 + 45*2*Math.random(0,20) + 45*Math.random();
+//     if (degree%22.5==0) degree -=5;
+//     if (Math.floor((degree-22.5)/45)%2!==0) {
+//         console.log('degree was', degree, 'vnesena popravka');
+//         degree+=45;
+//     }
+//     container.style.transform = "rotate(" + degree + "deg)";
+//     if((degree%360)<=22.5 || (degree%360)>337.5) {
+//         document.querySelector('.one').classList.add('wheel_selected');
+//         setTimeout(()=>{document.getElementById('spin_result').innerText=`Вы выиграли ${document.querySelector('.one').innerText}`;},5000)
+//     } else if ((degree%360)<=337.5 && (degree%360)>292.5) {
+//         document.querySelector('.two').classList.add('wheel_selected');
+//         setTimeout(()=>{document.getElementById('spin_result').innerText=`Вы выиграли ${document.querySelector('.two').innerText}`;},5000)
+//     } else if ((degree%360)<=292.5 && (degree%360)>247.5) {
+//         document.querySelector('.three').classList.add('wheel_selected');
+//         setTimeout(()=>{document.getElementById('spin_result').innerText=`Вы выиграли ${document.querySelector('.three').innerText}`;},5000)
+//     } else if ((degree%360)<=247.5 && (degree%360)>202.5) {
+//         document.querySelector('.four').classList.add('wheel_selected');
+//         setTimeout(()=>{document.getElementById('spin_result').innerText=`Вы выиграли ${document.querySelector('.four').innerText}`;},5000)
+//     } else if ((degree%360)<=202.5 && (degree%360)>157.5) {
+//         document.querySelector('.five').classList.add('wheel_selected');
+//         setTimeout(()=>{document.getElementById('spin_result').innerText=`Вы выиграли ${document.querySelector('.five').innerText}`;},5000)
+//     } else if ((degree%360)<=157.5 && (degree%360)>112.5) {
+//         document.querySelector('.six').classList.add('wheel_selected');
+//         setTimeout(()=>{document.getElementById('spin_result').innerText=`Вы выиграли ${document.querySelector('.six').innerText}`;},5000)
+//     } else if ((degree%360)<=112.5 && (degree%360)>67.5) {
+//         document.querySelector('.seven').classList.add('wheel_selected');
+//         setTimeout(()=>{document.getElementById('spin_result').innerText=`Вы выиграли ${document.querySelector('.seven').innerText}`;},5000)
+//     } else if ((degree%360)<=67.5 && (degree%360)>22.5) {
+//         document.querySelector('.eight').classList.add('wheel_selected');
+//         setTimeout(()=>{document.getElementById('spin_result').innerText=`Вы выиграли ${document.querySelector('.eight').innerText}`;},5000)
+//     }
+// 	degree += (22.5 + 45*2*Math.random(0,20) + 45*Math.random()+3600);
     
-}
+// }
 /*Конец колеса */
 
 

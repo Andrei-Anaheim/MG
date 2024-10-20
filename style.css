@@ -269,6 +269,16 @@ body {
     padding: 2px auto;
 }
 
+.posters_box {
+    display: flex;
+    justify-content: center;
+}
+.poster_img {
+    display: flex;
+    object-fit: cover;
+    
+}
+
 .map_box {
     display: flex;
     flex-direction: row;
@@ -342,8 +352,8 @@ body {
 .download {
     position: absolute;
     left: 92%;
-    top: 3%;
-    font: normal normal 30px/30px Arial;
+    top: 1%;
+    font: normal normal 15px/10px Arial;
     cursor: pointer;
     color: red;
     border-bottom: 4px solid red;

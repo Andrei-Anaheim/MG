@@ -13,7 +13,8 @@
 <body>
     <div class="topnav disabled" id="myTopnav">
         <li id="visits" class="active">Выезды</li>
-        <li id="plans" >Планы(WIP)</li>
+        <li id="posters">Шпаргалка(WIP)</li>
+        <!-- <li id="plans" >Планы(WIP)</li> -->
         <li id="maps" >Карта(WIP)</li>
         <li id="quantity">Потоки</li>
         <li id="generator">Генератор</li>
@@ -23,7 +24,7 @@
         <li id="iq200">IQ200</li>
         <li id="velocity">iChem Velocity</li>
         <li id="ax4030">AX-4030(WIP)</li>
-        <li id="wheels">Колесо (Тест)</li>
+        <!-- <li id="wheels">Колесо (Тест)</li> -->
         <li id="exit">Выход</li>
         <li class="icon" onclick="burgerMenu()">X</li>
     </div>
@@ -117,6 +118,20 @@
         </div>
     </div>
     <!-- Конец страницы выездов -->
+    <!-- Шпаргалка-->
+    <div id="postersPage" class="posters main hide">
+        <div class="question">
+            <p class="text">Выберите прибор</p>
+            <select class="select" id="instrument_type">
+                <option value="1" selected></option>
+                <option value="2">iChemVelocity</option>
+            </select>
+        </div>
+        <div class="posters_box" id="posters_box">
+        </div>
+        
+    </div>
+    <!-- Конец страницы шпаргалки -->
     <!-- Карта-->
     <div id="mapsPage" class="map main hide">
         <div class="map_box">
@@ -232,6 +247,7 @@
                 <option value="4">Diff800</option>
                 <option value="5">Clean800</option>
                 <option value="6">Ret800</option>
+                <option value="7">IQ200 C/F/C</option>
             </select>
         </div> 
         <p class="red_status"> *Данный генератор случайных штрих-кодов не несет смысловой нагрузки, все совпадения случайны</p>
