@@ -1038,7 +1038,7 @@ function VelocityCalculate() {
     const strips = Math.ceil((months*30.5*days_per_week/7*controls*instruments+potok+20*instruments*(calc_type<=2 ? months : 0))/100);
     const wash = Math.ceil((months*30.5*days_per_week/7*(20+controls)*instruments+potok)/850/2);
     const calibrator = Math.ceil(Math.ceil(months/3)*Math.ceil(instruments/3));
-    const control = calc_type <= 2 ? 8 : 6;
+    const control = calc_type <= 2 ? Math.ceil(8*months/12) : Math.ceil(6*months/12);
     const diluent = Math.ceil(months/12)*instruments;
     const cleanser = Math.ceil(months/12)*instruments;
     const table_length = 6;
@@ -1414,14 +1414,21 @@ function QRGeneratorCalculate() {
             date_plus8month.setMonth(date_plus8month.getMonth() + 7);
             date_plus8month.setDate(0);
             text.innerText = `IQ200: Годен до ${date_plus8month.toLocaleDateString("ru-RU")}`;
-            qr1 = `FO${year_number}${date_number>3?String((date_number-3)).padStart(3, '0'):"003"}G1123000000`;
-            qr2 = `PC${year_number}${date_number>3?String((date_number-3)).padStart(3, '0'):"003"}G1018000000`;
-            qr3 = `NC${year_number}${date_number>3?String((date_number-3)).padStart(3, '0'):"003"}G0000200000`;
-            qr4 = `CA${year_number}${date_number>3?String((date_number-3)).padStart(3, '0'):"003"}G1224000000`;
-            JsBarcode(`#qr_answer${document.getElementById('qr_box').children.length}_4`, `${qr4}`, {height:60});
-            JsBarcode(`#qr_answer${document.getElementById('qr_box').children.length}_3`, `${qr3}`, {height:60});
+            qr1 = `PC${year_number}${date_number>3?String((date_number-3)).padStart(3, '0'):"003"}G1018000000`;
+            qr2 = `NC${year_number}${date_number>3?String((date_number-3)).padStart(3, '0'):"003"}G0000200000`;
+            JsBarcode(`#qr_answer${document.getElementById('qr_box').children.length}_1`, `${qr1}`, {height:60, margin:25});
             JsBarcode(`#qr_answer${document.getElementById('qr_box').children.length}_2`, `${qr2}`, {height:60});
-            JsBarcode(`#qr_answer${document.getElementById('qr_box').children.length}_1`, `${qr1}`, {height:60});
+        } else if (sn==8) {
+            const date_number = Math.floor((new Date()-new Date(new Date().getFullYear(), 0, 0))/1000/60/60/24)
+            const year_number = String(new Date().getFullYear()).split("20")[1];
+            let date_plus8month = new Date();
+            date_plus8month.setMonth(date_plus8month.getMonth() + 7);
+            date_plus8month.setDate(0);
+            text.innerText = `IQ200: Годен до ${date_plus8month.toLocaleDateString("ru-RU")}`;
+            qr1 = `FO${year_number}${date_number>3?String((date_number-3)).padStart(3, '0'):"003"}G1123000000`;
+            qr2 = `CA${year_number}${date_number>3?String((date_number-3)).padStart(3, '0'):"003"}G1224000000`;
+            JsBarcode(`#qr_answer${document.getElementById('qr_box').children.length}_1`, `${qr1}`, {height:60, margin:25});
+            JsBarcode(`#qr_answer${document.getElementById('qr_box').children.length}_2`, `${qr2}`, {height:60});
         } else {
             document.getElementById('qr_box').removeChild(box);
         }
