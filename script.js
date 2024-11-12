@@ -276,7 +276,7 @@ function postersClick() {
 document.getElementById('instrument_type').addEventListener('change',PosterGenerator);
 function PosterGenerator() {
     let instrument_poster_value = document.getElementById('instrument_type').value;
-    let instrument_poster = document.getElementById('instrument_type').innerText;
+    let instrument_poster = document.getElementById('instrument_type').options[document.getElementById('instrument_type').selectedIndex].text;
     if (instrument_poster_value == 1) document.getElementById('posters_box').innerHTML = "";
     else document.getElementById('posters_box').innerHTML = `
         <div class="poster_img"><img width=${window.innerWidth-50}px src="${instrument_poster}_poster.png"></div>    
