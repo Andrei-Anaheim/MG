@@ -1135,9 +1135,9 @@ function GeneratorCalculate() {
 
     let password = 0;
     if (sn_length<5) {
-        password = base[0]+day_difference*daygap + month_diffenrence*monthgap - (-169+year_diffenrence)*yeargap;
+        password = base[0]+day_difference*daygap + month_diffenrence*monthgap - (-(year_diffenrence/365 ==0? 0 : year_diffenrence/365 ==1? 169:337)+year_diffenrence)*yeargap;
     } else {
-        password = Number(base[sn_length-1])+day_difference*daygap + month_diffenrence*monthgap - (-169+year_diffenrence)*yeargap;
+        password = Number(base[sn_length-1])+day_difference*daygap + month_diffenrence*monthgap - (-(year_diffenrence/365 ==0? 0 : year_diffenrence/365 ==1? 169:337)+year_diffenrence)*yeargap;
         for (let i=0; i<sn_length-4; i+=1) {
             password = Number(password) + Number(sdvig[i+4])*Number(symbol.indexOf(sn_arr[i+4]));
         }
