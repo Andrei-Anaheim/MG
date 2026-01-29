@@ -139,15 +139,15 @@ main { flex:1; display:flex; justify-content:center; align-items:flex-start; pad
     </div>
 
     <nav class="nav-icons">
-        <a href="/start.html"><i class="fa-solid fa-car"></i></a>
-        <a href="/calc.html"><i class="fa-solid fa-calculator"></i></a>
-        <a href="/generator.html"><i class="fa-solid fa-key"></i></a>
-        <a href="/barcode.html"><i class="fa-solid fa-barcode"></i></a>
-        <a href="/map.html"><i class="fa-solid fa-globe"></i></a>
-        <a href="/analyzers.html" class="active"><i class="fa-solid fa-book"></i></a>
-        <a href="/error.html"><i class="fa-solid fa-triangle-exclamation"></i></a>
-        <a href="/calendar.html"><i class="fa-regular fa-calendar"></i></a>
-        <a href="/devices.html"><i class="fa-solid fa-computer"></i></a>
+        <a href="start.html"><i class="fa-solid fa-car"></i></a>
+        <a href="calc.html"><i class="fa-solid fa-calculator"></i></a>
+        <a href="generator.html"><i class="fa-solid fa-key"></i></a>
+        <a href="barcode.html"><i class="fa-solid fa-barcode"></i></a>
+        <a href="map.html"><i class="fa-solid fa-globe"></i></a>
+        <a href="analyzers.html" class="active"><i class="fa-solid fa-book"></i></a>
+        <a href="error.html"><i class="fa-solid fa-triangle-exclamation"></i></a>
+        <a href="calendar.html"><i class="fa-regular fa-calendar"></i></a>
+        <a href="devices.html"><i class="fa-solid fa-computer"></i></a>
     </nav>
 
     <div class="header-right">
@@ -174,26 +174,26 @@ document.getElementById('logout').addEventListener('click', ()=>{
 
 // ===== ДАННЫЕ АНАЛИЗАТОРОВ С РАНДОМНЫМИ КАРТИНКАМИ =====
 const analyzers = [
-    {name:'DxH500', bg:'/assets/img/dxh500_button.png', link:'#'},
-    {name:'DxH600', bg:'/assets/img/dxh600_button.png', link:'#'},
-    {name:'DxH800', bg:'/assets/img/dxh800_button.png', link:'#'},
-    {name:'DxH900', bg:'/assets/img/dxh900_button.png', link:'#'},
-    {name:'iChem_Velocity', bg:'/assets/img/ichemvelocity_button.png', link:'#'},
-    {name:'IQ200', bg:'/assets/img/iq200_button.png', link:'#'},
-    {name:'AX-4030', bg:'/assets/img/ax4030_button.png', link:'#'},
-    {name:'BC6800Plus', bg:'/assets/img/bc6800plus_button.png', link:'#'},
-    {name:'BC6000/BC6200', bg:'/assets/img/bc6000_button.png', link:'#'},
-    {name:'BC700/BC720', bg:'/assets/img/bc700_button.png', link:'#'},
-    {name:'BC760/BC780', bg:'/assets/img/bc760_button.png', link:'#'},
-    {name:'SC-120', bg:'/assets/img/sc120_button.png', link:'#'},
-    {name:'MC-80', bg:'/assets/img/mc80_button.png', link:'#'},
-    {name:'CAL8000', bg:'/assets/img/cal8000_button.png', link:'#'},
-    {name:'BC20s/BC30s', bg:'/assets/img/bc30_button.png', link:'#'},
-    {name:'UA-5600', bg:'/assets/img/ua5600_button.png', link:'#'},
-    {name:'EH-2090', bg:'/assets/img/eh2090_button.png', link:'#'},
-    {name:'EU-5600', bg:'/assets/img/eu5600_button.png', link:'#'},
-    {name:'EU-5300', bg:'/assets/img/eu5300_button.png', link:'#'},
-    {name:'MT8000', bg:'/assets/img/mt8000_button.png', link:'#'}
+    {name:'DxH500', bg:'assets/img/dxh500_button.png', link:'#'},
+    {name:'DxH600', bg:'assets/img/dxh600_button.png', link:'#'},
+    {name:'DxH800', bg:'assets/img/dxh800_button.png', link:'#'},
+    {name:'DxH900', bg:'assets/img/dxh900_button.png', link:'#'},
+    {name:'iChem_Velocity', bg:'assets/img/ichemvelocity_button.png', link:'#'},
+    {name:'IQ200', bg:'assets/img/iq200_button.png', link:'#'},
+    {name:'AX-4030', bg:'assets/img/ax4030_button.png', link:'#'},
+    {name:'BC6800Plus', bg:'assets/img/bc6800plus_button.png', link:'#'},
+    {name:'BC6000/BC6200', bg:'assets/img/bc6000_button.png', link:'#'},
+    {name:'BC700/BC720', bg:'assets/img/bc700_button.png', link:'#'},
+    {name:'BC760/BC780', bg:'assets/img/bc760_button.png', link:'#'},
+    {name:'SC-120', bg:'assets/img/sc120_button.png', link:'#'},
+    {name:'MC-80', bg:'assets/img/mc80_button.png', link:'#'},
+    {name:'CAL8000', bg:'assets/img/cal8000_button.png', link:'#'},
+    {name:'BC20s/BC30s', bg:'assets/img/bc30_button.png', link:'#'},
+    {name:'UA-5600', bg:'assets/img/ua5600_button.png', link:'#'},
+    {name:'EH-2090', bg:'assets/img/eh2090_button.png', link:'#'},
+    {name:'EU-5600', bg:'assets/img/eu5600_button.png', link:'#'},
+    {name:'EU-5300', bg:'assets/img/eu5300_button.png', link:'#'},
+    {name:'MT8000', bg:'assets/img/mt8000_button.png', link:'#'}
 ];
 
 // ===== Генерация блоков =====
@@ -203,7 +203,7 @@ analyzers.forEach(a=>{
     div.className = 'analyzer-item';
     div.style.backgroundImage = `url('${a.bg}')`;
     div.textContent = a.name;
-    div.addEventListener('click', ()=>{ window.location.href=`/analyzer.html?type=${a.name}`; });
+    div.addEventListener('click', ()=>{ window.location.href=`analyzer.html?type=${a.name}`; });
     grid.appendChild(div);
 });
 </script>

@@ -262,15 +262,15 @@ header {
     </div>
 
     <nav class="nav-icons">
-        <a href="/visit.html" ><i class="fa-solid fa-car"></i></a>
-        <a href="/calc.html"><i class="fa-solid fa-calculator"></i></a>
-        <a href="/generator.html"><i class="fa-solid fa-key"></i></a>
-        <a href="/barcode.html"><i class="fa-solid fa-barcode"></i></a>
-        <a href="/map.html"><i class="fa-solid fa-globe"></i></a>
-        <a href="/analyzers.html" class="active"><i class="fa-solid fa-book"></i></a>
-        <a href="/error.html"><i class="fa-solid fa-triangle-exclamation"></i></a>
-        <a href="/calendar.html"><i class="fa-regular fa-calendar"></i></a>
-        <a href="/devices.html"><i class="fa-solid fa-computer"></i></a>
+        <a href="visit.html" ><i class="fa-solid fa-car"></i></a>
+        <a href="calc.html"><i class="fa-solid fa-calculator"></i></a>
+        <a href="generator.html"><i class="fa-solid fa-key"></i></a>
+        <a href="barcode.html"><i class="fa-solid fa-barcode"></i></a>
+        <a href="map.html"><i class="fa-solid fa-globe"></i></a>
+        <a href="analyzers.html" class="active"><i class="fa-solid fa-book"></i></a>
+        <a href="error.html"><i class="fa-solid fa-triangle-exclamation"></i></a>
+        <a href="calendar.html"><i class="fa-regular fa-calendar"></i></a>
+        <a href="devices.html"><i class="fa-solid fa-computer"></i></a>
     </nav>
 
     <div class="header-right">
@@ -399,7 +399,7 @@ function getAnalyzerInfo() {
             console.log(j)
             const container = document.createElement('div');
             container.className = 'gallery-item';
-            container.innerHTML = `<img src="/assets/img/${String(analyzer[index]).toLowerCase()}_${j+1}.jpg">`;
+            container.innerHTML = `<img src="assets/img/${String(analyzer[index]).toLowerCase()}_${j+1}.jpg">`;
             document.getElementById('gallery_box').appendChild(container);
         }
 
