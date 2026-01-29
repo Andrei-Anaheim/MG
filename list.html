@@ -455,12 +455,18 @@ function filterTable(){
     const d = filterDevice.value;
     const year = document.querySelector('.year-buttons button.active').dataset.year;
 
-    const filtered = arr.filter(r=>{
-        return (!s || r.specialist===s)
-            && (!i || r.institution===i)
-            && (!d || r.device===d)
-            && (!year || r.dateFrom.endsWith(year));
-    });
+    const filtered = arr.filter(r => {
+    return (!s || r.specialist === s)
+        && (!i || r.institution === i)
+        && (
+        !d ||
+        r.device
+            .split(',')
+            .map(x => x.trim())
+            .includes(d)
+        )
+        && (!year || r.dateFrom.endsWith(year));
+});
     renderTable(filtered);
 }
 
