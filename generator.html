@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>MG – Генератор паролей</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Иконки (Font Awesome) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            background: #f3f3f3;
+        }
+
+        /* ===== HEADER ===== */
+        header {
+            background: #111;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            padding: 10px 12px;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .header-left,
+        .header-right {
+            flex: 0 0 auto;
+        }
+
+        .home {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 20px;
+            font-weight: bold;
+            transition: transform 0.2s, color 0.2s;
+        }
+
+        .home:hover {
+            color: #4caf50;
+            transform: scale(1.05);
+        }
+
+        .nav-icons {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            gap: 4%;
+        }
+
+        .nav-icons a {
+            color: #aaa;
+            font-size: 14px;
+            text-decoration: none;
+            transition: color 0.2s, transform 0.2s;
+        }
+
+        .nav-icons a:hover {
+            color: #4caf50;
+            transform: scale(1.2);
+        }
+
+        .nav-icons a.active {
+            color: #4caf50;
+            transform: scale(1.2);
+        }
+
+        .logout-btn {
+            padding: 8px 14px;
+            background: #e74c3c;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        /* ===== MAIN ===== */
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Фон */
+        main::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: url('/assets/img/button3.jpg');
+            background-size: cover;
+            background-position: center;
+            z-index: 0;
+            filter: brightness(0.7);
+        }
+
+        /* ===== BLUR КОНТЕЙНЕР ===== */
+        .blur-container {
+            position: relative;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(30px);
+            padding: 32px 24px;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        .blur-container input {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 8px;
+            border: none;
+            margin-bottom: 16px;
+            font-size: 18px;
+        }
+
+        .blur-container button {
+            padding: 12px 20px;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            background: #4caf50;
+            color: #fff;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .blur-container button:hover {
+            background: #45a049;
+            transform: scale(1.05);
+        }
+
+        .password-output {
+            margin-top: 10px;
+            font-size: 26px;
+            text-align: center;
+            color: #fff;
+            word-break: normal;
+            overflow-wrap: break-word;
+            white-space: pre-wrap;
+        }
+
+        .password-output .validity {
+            display: inline-block;
+            max-width: 90%;
+            font-size: 12px;
+            margin-top: 6px;
+            color: #ddd;
+            word-break: normal;
+            overflow-wrap: break-word;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        /* ===== ПК ===== */
+@media (min-width: 900px) {
+    header {
+        height: 80px;
+        padding: 0 20px;
+    }
+
+    .nav-icons {
+        gap: 76px; /* увеличено расстояние между иконками */
+    }
+
+    .nav-icons a {
+        font-size: 22px;
+    }
+}
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-left">
+        <a href="start.html" class="home">
+            <i class="fa-solid fa-house"></i>
+            MG
+        </a>
+    </div>
+
+    <nav class="nav-icons">
+        <a href="/visit.html"><i class="fa-solid fa-car"></i></a>
+        <a href="/calc.html"><i class="fa-solid fa-calculator"></i></a>
+        <a href="/generator.html" class="active"><i class="fa-solid fa-key"></i></a>
+        <a href="/barcode.html"><i class="fa-solid fa-barcode"></i></a>
+        <a href="/map.html"><i class="fa-solid fa-globe"></i></a>
+        <a href="/analyzers.html"><i class="fa-solid fa-book"></i></a>
+        <a href="/error.html"><i class="fa-solid fa-triangle-exclamation"></i></a>
+        <a href="/calendar.html"><i class="fa-regular fa-calendar"></i></a>
+        <a href="/devices.html"><i class="fa-solid fa-computer"></i></a>
+    </nav>
+
+    <div class="header-right">
+        <button class="logout-btn" id="logout">Выход</button>
+    </div>
+</header>
+
+<main>
+    <div class="blur-container">
+        <input type="text" id="computerName" placeholder="Введите имя компьютера" />
+        <button id="generateBtn">Сгенерировать пароль</button>
+        <div class="password-output" id="passwordOutput"></div>
+    </div>
+</main>
+
+<script>
+    // Проверка авторизации
+    if (localStorage.getItem("isLoggedIn") !== "true") {
+        window.location.href = "index.html";
+    }
+
+    // Выход
+    document.getElementById("logout").addEventListener("click", () => {
+        localStorage.removeItem("isLoggedIn");
+        localStorage.removeItem("user");
+        window.location.href = "index.html";
+    });
+
+    // Генерация пароля
+    function generatePassword(sn) {
+        // Простая генерация пароля (можно усложнить)
+    const symbol=['!','"','#','$','%','&',"'",'(',')','*','+',',','-','.','/','0','1','2','3','4','5','6','7','8','9',':',';','<','=','>','?','@','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','[',"\\",']','^','_','`','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','{','|','}','~'];
+    let sn_arr = sn.split('');
+    if (sn_arr.length >11) sn_arr=sn_arr.slice(0,11);
+    const sn_length = sn_arr.length;
+    const sdvig = [0,0,0,0,1771561,161051,14641,1331,121,11,1];
+    const base = [981176888,981176888,981176888,981176888,1039638401,1044953084,1045436237,1045480160,1045484153,1045484516,1045484549];
+    const daygap = 28561;
+    const monthgap = 28561*13; /* Требуется проверка точно ли перескок в 13 в последующие месяцы. И что с перескоком по году */
+    const yeargap = 28561;
+    const baseday = new Date ('2023/01/29');
+    const day_difference = Math.floor(Math.abs(new Date() - baseday)/1000/60/60/24);
+    const month_diffenrence = new Date().getMonth()/*+(new Date().getFullYear()-2023)*12*/;
+    const year_diffenrence = (new Date().getFullYear()-2023)*365;
+
+    let password = 0;
+    if (sn_length<5) {
+        password = base[0]+day_difference*daygap + month_diffenrence*monthgap - (-(year_diffenrence/365 ==0? 0 : year_diffenrence/365 ==1? 169:year_diffenrence/365 ==2? 337:506)+year_diffenrence)*yeargap;
+    } else {
+        password = Number(base[sn_length-1])+day_difference*daygap + month_diffenrence*monthgap - (-(year_diffenrence/365 ==0? 0 : year_diffenrence/365 ==1? 169:year_diffenrence/365 ==2? 337:506)+year_diffenrence)*yeargap;
+        for (let i=0; i<sn_length-4; i+=1) {
+            password = Number(password) + Number(sdvig[i+4])*Number(symbol.indexOf(sn_arr[i+4]));
+        }
+    } 
+    const final_result = password.toString(16).toLowerCase();
+    return final_result
+    }
+
+    document.getElementById("generateBtn").addEventListener("click", () => {
+        const name = document.getElementById("computerName").value.trim();
+        const password = generatePassword(name);
+
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('ru-RU');
+
+        document.getElementById("passwordOutput").innerHTML = `
+    <div>Пароль: <strong>${password}</strong></div>
+    <div class="validity">
+        <div>Пароль действителен ${dateStr}</div>
+        <div>Применяется для анализаторов DxH500, DxH600, DxH800 и станции Iris</div>
+    </div>
+`;
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>MG – Immune</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    background: #f3f3f3;
+}
+
+/* ===== HEADER ===== */
+header {
+    background: #111;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.header-left,
+.header-right {
+    flex: 0 0 auto;
+}
+
+.home {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: bold;
+    transition: transform 0.2s, color 0.2s;
+}
+
+/* Анимация наведения на MG */
+.home:hover {
+    color: #4caf50;
+    transform: scale(1.05);
+}
+
+.nav-icons {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    gap: 4%; /* увеличено расстояние между иконками на ПК */
+}
+
+.nav-icons a {
+    color: #aaa;
+    font-size: 14px;
+    text-decoration: none;
+    transition: color 0.2s, transform 0.2s;
+}
+
+/* Анимация наведения на иконки */
+.nav-icons a:hover {
+    color: #4caf50;
+    transform: scale(1.2);
+}
+
+.nav-icons a.active {
+    color: #4caf50;
+    transform: scale(1.2);
+}
+
+.logout-btn {
+    padding: 8px 14px;
+    background: #e74c3c;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+/* ===== MAIN ===== */
+main {
+    flex:1;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:16px;
+    overflow:auto;
+    background-image: url('/assets/img/button12.jpg');
+    background-size: cover;
+}
+
+/* ===== FORM CONTAINER ===== */
+.form-container {
+    width:100%;
+    max-width:1100px;
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(40px);
+    border-radius:16px;
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+}
+
+/* ===== FORM ELEMENTS ===== */
+.form-container label {
+    font-weight:bold;
+    margin-bottom:4px;
+    display:block;
+    font-weight:600;
+    color:#111;
+}
+.form-container input,
+.form-container select,
+.form-container textarea {
+    width:100%;
+    padding:8px 10px;
+    border-radius:8px;
+    border:none;
+    font-size:16px;
+}
+
+/* ===== TEXTAREAS ===== */
+.flow-table {
+    margin-top:12px;
+    overflow-x:auto;
+    border-color: #111;
+    border-radius: 2px;
+}
+
+.flow-table thead {
+    background: rgba(5, 5, 5, 0.5);
+    font-weight:600;
+    color: white;
+}
+
+/* ===== FORM ROWS ===== */
+.form-row { flex:1 1 100%; display:flex; flex-wrap:wrap; gap:12px; }
+
+.form-row .half { flex:1 1 calc(50% - 12px); }
+.form-row .third { flex:1 1 calc(33.33% - 12px); }
+.form-row .full { flex:1 1 100%; }
+
+/* ===== BUTTONS ===== */
+.button-row {
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+}
+
+.button-row button {
+    flex:1;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:16px;
+    color:#fff;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.calc-btn { background:#4caf50; }
+.calc-btn:hover { background:#45a049; transform: scale(1.03); }
+
+.clear-form-btn { background:#ff9800; }
+.clear-form-btn:hover { background:#fb8c00; }
+
+.clear-result-btn { background:#e74c3c; }
+.clear-result-btn:hover { background:#d84335; }
+
+/* ===== TABLE ===== */
+.result-table {
+    margin-top:12px;
+    overflow-x:auto;
+}
+
+table {
+    width:100%;
+    border-collapse:collapse;
+    font-size:14px;
+}
+
+th, td {
+    padding:8px;
+    border-bottom:1px solid rgba(0,0,0,0.1);
+    text-align:center;
+}
+
+th {
+    background: rgba(0,0,0,0.05);
+    font-weight:600;
+}
+
+.red_status {
+    font-weight: 700;
+    color: red;
+    background-color: #fff;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.hide {
+    display:none;
+}
+
+/* ===== MOBILE ===== */
+@media(max-width:700px){
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+@media (min-width: 900px) {
+    header {
+        height: 80px;
+        padding: 0 20px;
+    }
+
+    .nav-icons {
+        gap: 76px; /* увеличено расстояние между иконками */
+    }
+
+    .nav-icons a {
+        font-size: 22px;
+    }
+}
+</style>
+</head>
+<body>
+
+<header>
+    <div class="header-left">
+        <a href="/start.html" class="home"><i class="fa-solid fa-house"></i>MG</a>
+    </div>
+
+    <nav class="nav-icons">
+        <a href="/visit.html"><i class="fa-solid fa-car"></i></a>
+        <a href="/calc.html" class="active"><i class="fa-solid fa-calculator"></i></a>
+        <a href="/generator.html"><i class="fa-solid fa-key"></i></a>
+        <a href="/barcode.html"><i class="fa-solid fa-barcode"></i></a>
+        <a href="/map.html"><i class="fa-solid fa-globe"></i></a>
+        <a href="/analyzers.html"><i class="fa-solid fa-book"></i></a>
+        <a href="/error.html"><i class="fa-solid fa-triangle-exclamation"></i></a>
+        <a href="/calendar.html"><i class="fa-regular fa-calendar"></i></a>
+        <a href="/devices.html"><i class="fa-solid fa-computer"></i></a>
+    </nav>
+
+    <div class="header-right">
+        <button class="logout-btn" id="logout">Выход</button>
+    </div>
+</header>
+
+<main>
+<div class="form-container">
+
+    <div class="form-row">
+        <div class="half">
+            <label>Учреждение</label>
+            <input type="text" id="institution">
+        </div>
+        <div class="half">
+            <label>№ приборов</label>
+            <input type="number" id="stations" value="1">
+        </div>
+    </div>
+
+    <!-- НОВЫЙ БЛОК -->
+    <div class="form-row full">
+        <div class="full">
+            <label>Поток на число месяцев</label>
+            <input type="number" id="flowMonths" value="12">
+        </div>
+    </div>
+
+    <!-- ТАБЛИЦА ТЕСТ / ПОТОК -->
+    <div class="form-row full">
+        <div class="full">
+            <p>Поток по тестам</p>
+
+            <table class="flow-table">
+                <thead>
+                    <tr>
+                        <th style="width:30%">Тест</th>
+                        <th>Поток</th>
+                        <th style="width:30%">Тест</th>
+                        <th>Поток</th>
+                    </tr>
+                </thead>
+                <tbody id="testsFlow">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="half">
+            <label>Рабочих дней в неделе</label>
+            <input type="number" id="workDays" value="5" max="7" min="1">
+        </div>
+
+        <div class="half">
+            <label>Подсчет на месяцев</label>
+            <input type="number" id="months" value="12">
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="half">
+            <label>Прибор</label>
+            <select id="device">
+                <option value="DxI">DxI800</option>
+                <option value="Access2">Access2</option>
+            </select>
+        </div>
+        <div class="half">
+            <label>% повторов</label>
+            <input type="number" id="repeat" value="0">
+        </div>
+    </div>
+
+    <p class="red_status" id="confirmation_status"></p>
+
+    <div class="button-row">
+        <button class="calc-btn" id="calcBtn">Рассчитать</button>
+        <button class="clear-form-btn" id="clearFormBtn">Очистить форму</button>
+        <button class="clear-result-btn" id="clearResultBtn">Очистить результат</button>
+        <button class="calc-btn hide" id="copyExcel">Скопировать таблицу в Excel</button>
+    </div>
+
+    <div class="result-table" id="result"></div>
+
+</div>
+</main>
+
+<script>
+// ===== AUTH =====
+if(localStorage.getItem('isLoggedIn') !== 'true'){
+    window.location.href = 'index.html';
+}
+document.getElementById('logout').onclick = ()=>{
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('user');
+    window.location.href = 'index.html';
+};
+
+function drawTestsList() {
+    const tests = ['Свободный Т4',
+'Свободный Т3',
+'Общий Т3',
+'Общий Т4',
+'АТПО',
+'ТГ',
+'АТГ',
+'ТирЗах',
+'ТТГ',
+'B12',
+'Фолат',
+'Ферритин',
+'АТВФ',
+'ЭПО',
+'рТФР',
+'Тропонин',
+'Дигоксин',
+'ККМВ',
+'Миоглобин',
+'Общий β-ХГЧ',
+'ЛГ',
+'ФСГ',
+'Пролактин',
+'Эстрадиол',
+'Прогестерон',
+'Тестостерон',
+'Эстриол',
+'ДГЭА-S',
+'Ингибин А',
+'PAPP-A',
+'ГСПГ',
+'ПТГ',
+'СТГ',
+'anti-HAV',
+'anti-HAV-IgM',
+'Anti-HBc',
+'Anti-HBc-IgM',
+'Anti-HBs',
+'HBs',
+'HCV-Ab-V3',
+'ВИЧ',
+'Краснуха АТ-IgG',
+'Краснуха АТ-IgM',
+'Токсоплазма АТ-IgM',
+'Токсоплазма АТ-IgG',
+'ЦМВ-АТ-IgG',
+'ЦМВ-АТ-IgM',
+'РЭА',
+'АФП',
+'ПСА',
+'Свободный ПСА',
+'про-ПСА',
+'СА-125',
+'CA-15-3',
+'CA-19-9',
+'Инсулин',
+'Кортизол',
+'ИЛ6',
+'С-пептид',
+'ПКТ',
+'АМГ',
+'25-ОН Вит.D']
+for (let i=0;i<Math.ceil(tests.length/2); i+=1) {
+    let tr = document.createElement('tr');
+    if (Math.ceil(tests.length/2) == tests.length/2 || i<Math.floor(tests.length/2)) tr.innerHTML = `<td>${tests[i]}</td><td><input id="${tests[i]}" type="number"></td><td>${tests[i+Math.ceil(tests.length/2)]}</td><td><input id="${tests[i+Math.ceil(tests.length/2)]}" type="number"></td>`;
+    else tr.innerHTML = `<td>${tests[i]}</td><td><input id="${tests[i]}" type="number"></td><td></td><td></td>`
+    document.getElementById('testsFlow').appendChild(tr)
+}
+}
+window.onload = drawTestsList();
+const immunoTable = [];
+let activeTest = [];
+function getImmunoReagents() {
+    const url = `https://docs.google.com/spreadsheets/d/16ABEN54Ykbej-PhrbBjGlaHSXzNbD4PA8ecbpWc5QHQ/gviz/tq?gid=1944396601`;
+    fetch(url)
+    .then(res => res.text())
+    .then(rep => {
+        const data2 = JSON.parse(rep.substr(47).slice(0,-2));
+        console.log(data2)
+        const length = data2.table.rows.length;
+        for (let i=0; i<length; i+=1) {const obj = {
+                catalog: data2.table.rows[i].c[0]?data2.table.rows[i].c[0].v:"",
+                desc: data2.table.rows[i].c[1]?data2.table.rows[i].c[1].v:"",
+                noNDS: data2.table.rows[i].c[3]?Number(data2.table.rows[i].c[3].v):"",
+                NDS: data2.table.rows[i].c[4]? data2.table.rows[i].c[4].v:"",
+                linear:data2.table.rows[i].c[6]? data2.table.rows[i].c[6].v: "",
+                withNDS:data2.table.rows[i].c[7]? Number(data2.table.rows[i].c[7].v):"",
+                panel: data2.table.rows[i].c[8]? data2.table.rows[i].c[8].v:"",
+                type: data2.table.rows[i].c[9]? data2.table.rows[i].c[9].v:"",
+                testsMonth: 0,
+                testsPeriod: 0,
+                quantity: 0,
+                price: 0
+
+            };
+
+        immunoTable.push(obj);
+        }
+    })
+    
+}
+window.onload = getImmunoReagents();
+let filledCount = 0;
+let sum = 0;
+let sumForDiluentA = 0;
+let totalPrice = 0;
+let diluentAList = [
+'B12',
+'Ферритин',
+'ЭПО',
+'Тропонин',
+'ККМВ',
+'Миоглобин',
+'Общий β-ХГЧ',
+'ЛГ',
+'ФСГ',
+'Пролактин',
+'Ингибин А',
+'ПТГ',
+'СТГ',
+'АФП',
+'ПСА',
+'СА-125',
+'CA-15-3',
+'CA-19-9',
+'Инсулин',
+'ИЛ6',
+'С-пептид',
+'АМГ'];
+let specialControlList = ['АТПО','АТГ','ЭПО','ПТГ','С-пептид','25-ОН Вит.D'];
+let oncoPanelControl = ['РЭА','АФП','ПСА','Свободный ПСА','про-ПСА','СА-125','CA-15-3','CA-19-9'];
+let infectionPanel = ['anti-HAV','anti-HAV-IgM','Anti-HBc','Anti-HBc-IgM','Anti-HBs','HBs','HCV-Ab-V3','ВИЧ','Краснуха АТ-IgG','Краснуха АТ-IgM','Токсоплазма АТ-IgM','Токсоплазма АТ-IgG','ЦМВ-АТ-IgG','ЦМВ-АТ-IgM'];
+let filterDiluentA=[];
+function checkLogic() {
+    let criticalError = 0;
+    filledCount = 0;
+    sum = 0;
+    const device = document.getElementById('device');
+    const stations = document.getElementById('stations');
+    const flowMonths = document.getElementById('flowMonths');
+    const alarm = document.getElementById('confirmation_status');
+    const days = document.getElementById('workDays');
+    const months = document.getElementById('months');
+    alarm.innerText = '';
+    const repeat = Number((document.getElementById('repeat').value)/100)
+    const inputs = document.querySelectorAll('#testsFlow input');
+    const values = [];
+    inputs.forEach(input => {
+        values.push(Number(input.value)*(1+repeat));
+        if (input.value != "") activeTest.push(input.id)
+        if (input.value != "" && diluentAList.indexOf(input.id)!= -1) filterDiluentA.push(Number(input.value)*(1+repeat))
+    });
+    
+    filledCount = values.filter(v => v !== ""&&v != 0).length;
+    const negValues = values.filter(v => Number(v) < 0).length;
+    sum = values.reduce((a, b) => Number(a) + Number(b), 0);
+    sumForDiluentA = filterDiluentA.reduce((a, b) => Number(a) + Number(b), 0);
+    if (Number(filledCount == 0)) alarm.innerHTML = `Не указаны потоки. Проверьте правильность заполнения таблицы`
+    else if (negValues > 0) alarm.innerHTML = `Проверьте правильность заполнения годовых потоков`
+    else if (!Number(days.value)||Number(days.value)>7||Number(days.value)<1) alarm.innerHTML = `Проверьте правильность заполнения рабочих дней в неделе`
+    else if (!Number(flowMonths.value)||Number(flowMonths.value)<1) alarm.innerHTML = `Проверьте правильность заполнения количества месяцев на которые указаны потоки`
+    else if (!Number(months.value)||Number(months.value)<1) alarm.innerHTML = `Проверьте правильность заполнения количества месяцев для подсчета`
+    else if (!Number(stations.value)) alarm.innerHTML = `Проверьте правильность заполнения количества приборов`
+    
+    if(filledCount == 0 || negValues > 0 ||sum == 0 || !Number(days.value) ||Number(days.value)>7||Number(days.value)<1|| !Number(flowMonths.value)||Number(flowMonths.value)<1|| !Number(months.value)||Number(months.value)<1|| !Number(stations.value)) criticalError = 1;
+    return criticalError;
+}
+
+// ===== CALC =====
+const resultDiv = document.getElementById('result');
+
+document.getElementById('calcBtn').onclick = ()=>{
+    document.getElementById('copyExcel').classList.remove('hide');
+    activeTest = [];
+    filterDiluentA=[];
+    const criticalError = checkLogic();
+    const device = document.getElementById('device');
+    const flowMonths = Number(document.getElementById('flowMonths').value);
+    const days = Number(document.getElementById('workDays').value);
+    const months = Number(document.getElementById('months').value);
+    const stations = Number(document.getElementById('stations').value);
+    const repeat = Number((document.getElementById('repeat').value)/100)
+    const rashodka = immunoTable.filter((item)=>item.panel == 'Расходка'&&(item.linear == device.value || item.linear == 'Access и UniCel DxI'))
+    if (criticalError == 0) {
+        
+        let html = `
+        <table>
+            <thead>
+                <tr>
+                    <th>Кат. номер</th>
+                    <th>Описание</th>
+                    <th>Линейка</th>
+                    <th>Цена (без НДС)</th>
+                    <th>НДС, %</th>
+                    <th>Модель анализатора</th>
+                    <th>Цена (с НДС)</th>
+                    <th>Поток, 1 месяц</th>
+                    <th>Поток, ${months} месяц(ев)</th>
+                    <th>Количество</th>
+                    <th>Цена</th>
+                </tr>
+            </thead>
+            <tbody id="resultKP">
+        `;
+        console.log(activeTest)
+        for (let i=0;i<activeTest.length;i+=1) {
+            testsMonth = Math.ceil(Number(document.getElementById(`${activeTest[i]}`).value) / Number(flowMonths)*(1+repeat))
+            console.log(immunoTable)
+            const filter = immunoTable.filter((item)=>item.panel == activeTest[i]&&(item.linear == device.value || item.linear == 'Access и UniCel DxI'))
+            console.log(filter, activeTest[i],device.value)
+            const testPMemory = Math.floor(Number(document.getElementById(`${activeTest[i]}`).value) / Number(flowMonths)*months*(1+repeat));
+            for (let j=0; j<filter.length; j+=1) {
+                let testsM = j==0 ? testsMonth : '';
+                let testsP = j==0 ? testPMemory : '';
+                let size = activeTest[i]=="ТТГ"?200:100;
+                let quantityFinal = j==0 ? Math.ceil(testsP / size): 1+Math.min((testPMemory<1000 ? 0 : Math.ceil(testPMemory/10000)) , 6);
+                console.log(filter[j].desc, quantityFinal)
+                totalPrice += Math.round(100*Number(filter[j].withNDS)*Number(quantityFinal))/100;
+                html += `
+             <tr>
+                  <td>${filter[j].catalog}</td>
+                    <td>${filter[j].desc}</td>
+                    <td>${filter[j].linear}</td>
+                    <td>${filter[j].noNDS}</td>
+                    <td>${filter[j].NDS}</td>
+                    <td>${device.value}</td>
+                    <td>${filter[j].withNDS}</td>
+                    <td>${testsM}</td>
+                    <td>${testsP}</td>
+                    <td>${quantityFinal}</td>
+                    <td>${Math.round(100*Number(filter[j].withNDS)*Number(quantityFinal))/100}</td>
+             </tr>`;
+                
+            }
+        }
+        console.log(filledCount, sum)
+        let extra = [
+            {code: "C62616",value: 1},{code: "81904",value: Math.ceil(sum/40000+216*filledCount/80000+1560*filledCount/80000)},{code: "81906",value: Math.ceil(sum/2400+144*filledCount/2400+18.6+780*filledCount/2400)},{code: "81901",value: Math.ceil(sum*2/98/16+216*filledCount/98/16+3.1+1560*filledCount/98/16)},{code: "386167",value: Math.ceil(sum*2/10000+216*filledCount/10000+3.1+1560*filledCount/10000)},{code: "81902",value: Math.ceil(72*filledCount/1000+1.8+2)},{code: "A16792",value: Math.ceil(sum/400 + 144*filledCount/400+29+780*filledCount/800)},{code: "A16793",value: Math.ceil(sum/500 + 144*filledCount/500+29+780*filledCount/1000)},{code: "81910",value: 8},{code: "81911",value: 1},{code: "81912",value: 1},{code: "81908",value: 1+Math.floor(sumForDiluentA/100000)}]
+        for (let j=0; j<rashodka.length; j+=1) {
+            const found = extra.find(item => item.code === rashodka[j].catalog);
+            const value = found ? found.value : null;
+            totalPrice += Math.round(100*Number(rashodka[j].withNDS)*Number(value))/100
+            html += `
+             <tr>
+                  <td>${rashodka[j].catalog}</td>
+                    <td>${rashodka[j].desc}</td>
+                    <td>${rashodka[j].linear}</td>
+                    <td>${rashodka[j].noNDS}</td>
+                    <td>${rashodka[j].NDS}</td>
+                    <td>${device.value}</td>
+                    <td>${rashodka[j].withNDS}</td>
+                    <td></td>
+                    <td></td>
+                    <td>${value}</td>
+                    <td>${Math.round(100*Number(rashodka[j].withNDS)*Number(value))/100}</td>
+             </tr>`;
+        }
+        html += `<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>Итого:</td><td>${Math.round(totalPrice*100)/100}</td></tr>`
+        html += '</tbody></table>';
+        resultDiv.innerHTML = html;
+    }
+    
+};
+
+
+document.getElementById('clearFormBtn').onclick = ()=>{
+    document.querySelectorAll('.form-grid input').forEach(inp=>{
+        if(inp.id !== 'months' && inp.id !== "stations" && inp.id !== "repeat") inp.value = '';
+        if(inp.id == "repeat") inp.value = 0;
+        if(inp.id == "months") inp.value = 12;
+        if(inp.id == "stations") inp.value = 1;
+    });
+    document.querySelectorAll('#testsFlow input').forEach(inp=>{
+        inp.value = '';
+    });
+    document.getElementById('device').selectedIndex = 0;
+};
+
+
+document.getElementById('clearResultBtn').onclick = ()=>{
+    resultDiv.innerHTML = '';
+    document.getElementById('copyExcel').classList.add('hide');
+};
+
+document.getElementById('copyExcel').onclick = ()=>{
+    const rows = document.querySelectorAll("#resultKP tr");
+    const months = document.getElementById('months');
+    let text = "";
+
+    // Заголовки
+    text += `Кат. номер\tОписание\tЛинейка\tЦена (без НДС)\tНДС, %\tМодель анализатора\tЦена (с НДС)\tПоток, 1 месяц\tПоток, ${months} месяц(ев)\tКоличество\tЦена\n`;
+
+    rows.forEach(row => {
+        const cells = row.querySelectorAll("td");
+
+        const rowText = Array.from(cells)
+            .map(cell => cell.textContent.trim())
+            .join("\t");
+
+        text += rowText + "\n";
+    })
+    navigator.clipboard.writeText(text)   
+};
+</script>
+
+</body>
+</html>

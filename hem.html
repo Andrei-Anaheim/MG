@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>MG – Urine</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    background: #f3f3f3;
+}
+
+/* ===== HEADER ===== */
+header {
+    background: #111;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.header-left,
+.header-right {
+    flex: 0 0 auto;
+}
+
+.home {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: bold;
+    transition: transform 0.2s, color 0.2s;
+}
+
+/* Анимация наведения на MG */
+.home:hover {
+    color: #4caf50;
+    transform: scale(1.05);
+}
+
+.nav-icons {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    gap: 4%; /* увеличено расстояние между иконками на ПК */
+}
+
+.nav-icons a {
+    color: #aaa;
+    font-size: 14px;
+    text-decoration: none;
+    transition: color 0.2s, transform 0.2s;
+}
+
+/* Анимация наведения на иконки */
+.nav-icons a:hover {
+    color: #4caf50;
+    transform: scale(1.2);
+}
+
+.nav-icons a.active {
+    color: #4caf50;
+    transform: scale(1.2);
+}
+
+.logout-btn {
+    padding: 8px 14px;
+    background: #e74c3c;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+/* ===== MAIN ===== */
+main {
+    flex:1;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:16px;
+    overflow:auto;
+    background-image: url('/assets/img/button12.jpg');
+    background-size: cover;
+}
+
+/* ===== FORM CONTAINER ===== */
+.form-container {
+    width:100%;
+    max-width:1100px;
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(40px);
+    border-radius:16px;
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+}
+
+/* ===== FORM GRID ===== */
+.form-grid {
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap:12px;
+}
+
+.form-group {
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+}
+
+.form-group label {
+    font-weight:600;
+    color:#111;
+}
+
+.form-group input,
+.form-group select {
+    padding:10px 12px;
+    border-radius:8px;
+    border:none;
+    font-size:15px;
+}
+
+/* ===== BUTTONS ===== */
+.button-row {
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+}
+
+.button-row button {
+    flex:1;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:16px;
+    color:#fff;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.calc-btn { background:#4caf50; }
+.calc-btn:hover { background:#45a049; transform: scale(1.03); }
+
+.clear-form-btn { background:#ff9800; }
+.clear-form-btn:hover { background:#fb8c00; }
+
+.clear-result-btn { background:#e74c3c; }
+.clear-result-btn:hover { background:#d84335; }
+
+/* ===== TABLE ===== */
+.result-table {
+    margin-top:12px;
+    overflow-x:auto;
+}
+
+table {
+    width:100%;
+    border-collapse:collapse;
+    font-size:14px;
+}
+
+th, td {
+    padding:8px;
+    border-bottom:1px solid rgba(0,0,0,0.1);
+    text-align:center;
+}
+
+th {
+    background: rgba(0,0,0,0.05);
+    font-weight:600;
+}
+
+.red_status {
+    font-weight: 700;
+    color: red;
+    background-color: #fff;
+    text-align: center;
+    border-radius: 5px;
+}
+
+/* ===== MOBILE ===== */
+@media(max-width:700px){
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+@media (min-width: 900px) {
+    header {
+        height: 80px;
+        padding: 0 20px;
+    }
+
+    .nav-icons {
+        gap: 76px; /* увеличено расстояние между иконками */
+    }
+
+    .nav-icons a {
+        font-size: 22px;
+    }
+}
+</style>
+</head>
+<body>
+
+<header>
+    <div class="header-left">
+        <a href="/start.html" class="home"><i class="fa-solid fa-house"></i>MG</a>
+    </div>
+
+    <nav class="nav-icons">
+        <a href="/visit.html"><i class="fa-solid fa-car"></i></a>
+        <a href="/calc.html" class="active"><i class="fa-solid fa-calculator"></i></a>
+        <a href="/generator.html"><i class="fa-solid fa-key"></i></a>
+        <a href="/barcode.html"><i class="fa-solid fa-barcode"></i></a>
+        <a href="/map.html"><i class="fa-solid fa-globe"></i></a>
+        <a href="/analyzers.html"><i class="fa-solid fa-book"></i></a>
+        <a href="/error.html"><i class="fa-solid fa-triangle-exclamation"></i></a>
+        <a href="/calendar.html"><i class="fa-regular fa-calendar"></i></a>
+        <a href="/devices.html"><i class="fa-solid fa-computer"></i></a>
+    </nav>
+
+    <div class="header-right">
+        <button class="logout-btn" id="logout">Выход</button>
+    </div>
+</header>
+
+<main>
+<div class="form-container">
+
+    <div class="form-grid">
+        <div class="form-group">
+            <label>Учреждение</label>
+            <input type="text" id="institution">
+        </div>
+
+        <div class="form-group">
+            <label>№ станций / приборов</label>
+            <input type="number" id="stations" value="1">
+        </div>
+
+        <div class="form-group">
+            <label>CBC</label>
+            <input type="number" id="CBC">
+        </div>
+
+        <div class="form-group">
+            <label>CD</label>
+            <input type="number" id="CD">
+        </div>
+        <div class="form-group">
+            <label>CDR</label>
+            <input type="number" id="CDR">
+        </div>
+
+        <div class="form-group">
+            <label>CR</label>
+            <input type="number" id="CR">
+        </div>
+        <div class="form-group">
+            <label>Ret</label>
+            <input type="number" id="Ret">
+        </div>
+
+        <div class="form-group">
+            <label>СОЭ</label>
+            <input type="number" id="ESR">
+        </div>
+
+        <div class="form-group">
+            <label>Рабочих дней в неделе</label>
+            <input type="number" id="workDays" value="5" max="7" min="1">
+        </div>
+
+        <div class="form-group">
+            <label>Подсчет на месяцев</label>
+            <input type="number" id="months" value="12">
+        </div>
+
+        <div class="form-group">
+            <label>Прибор</label>
+            <select id="device">
+                <option value="1">DxH500</option>
+                <option value="2">DxH600/800/900</option>
+                <option value="3">BC6000</option>
+                <option value="4">BC6200</option>
+                <option value="5">BC6800Plus</option>
+                <option value="6">BC700/760</option>
+                <option value="7">BC720/780</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>% повторов</label>
+            <input type="number" id="repeat" value="0">
+        </div>
+    </div>
+    <p class="red_status" id="confirmation_status"></p>
+    <div class="button-row">
+        <button class="calc-btn" id="calcBtn">Рассчитать</button>
+        <button class="clear-form-btn" id="clearFormBtn">Очистить форму</button>
+        <button class="clear-result-btn" id="clearResultBtn">Очистить результат</button>
+    </div>
+
+    <div class="result-table" id="result"></div>
+
+</div>
+</main>
+
+<script>
+// ===== AUTH =====
+if(localStorage.getItem('isLoggedIn') !== 'true'){
+    window.location.href = 'index.html';
+}
+document.getElementById('logout').onclick = ()=>{
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('user');
+    window.location.href = 'index.html';
+};
+
+function checkLogic() {
+    let criticalError = 0;
+    const device = document.getElementById('device');
+    const stations = document.getElementById('stations');
+    const CBC = document.getElementById('CBC');
+    const CD = document.getElementById('CD');
+    const CDR = document.getElementById('CDR');
+    const CR = document.getElementById('CR');
+    const Ret = document.getElementById('Ret');
+    const ESR = document.getElementById('ESR');
+    const alarm = document.getElementById('confirmation_status');
+    const days = document.getElementById('workDays');
+    const months = document.getElementById('months');
+    alarm.innerText = '';
+    if (Number(CBC.value)== 0 && Number(CD.value)== 0 && Number(CDR.value)== 0 && Number(CR.value)== 0 && Number(Ret.value)== 0 && Number(ESR.value)== 0) alarm.innerHTML = `Не указаны потоки. Проверьте правильность заполнения таблицы`
+    else if (Number(CBC.value)< 0 || Number(CD.value)< 0 || Number(CDR.value)< 0 || Number(CR.value)< 0 || Number(Ret.value)< 0 || Number(ESR.value)< 0) alarm.innerHTML = `Проверьте правильность заполнения годовых потоков`
+    else if (!Number(days.value)||Number(days.value)>7||Number(days.value)<1) alarm.innerHTML = `Проверьте правильность заполнения рабочих дней в неделе`
+    else if (!Number(months.value)||Number(months.value)<1) alarm.innerHTML = `Проверьте правильность заполнения количества месяцев для подсчета`
+    else if (!Number(stations.value)) alarm.innerHTML = `Проверьте правильность заполнения количества приборов`
+    else if ((device.value == 1 || device.value == 3 || device.value == 6) && (Number(CDR.value)!= 0 || Number(CR.value)!= 0 || Number(Ret.value)!= 0)) alarm.innerHTML = `Данный прибор не умеет делать ретикулоциты. <br/>Исправьте таблицу для корректного подсчета, для Ret выберете другой прибор`
+    else if ((device.value == 1 || device.value == 2 || device.value == 3 || device.value == 4) && Number(ESR.value)!= 0) alarm.innerHTML = `Данный прибор не умеет делать СОЭ. <br/>Исправьте таблицу для корректного подсчета, для СОЭ выберете другой прибор`
+    
+    if( !Number(days.value) ||Number(days.value)>7||Number(days.value)<1|| !Number(months.value)||Number(months.value)<1|| !Number(stations.value)) criticalError = 1;
+    return criticalError;
+}
+
+// ===== CALC =====
+const resultDiv = document.getElementById('result');
+
+document.getElementById('calcBtn').onclick = ()=>{
+    const criticalError = checkLogic();
+    const device = document.getElementById('device');
+    const CBC = document.getElementById('CBC').value;
+    const CD = document.getElementById('CD').value;
+    const CDR = document.getElementById('CDR').value;
+    const CR = document.getElementById('CR').value;
+    const Ret = document.getElementById('Ret').value;
+    const ESR = document.getElementById('ESR').value;
+    const days = document.getElementById('workDays').value;
+    const months = document.getElementById('months').value;
+    const stations = document.getElementById('stations').value;
+    const repeat = Number((document.getElementById('repeat').value)/100)
+    const reagents = {
+        '1': [['DxH500 Diluent','DxH500 Lyse','DxH500 Cleaner', 'DxH500 Control', 'DxH500 Calibrator'],['B36845','B36846','B36868', 'B36872', 'B36880']],
+        '2': [['DxH Diluent, 10л','DxH Cell Lyse, 5л','DxH Diff Pack, 2,75л','DxH Retic Pack, 2,25л', 'DxH Cleaner, 10л', 'Контроль 6C, 9x3,5мл','Контроль Retic-X, 12x3,5мл', 'Контроль Latron CP-X, 8x4мл', 'Калибратор S-Cal, 1x3,3 мл'],['628017','628019','628020', '628021', '628023','A59925','628028','628024','628026']],
+        '3': [['DS Diluent, 20л','M-6FD, 4x12мл','M-6LD, 4x1л','M-6LH, 4x1л','M-6LN, 4x1л','M-6FN, 4x12мл','Probe Cleanser, 50мл','Контроль BC-6D 2x3x4,5мл'],['105-012283-00','105-012298-00','105-012288-00','105-012292-00','105-012290-00','105-012294-00','105-002225-00','105-002424-00']],
+        '4': [['DS Diluent, 20л','M-6FD, 4x12мл','M-6LD, 4x1л','M-6LH, 4x1л','M-6DR Diluent, 4x1л','M-6FR, 4x12мл','M-6LN, 4x1л','M-6FN, 4x12мл','Probe Cleanser, 50мл','Контроль BC-6D 2x3x4,5мл','Контроль BC-Ret, 2x3x4,5мл'],['105-012283-00','105-012298-00','105-012288-00','105-012292-00','105-012286-00','105-012296-00','105-012290-00','105-012294-00','105-002225-00','105-002424-00','105-002432-00']],
+        '5': [['DS Diluent, 20л','M-6FD, 4x12мл','M-6LD, 4x1л','M-6LH, 4x1л','M-6DR Diluent, 4x1л','M-6FR, 4x12мл','M-6LN, 4x1л','M-6FN, 4x12мл','ESR Solution Reagent, 4x1л','Probe Cleanser, 50мл','Контроль BC-6D 2x3x4,5мл','Контроль BC-Ret, 2x3x4,5мл'],['105-012283-00','105-012298-00','105-012288-00','105-012292-00','105-012286-00','105-012296-00','105-012290-00','105-012294-00','105-026689-00','105-002225-00','105-002424-00','105-002432-00']],
+        '6': [['DS Diluent, 20л','M-6FD, 4x12мл','M-6LD, 4x1л','M-6LH, 4x1л','ESR Solution Reagent, 4x1л','Probe Cleanser, 50мл','Контроль BC-6D 2x3x4,5мл'],['105-012283-00','105-012298-00','105-012288-00','105-012292-00','105-026689-00','105-002225-00','105-002424-00']],
+        '7': [['DS Diluent, 20л','M-6FD, 4x12мл','M-6LD, 4x1л','M-6LH, 4x1л','M-6DR Diluent, 4x1л','M-6FR, 4x12мл','ESR Solution Reagent, 4x1л','Probe Cleanser, 50мл','Контроль BC-6D 2x3x4,5мл','Контроль BC-Ret, 2x3x4,5мл'],['105-012283-00','105-012298-00','105-012288-00','105-012292-00','105-012286-00','105-012296-00','105-026689-00','105-002225-00','105-002424-00','105-002432-00']],
+        }
+    if (criticalError == 0) {
+        let html = `
+        <table>
+            <thead>
+                <tr>
+                    <th>№</th>
+                    <th>Наименование</th>
+                    <th>Код</th>
+                    <th>Количество</th>
+                </tr>
+            </thead>
+            <tbody>
+        `;
+        let dxh500_dil = 0;
+        let dxh500_lyse = 0;
+        let dxh500_clean = 0;
+        let dxh500_control = 0;
+        let dxh500_cal = 0;
+        let dxh800_dil = 0;
+        let dxh800_lyse = 0;
+        let dxh800_diff = 0;
+        let dxh800_ret = 0;
+        let dxh800_clean = 0;
+        let dxh800_control = 0;
+        let dxh800_retcontrol = 0;
+        let latron = 0;
+        let dxh800_cal = 0;
+        let ds_diluent = 0;
+        let fd = 0;
+        let fn = 0;
+        let fr = 0;
+        let ld = 0;
+        let ln = 0;
+        let lh = 0;
+        let dr = 0;
+        let esr_reagent = 0;
+        let bc6d = 0;
+        let bcret = 0;
+        let probe_cleanser = 0;
+        let result = []
+
+        // Промежуточные расчеты
+        let CDR_ESR = Math.min(CDR,ESR); //q9
+        let CD_ESR = Math.min(CD, ESR - CDR_ESR); //q8
+        let CBC_ESR = Math.min(CBC, ESR - CDR_ESR - CD_ESR); //q7
+        let ESR_final = ESR - CDR_ESR - CD_ESR - CBC_ESR; //q6
+        let Ret_final = Number(Ret); //q5
+        let CR_final = Number(CR); //q4
+        let CDR_final = CDR > CDR_ESR ? CDR - CDR_ESR : 0; //q3
+        let CD_final = CD > CD_ESR ? CD - CD_ESR : 0; //q2
+        let CBC_final = CBC > CBC_ESR ? CBC - CBC_ESR : 0; //q1
+        console.log(device.value)
+        // Конец промежуточных расчетов
+        if (device.value == 1){ 
+            dxh500_dil = Math.ceil(((Number(CBC)+Number(CD))+(Number(CBC)+Number(CD))/50+365*days/7*(13+3)*stations*months/12)/750*Number(1+repeat));
+            dxh500_lyse = Math.ceil(((Number(CBC)+Number(CD))+(Number(CBC)+Number(CD))/50+365*days/7*(8+3)*stations*months/12)/750*Number(1+repeat));
+            dxh500_clean = Math.ceil(((Number(CBC)+Number(CD))+(Number(CBC)+Number(CD))/50*6+365*days/7*(100+3)*stations*months/12)/1180*Number(1+repeat));
+            dxh500_control = Math.ceil(months*Math.ceil(stations/2)/2);
+            dxh500_cal = 1*stations*Math.ceil(months/12);
+            result.push([dxh500_dil,dxh500_lyse,dxh500_clean,dxh500_control,dxh500_cal])
+        } else if (device.value == 2){
+            dxh800_dil = Math.ceil(((Number(CBC)+Number(CD)+Number(CDR)+Number(CR)+Number(Ret))+365*days/7*(15+3)*stations*months/12)/160*Number(1+repeat));
+            dxh800_lyse = Math.ceil(((Number(CBC)+Number(CD)+Number(CDR)+Number(CR)+Number(Ret))+365*days/7*(16+3)*stations*months/12)/4545*Number(1+repeat));
+            dxh800_diff = Math.ceil(((Number(CBC)+Number(CD)+Number(CDR)+Number(CR)+Number(Ret))+365*days/7*(26+3)*stations*months/12)/2125*Number(1+repeat));
+            dxh800_ret = Number(CDR)+Number(CR)+Number(Ret) == 0 ? 0: Math.ceil(((Number(CDR)+Number(CR)+Number(Ret))+365*days/7*(10+3)*stations*months/12)/904*Number(1+repeat)) < months/4 ? Math.ceil (months/4): Math.ceil(((Number(CDR)+Number(CR)+Number(Ret))+365*days/7*(10+3)*stations*months/12)/904*Number(1+repeat));
+            dxh800_clean = Math.ceil((365*days/7*stations*months/12)/28); /*Делим на 28, закладывая 2 доп промывки */
+            dxh800_control = Math.ceil(months*Math.ceil(stations/2)/2);
+            latron = Math.ceil(months/4)*stations;
+            dxh800_retcontrol = Math.ceil(months/4)*Math.ceil(stations/2)
+            dxh800_cal = 1*stations*Math.ceil(months/12);
+            result.push([dxh800_dil,dxh800_lyse,dxh800_diff, dxh800_ret,dxh800_clean, dxh800_control,dxh800_retcontrol, latron,dxh800_cal])
+        } else if (device.value == 3){ 
+            ds_diluent = Math.ceil(Math.ceil((40*(CBC_final+CD_final)+365/7*days*(265+3*40)*stations)/19400)*Number(1+repeat)*months/12);
+            fd = Math.ceil(Math.ceil((0.02*CD_final+365/7*days*(0.12+3*0.02)*stations)/40.8)*Number(1+repeat)*months/12);
+            ld = Math.ceil(Math.ceil((1.56*CD_final+365/7*days*(4.68+3*1.56)*stations)/3920)*Number(1+repeat)*months/12);
+            lh = Math.ceil(Math.ceil((1.04*CBC_final+0.52*CD_final+365/7*days*(5.72+3*0.52)*stations)/3920)*Number(1+repeat)*months/12);
+            ln = Math.ceil(Math.ceil((1.5*(CBC_final+CD_final)+365/7*days*(6+3*1.5)*stations)/3920)*Number(1+repeat)*months/12);
+            fn = Math.ceil(Math.ceil((0.02*(CBC_final+CD_final)+365/7*days*(0.12+3*0.02)*stations)/40.8)*Number(1+repeat)*months/12);
+            probe_cleanser = Math.ceil(Math.ceil((365/7*days*5)/48)*Number(1.05)*months/12*stations);
+            bc6d = CBC_final+CD_final <= 0 ? 0: 12/months/stations>5? 1 :Math.ceil(365/7*days*stations/(8000/80)/(12/months))<=Math.ceil(6/(12/months))?Math.ceil(6/(12/months)):Math.ceil(365/7*days*stations/(8000/80)/(12/months)); 
+            result.push([ds_diluent,fd,ld, lh,ln,fn,probe_cleanser,bc6d])
+        } else if (device.value == 4){ 
+            ds_diluent = Math.ceil(Math.ceil((40*(CBC_final+CD_final)+55*(CDR_final+CR_final+Ret_final)+365/7*days*(265+3*40+3*(CDR_final+CR_final+Ret_final>0? 55 : 0))*stations)/19400)*Number(1+repeat)*months/12);
+            fd = Math.ceil(Math.ceil((0.02*(CD_final+CDR_final)+365/7*days*(0.12+3*0.02)*stations)/40.8)*Number(1+repeat)*months/12);
+            ld = Math.ceil(Math.ceil((1.56*(CD_final+CDR_final)+365/7*days*(4.68+3*1.56)*stations)/3920)*Number(1+repeat)*months/12);
+            lh = Math.ceil(Math.ceil((1.04*CBC_final+0.52*(CD_final+CDR_final+CR_final+Ret_final)+365/7*days*(5.72+3*0.52+3*(CDR_final+CR_final+Ret_final>0 ? 0.52 : 0))*stations)/3920)*Number(1+repeat)*months/12);
+            dr = (CDR_final+CR_final+Ret_final)<= 0 ? 0 : Math.ceil(Math.ceil((1.56*(CDR_final+CR_final+Ret_final)+365/7*days*(5.72+3*(CDR_final+CR_final+Ret_final>0 ? 1.56 : 0))*stations)/3920)*Number(1+repeat)*months/12);
+            fr = (CDR_final+CR_final+Ret_final)<= 0 ? 0 : Math.ceil(Math.ceil((0.02*(CDR_final+CR_final+Ret_final)+365/7*days*(0.12+3*(CDR_final+CR_final+Ret_final>0 ? 0.02 : 0))*stations)/40.8)*Number(1+repeat)*months/12);
+            ln = Math.ceil(Math.ceil((1.5*(CBC_final+CD_final+CDR_final)+365/7*days*(6+3*1.5)*stations)/3920)*Number(1+repeat)*months/12);
+            fn = Math.ceil(Math.ceil((0.02*(CBC_final+CD_final+CDR_final)+365/7*days*(0.12+3*0.02)*stations)/40.8)*Number(1+repeat)*months/12);
+            probe_cleanser = Math.ceil(Math.ceil((365/7*days*5)/48)*Number(1.05)*months/12*stations);
+            bc6d = CBC_final+CD_final+CDR_final+CR_final <= 0 ? 0: 12/months/stations>5? 1 :Math.ceil(365/7*days*stations/(8000/80)/(12/months))<=Math.ceil(6/(12/months))?Math.ceil(6/(12/months)):Math.ceil(365/7*days*stations/(8000/80)/(12/months)); 
+            bcret = CDR_final+CR_final+Ret_final <= 0 ? 0: 12/months/stations>5? 1 :Math.ceil(365/7*days*stations/(8000/80)/(12/months))<=Math.ceil(6/(12/months))?Math.ceil(6/(12/months)):Math.ceil(365/7*days*stations/(8000/80)/(12/months));
+            result.push([ds_diluent,fd,ld, lh,dr,fr,ln,fn,probe_cleanser,bc6d,bcret])
+        } else if (device.value == 5){ 
+            ds_diluent = Math.ceil(Math.ceil((25*(CBC_final+CBC_ESR)+28*(CD_final+CD_ESR)+34*(CDR_final+CR_final+Ret_final+CDR_ESR)+16*ESR_final+365/7*days*(340+3*28+3*(CDR_final+CR_final+Ret_final+CDR_ESR>0? 34 : 0))*stations)/19400)*Number(1+repeat)*months/12);
+            fd = Math.ceil(Math.ceil((0.02*(CD_final+CDR_final+CD_ESR+CDR_ESR)+365/7*days*(0.2+3*0.02+3*(CDR_final+CR_final+Ret_final+CDR_ESR>0 ? 0.02 : 0))*stations)/40.8)*Number(1+repeat)*months/12);
+            ld = Math.ceil(Math.ceil((2*(CD_final+CDR_final+CD_ESR+CDR_ESR)+365/7*days*(16+3*2)*stations)/3920)*Number(1+repeat)*months/12);
+            lh = Math.ceil(Math.ceil((1.04*CBC_final+0.52*(CD_final+CDR_final+CR_final+Ret_final+CBC_ESR+CD_ESR+CDR_ESR)+365/7*days*(3.12+3*0.52+3*(CDR_final+CR_final+Ret_final+CDR_ESR>0 ? 0.52 : 0))*stations)/3920)*Number(1+repeat)*months/12);
+            dr = (CDR_final+CR_final+Ret_final+CDR_ESR)<= 0 ? 0 : Math.ceil(Math.ceil((2*(CDR_final+CR_final+Ret_final+CDR_ESR)+365/7*days*(16+3*(CDR_final+CR_final+Ret_final+CDR_ESR>0 ? 2 : 0))*stations)/3920)*Number(1+repeat)*months/12);
+            fr = (CDR_final+CR_final+Ret_final+CDR_ESR)<= 0 ? 0 : Math.ceil(Math.ceil((0.02*(CDR_final+CR_final+Ret_final+CDR_ESR)+365/7*days*(0.16+3*(CDR_final+CR_final+Ret_final+CDR_ESR>0 ? 0.02 : 0))*stations)/40.8)*Number(1+repeat)*months/12);
+            ln = Math.ceil(Math.ceil((2*(CBC_final+CD_final+CDR_final+CBC_ESR+CD_ESR+CDR_ESR)+365/7*days*(16+3*2)*stations)/3920)*Number(1+repeat)*months/12);
+            fn = Math.ceil(Math.ceil((0.02*(CBC_final+CD_final+CDR_final+CBC_ESR+CD_ESR+CDR_ESR)+365/7*days*(0.16+3*0.02+3*(CDR_final+CR_final+Ret_final+CDR_ESR>0 ? 0.02 : 0))*stations)/40.8)*Number(1+repeat)*months/12);
+            esr_reagent = (ESR_final+CBC_ESR+CD_ESR+CDR_ESR)<=0 ? 0: Math.ceil(Math.ceil((2.08*(ESR_final+CBC_ESR+CD_ESR+CDR_ESR)+365/7*days*(1.02+2*2.08)*stations)/3920)*Number(1+repeat)*months/12);
+            probe_cleanser = Math.ceil(Math.ceil((365/7*days*5)/48)*Number(1.05)*months/12*stations);
+            bc6d = CBC_final+CD_final+CDR_final+CR_final+ESR_final+CBC_ESR+CD_ESR+CDR_ESR <= 0 ? 0: 12/months/stations>5? 1 :Math.ceil(365/7*days*stations/(8000/(ESR_final+CBC_ESR+CD_ESR+CDR_ESR>0?400:200))/(12/months))<=Math.ceil(6/(12/months))?Math.ceil(6/(12/months)):Math.ceil(365/7*days*stations/(8000/(ESR_final+CBC_ESR+CD_ESR+CDR_ESR>0?400:200))/(12/months)); 
+            bcret = CDR_final+CR_final+Ret_final+CDR_ESR <= 0 ? 0: 12/months/stations>5? 1 :Math.ceil(365/7*days*stations/(8000/200)/(12/months))<=Math.ceil(6/(12/months))?Math.ceil(6/(12/months)):Math.ceil(365/7*days*stations/(8000/200)/(12/months));
+            result.push([ds_diluent,fd,ld, lh,dr,fr,ln,fn,esr_reagent,probe_cleanser,bc6d,bcret])
+        } else if (device.value == 6){ 
+            ds_diluent = Math.ceil(Math.ceil((28*(CBC_final+CD_final)+26*ESR_final+35*(CBC_ESR+CD_ESR)+365/7*days*(300+2*35+28)*stations)/19270)*Number(1+repeat)*months/12);
+            fd = Math.ceil(Math.ceil((0.04*(CD_final+CD_ESR)+365/7*days*(0.16+3*0.04)*stations)/40.8)*Number(1+repeat)*months/12);
+            ld = Math.ceil(Math.ceil((1.62*(CBC_final+CD_final+CBC_ESR+CD_ESR)+365/7*days*(9.36+3*1.62)*stations)/3920)*Number(1+repeat)*months/12);
+            lh = Math.ceil(Math.ceil((0.52*(CBC_final+CD_final)+0.52*(ESR_final+CBC_ESR+CD_ESR)+365/7*days*(3.64+3*0.52)*stations)/3920)*Number(1+repeat)*months/12);
+            esr_reagent = (ESR_final+CBC_ESR+CD_ESR)<=0 ? 0: Math.ceil(Math.ceil((2.08*(ESR_final+CBC_ESR+CD_ESR)+365/7*days*(1.56+2*2.08)*stations)/3920)*Number(1+repeat)*months/12);
+            probe_cleanser = Math.ceil(Math.ceil((365/7*days*4)/48)*Number(1.05)*months/12*stations);
+            bc6d = CBC_final+CD_final+ESR_final+CBC_ESR+CD_ESR <= 0 ? 0: 12/months/stations>5? 1 :Math.ceil(365/7*days*stations/(8000/(ESR_final+CBC_ESR+CD_ESR>0?160:25))/(12/months))<=Math.ceil(6/(12/months))?Math.ceil(6/(12/months)):Math.ceil(365/7*days*stations/(8000/(ESR_final+CBC_ESR+CD_ESR>0?160:25))/(12/months)); 
+            result.push([ds_diluent,fd,ld, lh,esr_reagent,probe_cleanser,bc6d])
+        } else if (device.value == 7){ 
+           ds_diluent = Math.ceil(Math.ceil((28*(CBC_final+CD_final)+35*(CBC_ESR+CD_ESR)+36*(CDR_final+CR_final+Ret_final)+26*ESR_final+42*CDR_ESR+365/7*days*(300+2*35+28+3*(CDR_final+CR_final+Ret_final+CDR_ESR>0? 36 : 0))*stations)/19270)*Number(1+repeat)*months/12);
+            fd = Math.ceil(Math.ceil((0.04*(CD_final+CDR_final+CD_ESR+CDR_ESR)+365/7*days*(0.16+3*0.04+3*(CDR_final+CR_final+Ret_final+CDR_ESR>0 ? 0.04 : 0))*stations)/40.8)*Number(1+repeat)*months/12);
+            ld = Math.ceil(Math.ceil((1.62*(CBC_final+CD_final+CDR_final+CR_final+Ret_final+CBC_ESR+CD_ESR+CDR_ESR)+365/7*days*(9.36+3*1.62+3*(CDR_final+CR_final+Ret_final+CDR_ESR>0 ? 1.62 : 0))*stations)/3920)*Number(1+repeat)*months/12);
+            lh = Math.ceil(Math.ceil((0.52*(CBC_final+CD_final+CDR_final+CR_final+Ret_final+ESR_final+CBC_ESR+CD_ESR+CDR_ESR)+365/7*days*(3.64+3*0.52+3*(CDR_final+CR_final+Ret_final+CDR_ESR>0 ? 0.52 : 0))*stations)/3920)*Number(1+repeat)*months/12);
+            dr = (CDR_final+CR_final+Ret_final+CDR_ESR)<= 0 ? 0 : Math.ceil(Math.ceil((1.62*(CDR_final+CR_final+Ret_final+CDR_ESR)+365/7*days*(9.36+3*(CDR_final+CR_final+Ret_final+CDR_ESR>0 ? 1.62 : 0))*stations)/3920)*Number(1+repeat)*months/12);
+            fr = (CDR_final+CR_final+Ret_final+CDR_ESR)<= 0 ? 0 : Math.ceil(Math.ceil((0.02*(CDR_final+CR_final+Ret_final+CDR_ESR)+365/7*days*(0.02+3*(CDR_final+CR_final+Ret_final+CDR_ESR>0 ? 0.02 : 0))*stations)/40.8)*Number(1+repeat)*months/12);
+            esr_reagent = (ESR_final+CBC_ESR+CD_ESR+CDR_ESR)<=0 ? 0: Math.ceil(Math.ceil((2.08*(ESR_final+CBC_ESR+CD_ESR+CDR_ESR)+365/7*days*(1.56+2*2.08)*stations)/3920)*Number(1+repeat)*months/12);
+            probe_cleanser = Math.ceil(Math.ceil((365/7*days*4)/48)*Number(1.05)*months/12*stations);
+            bc6d = CBC_final+CD_final+CDR_final+CR_final+ESR_final+CBC_ESR+CD_ESR+CDR_ESR <= 0 ? 0: 12/months/stations>5? 1 :Math.ceil(365/7*days*stations/(8000/(ESR_final+CBC_ESR+CD_ESR+CDR_ESR>0?160:25))/(12/months))<=Math.ceil(6/(12/months))?Math.ceil(6/(12/months)):Math.ceil(365/7*days*stations/(8000/(ESR_final+CBC_ESR+CD_ESR+CDR_ESR>0?160:25))/(12/months)); 
+            bcret = CDR_final+CR_final+Ret_final+CDR_ESR <= 0 ? 0: 12/months/stations>5? 1 :Math.ceil(365/7*days*stations/(8000/33)/(12/months))<=Math.ceil(6/(12/months))?Math.ceil(6/(12/months)):Math.ceil(365/7*days*stations/(8000/33)/(12/months));
+            result.push([ds_diluent,fd,ld, lh,dr,fr,esr_reagent,probe_cleanser,bc6d,bcret])
+        }
+        for(let i=0;i<reagents[device.value][0].length;i++){
+            html += `
+            <tr>
+                <td>${i+1}</td>
+                <td>${reagents[device.value][0][i]}</td>
+                <td>${reagents[device.value][1][i]}</td>
+                <td>${result[0][i]}</td>
+            </tr>`;
+        }
+        html += '</tbody></table>';
+        resultDiv.innerHTML = html;
+    }
+    
+};
+
+// ===== CLEAR FORM =====
+document.getElementById('clearFormBtn').onclick = ()=>{
+    document.querySelectorAll('.form-grid input').forEach(inp=>{
+        if(inp.id !== 'months' && inp.id !== "stations" && inp.id !== "repeat") inp.value = '';
+        if(inp.id == "repeat") inp.value = 0;
+        if(inp.id == "months") inp.value = 12;
+        if(inp.id == "stations") inp.value = 1;
+    });
+    document.getElementById('device').selectedIndex = 0;
+};
+
+// ===== CLEAR RESULT =====
+document.getElementById('clearResultBtn').onclick = ()=>{
+    resultDiv.innerHTML = '';
+};
+</script>
+
+</body>
+</html>

@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<title>MG - Интерактивная карта</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+<style>
+/* ===== RESET ===== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+html, body {
+  width: 100%;
+  max-width: 100%;
+}
+
+body {
+  background: #f3f3f3;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* ===== HEADER (НЕ ТРОГАЕМ ЛОГИКУ) ===== */
+header {
+    background: #111;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.header-left,
+.header-right {
+    flex: 0 0 auto;
+}
+
+.home {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: bold;
+    transition: transform 0.2s, color 0.2s;
+}
+
+/* Анимация наведения на MG */
+.home:hover {
+    color: #4caf50;
+    transform: scale(1.05);
+}
+
+.nav-icons {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    gap: 4%; /* увеличено расстояние между иконками на ПК */
+}
+
+.nav-icons a {
+    color: #aaa;
+    font-size: 14px;
+    text-decoration: none;
+    transition: color 0.2s, transform 0.2s;
+}
+
+/* Анимация наведения на иконки */
+.nav-icons a:hover {
+    color: #4caf50;
+    transform: scale(1.2);
+}
+
+.nav-icons a.active {
+    color: #4caf50;
+    transform: scale(1.2);
+}
+
+.logout-btn {
+    padding: 8px 14px;
+    background: #e74c3c;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+
+/* ===== MAIN GRID (DESKTOP) ===== */
+main {
+  height: calc(100vh - 80px);
+  display: grid;
+  grid-template-columns: 70% 30%;
+  grid-template-rows: 60% 40%;
+  gap: 8px;
+  padding: 8px;
+}
+
+/* ===== BLOCKS ===== */
+.block {
+  background: #ffffff;
+  border: 1px solid #ccc;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* КЛЮЧЕВО */
+  overflow: hidden;
+}
+
+/* ===== MAP ===== */
+.map-block {
+  position: relative;
+  overflow: hidden;
+}
+
+.map-date {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  font-size: 14px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+  z-index: 10;
+}
+
+.map-placeholder {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #2d6270;
+}
+
+.map_svg {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.region_name {
+    position: absolute;
+    color:rgb(255, 255, 255);
+    font: italic bold 25px/25px Arial;
+}
+
+/* ===== TABLES (DESKTOP) ===== */
+.table-scroll {
+  flex: 1;
+  overflow: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 4px 6px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+th {
+  background: #f0f0f0;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+/* ===== FILTER ===== */
+.filter {
+  margin-bottom: 8px;
+}
+
+select {
+  width: 100%;
+  padding: 6px;
+}
+
+.extraordinary {
+ background: rgba(37,219,237,0.8);
+
+}
+
+@media (min-width: 900px) {
+    header {
+        height: 80px;
+        padding: 0 20px;
+    }
+
+    .nav-icons {
+        gap: 76px; /* увеличено расстояние между иконками */
+    }
+
+    .nav-icons a {
+        font-size: 22px;
+    }
+  }
+/* ===== MOBILE ===== */
+@media (max-width: 768px) {
+
+  main {
+    height: auto;
+    min-height: auto;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    padding: 8px;
+  }
+
+  .block {
+    height: auto;
+    min-height: auto;
+    overflow: visible;
+    width: 95vw;
+  }
+
+  /* Карта */
+  .map-block {
+    height: 300px;
+  }
+
+  .map-placeholder {
+    height: 100%;
+  }
+
+  .region_name {
+    font: italic bold 10px/10px Arial;
+}
+
+  /* Таблицы — часть потока страницы */
+  .table-scroll {
+    overflow: scroll;
+    width: 90vw;
+  }
+
+  table {
+    width: 90vw;
+    min-width: 0;
+    font-size: 8px;
+    overflow: scroll;
+  }
+
+  th, td {
+    white-space: normal;
+  }
+
+  th {
+    position: static; /* КЛЮЧ */
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="header-left">
+        <a href="start.html" class="home">
+            <i class="fa-solid fa-house"></i>
+            MG
+        </a>
+    </div>
+
+    <nav class="nav-icons">
+        <a href="/visit.html" ><i class="fa-solid fa-car"></i></a>
+        <a href="/calc.html"><i class="fa-solid fa-calculator"></i></a>
+        <a href="/generator.html"><i class="fa-solid fa-key"></i></a>
+        <a href="/barcode.html"><i class="fa-solid fa-barcode"></i></a>
+        <a href="/map.html" class="active"><i class="fa-solid fa-globe"></i></a>
+        <a href="/analyzers.html"><i class="fa-solid fa-book"></i></a>
+        <a href="/error.html"><i class="fa-solid fa-triangle-exclamation"></i></a>
+        <a href="/calendar.html"><i class="fa-regular fa-calendar"></i></a>
+        <a href="/devices.html"><i class="fa-solid fa-computer"></i></a>
+    </nav>
+
+    <div class="header-right">
+        <button class="logout-btn" id="logout">Выход</button>
+    </div>
+</header>
+
+<main>
+
+  <div class="block map-block">
+    <div class="map-date" id="lastUpdate"></div>
+    <div class="map-placeholder">
+      <object class="map_svg" type="image/svg+xml" data="/assets/img/map2.svg" id="map_svg"></object>
+    </div>
+    <p id="region_name" class="region_name"></p>
+  </div>
+
+  <div class="block">
+    <div class="filter">
+      <select id="regionFilter"></select>
+    </div>
+    
+    <div class="table-scroll">
+      <table id="table_1">
+        <thead>
+          <tr><th>№</th><th>Регион</th><th>Учреждения</th><th>Beckman</th><th>Mindray</th></tr>
+        </thead>
+        <tbody id="topTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="filter">
+      <select id="applicatorFilter" placeholder="Фильтр"></select>
+    </div>
+    <div class="table-scroll">
+      <table id="table_2">
+        <thead>
+          <tr><th>№</th><th>Регион</th><th>Учреждение</th><th>Гематология</th><th>Биохимия</th><th>Иммунохимия</th><th>Мочевой анализ</th><th>Гемостаз</th><th>Автоматизация</th><th>Микроскопия</th></tr>
+        </thead>
+        <tbody id="bottomTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="table-scroll">
+      <table id="table_3">
+        <thead>
+          <tr><th>№</th><th>Направление</th><th>Приборов</th><th>Beckman</th><th>Mindray</th></tr>
+        </thead>
+        <tbody id="statsTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<script>
+if(localStorage.getItem('isLoggedIn') !== 'true'){
+    window.location.href = 'index.html';
+}
+document.getElementById('logout').onclick = ()=>{
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('user');
+    window.location.href = 'index.html';
+};
+
+const installBase=[];
+let date_update_installBase = '';
+window.onload = getInstruments();
+function getInstruments() {
+    const url = `https://docs.google.com/spreadsheets/d/16ABEN54Ykbej-PhrbBjGlaHSXzNbD4PA8ecbpWc5QHQ/gviz/tq?gid=1330505025`;
+    fetch(url)
+    .then(res => res.text())
+    .then(rep => {
+        const data2 = JSON.parse(rep.substr(47).slice(0,-2));
+        const length = data2.table.rows.length;
+        date_update_installBase = data2.table.rows[0].c[14].v
+        document.getElementById('lastUpdate').textContent =`Дата последнего обновления: ${new Date(date_update_installBase.split('Date(')[1].split(')')[0].split(',')[0],date_update_installBase.split('Date(')[1].split(')')[0].split(',')[1],date_update_installBase.split('Date(')[1].split(')')[0].split(',')[2]).toLocaleString('ru-RU', {year: 'numeric', month: '2-digit', day: '2-digit'})}`;
+        for (let i=0; i<length; i+=1) {
+            const instrumentsByUsers = {};
+            if(data2.table.rows[i].c[0] && data2.table.rows[i].c[0].v != null) instrumentsByUsers.region = data2.table.rows[i].c[0].v
+            if(data2.table.rows[i].c[1] && data2.table.rows[i].c[1].v != null) instrumentsByUsers.organization = data2.table.rows[i].c[1].v;
+            if(data2.table.rows[i].c[2] && data2.table.rows[i].c[2].v != null) instrumentsByUsers.instrument = data2.table.rows[i].c[2].v;
+            if(data2.table.rows[i].c[3] && data2.table.rows[i].c[3].v != null) instrumentsByUsers.quantity = data2.table.rows[i].c[3].v;
+            if(data2.table.rows[i].c[10] && data2.table.rows[i].c[10].v != null) instrumentsByUsers.city = data2.table.rows[i].c[10].v;
+            if(data2.table.rows[i].c[11] && data2.table.rows[i].c[11].v != null) instrumentsByUsers.application = data2.table.rows[i].c[11].v;
+            if(data2.table.rows[i].c[12] && data2.table.rows[i].c[12].v != null) instrumentsByUsers.company = data2.table.rows[i].c[12].v;
+            if(data2.table.rows[i].c[13] && data2.table.rows[i].c[13].v != null) instrumentsByUsers.direction = data2.table.rows[i].c[13].v;
+            installBase.push(instrumentsByUsers);
+        }
+        let app = ['','Александра', 'Андрей', 'Вадим', 'Вадим Г.', 'Влад', 'Женя', 'Лиза', 'Татьяна']
+        let regions = ['Все регионы','Санкт-Петербург', 'Ленинградская область', 'Архангельская область', 'Брянская область','Вологодская область', 'Воронежская область','Калининградская область','Мурманская область', 'Москва','Ненецкий АО','Новгородская область','Оренбургская область','Орловская область','Псковская область','Республика Карелия','Ставропольский край','Смоленская область','Ямало-Ненецкий АО','Республика Саха(Якутия)']
+        let regions_code = ['Все регионы','СПб','ЛО','АО','БО','ВО', 'ВорО','КО','МО','МСК','НАО','НО','ОО','ОрлО','ПО','РК','СК','СО','ЯНАО','ЯС'];
+        fillSelect('regionFilter', regions);
+        fillSelect('applicatorFilter',app);
+        showAllRegionsTable(installBase,'Все регионы');
+        showAllHospitalsTable (installBase,'Все регионы',"");
+        showAllDirectionTable(installBase,'Все регионы',"");
+        document.getElementById('regionFilter').addEventListener('change', ()=>{
+        document.getElementById('table_1').innerHTML = '<thead><tr><th>№</th><th>Регион</th><th>Учреждения</th><th>Beckman</th><th>Mindray</th></tr></thead><tbody id="topTableBody"></tbody>';
+        document.getElementById('table_2').innerHTML = '<thead><tr><th>№</th><th>Регион</th><th>Учреждение</th><th>Гематология</th><th>Биохимия</th><th>Иммунохимия</th><th>Мочевой анализ</th><th>Гемостаз</th><th>Автоматизация</th><th>Микроскопия</th></tr></thead><tbody id="bottomTableBody"></tbody>';
+        document.getElementById('table_3').innerHTML = '<thead><tr><th>№</th><th>Направление</th><th>Приборов</th><th>Beckman</th><th>Mindray</th></tr></thead><tbody id="statsTableBody"></tbody>';
+        showAllRegionsTable(installBase,regions_code[regions.indexOf(document.getElementById('regionFilter').value)]);
+        showAllHospitalsTable (installBase,regions_code[regions.indexOf(document.getElementById('regionFilter').value)],document.getElementById('applicatorFilter').value);
+        showAllDirectionTable(installBase,regions_code[regions.indexOf(document.getElementById('regionFilter').value)],document.getElementById('applicatorFilter').value)});
+
+        document.getElementById('applicatorFilter').addEventListener('change', ()=>{
+        document.getElementById('table_2').innerHTML = '<thead><tr><th>№</th><th>Регион</th><th>Учреждение</th><th>Гематология</th><th>Биохимия</th><th>Иммунохимия</th><th>Мочевой анализ</th><th>Гемостаз</th><th>Автоматизация</th><th>Микроскопия</th></tr></thead><tbody id="bottomTableBody"></tbody>';
+        showAllHospitalsTable (installBase,regions_code[regions.indexOf(document.getElementById('regionFilter').value)],document.getElementById('applicatorFilter').value);
+        showAllDirectionTable(installBase,regions_code[regions.indexOf(document.getElementById('regionFilter').value)],document.getElementById('applicatorFilter').value);
+      });
+    })
+}
+
+
+// ===== Заполняем селекты =====
+function fillSelect(id, array){
+    const sel = document.getElementById(id);
+    array.forEach(val=>{
+        const opt = document.createElement('option');
+        opt.value=val;
+        opt.textContent=val;
+        sel.appendChild(opt);
+    });
+}
+
+
+
+function showAllRegionsTable(installBase,filter) {
+    let regions = ['Все регионы','Санкт-Петербург', 'Ленинградская область', 'Архангельская область', 'Брянская область','Вологодская область', 'Воронежская область','Калининградская область','Мурманская область', 'Москва','Ненецкий АО','Новгородская область','Оренбургская область','Орловская область','Псковская область','Республика Карелия','Ставропольский край','Смоленская область','Ямало-Ненецкий АО','Республика Саха(Якутия)']
+    let regions_code = ['Все регионы','СПб','ЛО','АО','БО','ВО', 'ВорО','КО','МО','МСК','НАО','НО','ОО','ОрлО','ПО','РК','СК','СО','ЯНАО','ЯС'];
+    let count = regions.length;
+    
+    if (filter != 'Все регионы') {
+      count = new Set(installBase.filter(item => item.region === filter).map(item => item.city)).size; 
+      installBase = installBase.filter(item => item.region == filter)
+    }
+    for (let i=0;i<count;i+=1) {
+      if (filter != 'Все регионы') topTableBody.innerHTML+=`<tr><td>${i+1}</td><td>${Array.from(new Set(installBase.filter(item => item.region === filter).map(item => item.city)))[i]}</td><td>${new Set(installBase.filter(item => item.city === Array.from(new Set(installBase.filter(item => item.region === filter).map(item => item.city)))[i]).map(item => item.organization)).size}</td><td>${installBase.filter(item => item.city === Array.from(new Set(installBase.filter(item => item.region === filter).map(item => item.city)))[i]).filter(item => item.company==='Beckman Coulter').reduce((acc, item) => acc + item.quantity, 0)}</td><td>${installBase.filter(item => item.city === Array.from(new Set(installBase.filter(item => item.region === filter).map(item => item.city)))[i]).filter(item => item.company==='Mindray').reduce((acc, item) => acc + item.quantity, 0)}</td></tr>`;
+      else topTableBody.innerHTML+= i==0?"":`<tr><td>${i}</td><td>${regions[i]}</td><td>${new Set(installBase.filter(item => item.region === regions_code[i]).map(item => item.organization)).size}</td><td>${installBase.filter(item => item.region === regions_code[i]).filter(item => item.company==='Beckman Coulter').reduce((acc, item) => acc + item.quantity, 0)}</td><td>${installBase.filter(item => item.region === regions_code[i]).filter(item => item.company==='Mindray').reduce((acc, item) => acc + item.quantity, 0)}</td></tr>`;
+    }
+    topTableBody.innerHTML+=`<tr style="font-weight:900"><td></td><td>Всего</td><td>${new Set(installBase.map(item => item.organization)).size}</td><td>${installBase.filter(item => item.company==='Beckman Coulter').reduce((acc, item) => acc + item.quantity, 0)}</td><td>${installBase.filter(item => item.company==='Mindray').reduce((acc, item) => acc + item.quantity, 0)}</td></tr>`;
+}
+
+
+function showAllHospitalsTable (installBase,filter,filter2) {
+  const directions = ['Гематология','Биохимия','Иммунохимия','Анализ мочи','Гемостаз','Автоматизация','Микробиология'];
+  if (filter != 'Все регионы') {
+      installBase = installBase.filter(item => item.region == filter)
+  }
+  const result = Object.values(
+  installBase.reduce((acc, { region, organization, instrument, quantity, application, direction }) => {
+
+    // инициализация ychr
+    if (!acc[organization]) {
+      acc[organization] = {
+        region,
+        organization,
+        instrumentMap: {},      // device → { quantity, direction }
+        applSet: new Set()
+      };
+    }
+
+    // device + quantity + direction
+    if (!acc[organization].instrumentMap[instrument]) {
+      acc[organization].instrumentMap[instrument] = {
+        quantity: 0,
+        direction
+      };
+    }
+
+    acc[organization].instrumentMap[instrument].quantity += quantity;
+
+    // appl
+    acc[organization].applSet.add(application);
+
+    return acc;
+  }, {})
+  ).map(item => ({
+    region: item.region,
+    organization: item.organization,
+    instrument: Object.keys(item.instrumentMap),
+    quantity: Object.values(item.instrumentMap).map(d => d.quantity),
+    direction: Object.values(item.instrumentMap).map(d => d.direction),
+    application: Array.from(item.applSet)
+  }));
+
+  
+  for (let i=0;i<result.length;i+=1) {
+    let textResult = [];
+    for (let j=0;j<directions.length;j+=1) {
+    let directionResult = ''
+    const result2 = installBase.filter(item=> item.organization === result[i].organization && item.direction == directions[j]).reduce((map, { instrument, quantity, application }) => {
+  if (!map.has(instrument)) {
+    map.set(instrument, { quantity: 0, application });
+  }
+  map.get(instrument).quantity += quantity;
+  return map;
+}, new Map())
+  const resultText = [...result2.entries()]
+  .map(([device, { quantity, application }]) =>
+    `${device} _ ${quantity} _ ${application}`
+  )
+  .join(', ');
+    directionResult += resultText;
+    let html = directionResult.split(',').map(item => {const [instrument, qty, appl] = item.split('_').map(s => s.trim());return `<span class='${filter2==appl?'extraordinary':'boring'}'>${instrument} - <span style='font-weight:700'>${qty}</span></span>`;}).join('<br>');
+    if (html == "<span class='boring'> - <span style='font-weight:700'>undefined</span></span>" || html == "<span class='extraordinary'> - <span style='font-weight:700'>undefined</span></span>") html = '';
+    textResult.push(html)
+    }
+  bottomTableBody.innerHTML+=`<tr><td>${i+1}</td><td>${result[i].region}</td><td>${result[i].organization}</td><td>${textResult[0]}</td><td>${textResult[1]}</td><td>${textResult[2]}</td><td>${textResult[3]}</td><td>${textResult[4]}</td><td>${textResult[5]}</td><td>${textResult[6]}</td></tr>`;
+  }
+}
+
+
+
+function showAllDirectionTable(installBase,filter,filter2) {
+  statsTableBody.innerHTML = '';
+  const directions = ['Гематология','Биохимия','Иммунохимия','Анализ мочи','Гемостаз','Автоматизация','Микробиология'];
+  if (filter != 'Все регионы') {
+      installBase = installBase.filter(item => item.region == filter)
+    }
+  if (filter2!="") {
+    installBase = installBase.filter(item=>item.application==filter2)
+  }
+  for (let i=0;i<directions.length;i+=1) {
+    statsTableBody.innerHTML+=`<tr><td>${i+1}</td><td>${directions[i]}</td><td>${installBase.filter(item =>item.direction===directions[i]).reduce((acc, item) => acc + item.quantity, 0)}</td><td>${installBase.filter(item => item.company==='Beckman Coulter' && item.direction===directions[i]).reduce((acc, item) => acc + item.quantity, 0)}</td><td>${installBase.filter(item => item.company==='Mindray' && item.direction===directions[i]).reduce((acc, item) => acc + item.quantity, 0)}</td></tr>`;
+  }
+  
+}
+
+
+const svgObject = document.getElementById('map_svg');
+
+svgObject.addEventListener('load', () => {
+  const svgDoc = svgObject.contentDocument;
+  const areas = svgDoc.querySelectorAll('path');
+
+  areas.forEach(area => {
+
+    area.addEventListener('mouseover', e => {
+      area.dataset.oldFill = area.getAttribute('fill');
+      area.setAttribute('fill', '#ff00ff');
+    });
+
+    area.addEventListener('mouseout', e => {
+      if (area.classList.contains('working')) {
+        area.setAttribute('fill', '#32CD32');
+      } else {
+        area.setAttribute('fill', '#383431');
+      }
+      document.getElementById('region_name').innerText = '';
+    });
+
+    area.addEventListener('mousemove', e => {
+      const label = document.getElementById('region_name');
+      label.innerText = area.id;
+      label.style.left = e.clientX + 12 + 'px';
+      label.style.top = e.clientY + 12 + 'px';
+    });
+
+    area.addEventListener('click', () => {
+      if (area.classList.contains('working')) {
+        document.getElementById('regionFilter').value = area.id;
+        document.getElementById('regionFilter').dispatchEvent(new Event('change', { bubbles: true }));
+        // showRegionInstruments(area.id);
+        console.log('Клик по региону:', area.id);
+      }
+    });
+
+  });
+});
+</script>
+
+</body>
+</html>

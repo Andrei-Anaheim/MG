@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>MG – Анализаторы</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+<style>
+/* ===== Общие стили ===== */
+* { box-sizing: border-box; margin:0; padding:0; font-family: Arial, Helvetica, sans-serif; }
+html, body { height:100%; }
+body { display:flex; flex-direction:column; background:#f3f3f3; }
+
+/* ===== HEADER ===== */
+header {
+    background: #111;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.header-left,
+.header-right {
+    flex: 0 0 auto;
+}
+
+.home {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: bold;
+    transition: transform 0.2s, color 0.2s;
+}
+
+/* Анимация наведения на MG */
+.home:hover {
+    color: #4caf50;
+    transform: scale(1.05);
+}
+
+.nav-icons {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    gap: 4%; /* увеличено расстояние между иконками на ПК */
+}
+
+.nav-icons a {
+    color: #aaa;
+    font-size: 14px;
+    text-decoration: none;
+    transition: color 0.2s, transform 0.2s;
+}
+
+/* Анимация наведения на иконки */
+.nav-icons a:hover {
+    color: #4caf50;
+    transform: scale(1.2);
+}
+
+.nav-icons a.active {
+    color: #4caf50;
+    transform: scale(1.2);
+}
+
+.logout-btn {
+    padding: 8px 14px;
+    background: #e74c3c;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+}
+/* ===== MAIN GRID ===== */
+main { flex:1; display:flex; justify-content:center; align-items:flex-start; padding:8px; }
+
+/* ===== GRID БЛОКОВ ===== */
+.analyzers-grid {
+    display:grid;
+    grid-template-columns: 1fr; /* мобильная версия */
+    grid-auto-rows: 1fr;        /* каждая строка растягивается */
+    gap:8px;
+    width:100%;
+    height: calc(100vh - 100px); /* 100% высоты окна минус header */
+}
+
+/* ===== БЛОК АНАЛИЗАТОРА ===== */
+.analyzer-item {
+    position: relative;
+    border-radius:16px;
+    overflow:hidden;
+    cursor:pointer;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-weight:bold;
+    color:#161111;
+    font-size:22px;
+    background-size:cover;
+    background-position:center;
+    transition: transform 0.2s;
+    height: 100%; /* Растягивается на всю строку */
+}
+.analyzer-item:hover { transform: scale(1.01); }
+
+/* ===== ПК версия ===== */
+@media(min-width:900px){
+    .analyzers-grid { grid-template-columns: repeat(2, 1fr); gap:12px; grid-auto-rows: 1fr; }
+    .analyzer-item { height: 100%; } /* растягиваемся на всю строку */
+    header {
+        height: 80px;
+        padding: 0 20px;
+    }
+
+    .nav-icons {
+        gap: 76px; /* увеличено расстояние между иконками */
+    }
+
+    .nav-icons a {
+        font-size: 22px;
+    }
+}
+</style>
+</head>
+<body>
+
+<header>
+    <div class="header-left">
+        <a href="start.html" class="home"><i class="fa-solid fa-house"></i>MG</a>
+    </div>
+
+    <nav class="nav-icons">
+        <a href="/start.html"><i class="fa-solid fa-car"></i></a>
+        <a href="/calc.html"><i class="fa-solid fa-calculator"></i></a>
+        <a href="/generator.html"><i class="fa-solid fa-key"></i></a>
+        <a href="/barcode.html"><i class="fa-solid fa-barcode"></i></a>
+        <a href="/map.html"><i class="fa-solid fa-globe"></i></a>
+        <a href="/analyzers.html" class="active"><i class="fa-solid fa-book"></i></a>
+        <a href="/error.html"><i class="fa-solid fa-triangle-exclamation"></i></a>
+        <a href="/calendar.html"><i class="fa-regular fa-calendar"></i></a>
+        <a href="/devices.html"><i class="fa-solid fa-computer"></i></a>
+    </nav>
+
+    <div class="header-right">
+        <button class="logout-btn" id="logout">Выход</button>
+    </div>
+</header>
+
+<main>
+    <div class="analyzers-grid" id="analyzersGrid"></div>
+</main>
+
+<script>
+// ===== Проверка авторизации =====
+if(localStorage.getItem('isLoggedIn') !== 'true') {
+    window.location.href = 'index.html';
+}
+
+// ===== Выход =====
+document.getElementById('logout').addEventListener('click', ()=>{
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('user');
+    window.location.href = 'index.html';
+});
+
+// ===== ДАННЫЕ АНАЛИЗАТОРОВ С РАНДОМНЫМИ КАРТИНКАМИ =====
+const analyzers = [
+    {name:'DxH500', bg:'/assets/img/dxh500_button.png', link:'#'},
+    {name:'DxH600', bg:'/assets/img/dxh600_button.png', link:'#'},
+    {name:'DxH800', bg:'/assets/img/dxh800_button.png', link:'#'},
+    {name:'DxH900', bg:'/assets/img/dxh900_button.png', link:'#'},
+    {name:'iChem_Velocity', bg:'/assets/img/ichemvelocity_button.png', link:'#'},
+    {name:'IQ200', bg:'/assets/img/iq200_button.png', link:'#'},
+    {name:'AX-4030', bg:'/assets/img/ax4030_button.png', link:'#'},
+    {name:'BC6800Plus', bg:'/assets/img/bc6800plus_button.png', link:'#'},
+    {name:'BC6000/BC6200', bg:'/assets/img/bc6000_button.png', link:'#'},
+    {name:'BC700/BC720', bg:'/assets/img/bc700_button.png', link:'#'},
+    {name:'BC760/BC780', bg:'/assets/img/bc760_button.png', link:'#'},
+    {name:'SC-120', bg:'/assets/img/sc120_button.png', link:'#'},
+    {name:'MC-80', bg:'/assets/img/mc80_button.png', link:'#'},
+    {name:'CAL8000', bg:'/assets/img/cal8000_button.png', link:'#'},
+    {name:'BC20s/BC30s', bg:'/assets/img/bc30_button.png', link:'#'},
+    {name:'UA-5600', bg:'/assets/img/ua5600_button.png', link:'#'},
+    {name:'EH-2090', bg:'/assets/img/eh2090_button.png', link:'#'},
+    {name:'EU-5600', bg:'/assets/img/eu5600_button.png', link:'#'},
+    {name:'EU-5300', bg:'/assets/img/eu5300_button.png', link:'#'},
+    {name:'MT8000', bg:'/assets/img/mt8000_button.png', link:'#'}
+];
+
+// ===== Генерация блоков =====
+const grid = document.getElementById('analyzersGrid');
+analyzers.forEach(a=>{
+    const div = document.createElement('div');
+    div.className = 'analyzer-item';
+    div.style.backgroundImage = `url('${a.bg}')`;
+    div.textContent = a.name;
+    div.addEventListener('click', ()=>{ window.location.href=`/analyzer.html?type=${a.name}`; });
+    grid.appendChild(div);
+});
+</script>
+
+</body>
+</html>

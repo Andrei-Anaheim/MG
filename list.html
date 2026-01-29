@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>MG – Список</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    background: #f3f3f3;
+}
+
+/* ===== HEADER ===== */
+header {
+    background: #111;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.header-left,
+.header-right {
+    flex: 0 0 auto;
+}
+
+.home {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: bold;
+    transition: transform 0.2s, color 0.2s;
+}
+
+/* Анимация наведения на MG */
+.home:hover {
+    color: #4caf50;
+    transform: scale(1.05);
+}
+
+.nav-icons {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    gap: 4%; /* увеличено расстояние между иконками на ПК */
+}
+
+.nav-icons a {
+    color: #aaa;
+    font-size: 14px;
+    text-decoration: none;
+    transition: color 0.2s, transform 0.2s;
+}
+
+/* Анимация наведения на иконки */
+.nav-icons a:hover {
+    color: #4caf50;
+    transform: scale(1.2);
+}
+
+.nav-icons a.active {
+    color: #4caf50;
+    transform: scale(1.2);
+}
+
+.logout-btn {
+    padding: 8px 14px;
+    background: #e74c3c;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+/* ===== FILTERS ===== */
+.filters-container {
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    justify-content:center;
+    padding:12px;
+    background:#aaa;
+}
+.filters-container select {
+    padding:8px 12px;
+    border-radius:8px;
+    border:none;
+    font-size:14px;
+    min-width:150px;
+}
+
+.year-buttons {
+    display:flex;
+    gap:8px;
+    justify-content:center;
+    padding:6px 12px;
+    flex-wrap:wrap;
+    background:#aaa;
+}
+.year-buttons button {
+    padding:6px 12px;
+    border-radius:6px;
+    border:none;
+    cursor:pointer;
+    background:#b1d4b2;
+    color:#413535;
+    font-size:14px;
+    transition: transform 0.2s, background 0.2s;
+}
+.year-buttons button:hover, .year-buttons button.active {
+    background:#45a049;
+    transform: scale(1.05);
+}
+
+/* ===== TABLE ===== */
+main { flex:1; display:flex; flex-direction:column; overflow:auto; }
+.table-container {
+    width:100%;
+    flex:1;
+    overflow-x:auto;
+}
+table {
+    width:100%;
+    border-collapse: collapse;
+    color:#111;
+    font-size:14px;
+}
+
+thead th {
+    background: rgba(0,0,0,0.75);
+    color: white;
+    padding:8px;
+    position: sticky;
+    top:0;
+    z-index:1;
+}
+
+tbody td {
+    padding:8px;
+    border-bottom:1px solid rgba(0,0,0,0.1);
+}
+.group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.group label {
+    font-weight:bold;
+    margin-bottom:4px;
+    display:block;
+    color:#534242;
+}
+.icon {
+    cursor: pointer;
+}
+
+/* ===== MOBILE HIDE COLUMNS ===== */
+@media(max-width:899px){
+    table th:nth-child(1),
+    table th:nth-child(3),
+    table th:nth-child(6),
+    table th:nth-child(7),
+    table th:nth-child(9),
+    table th:nth-child(10) {
+        display:none;
+    }
+
+    table td:nth-child(1),
+    table td:nth-child(3),
+    table td:nth-child(6),
+    table td:nth-child(7),
+    table td:nth-child(9),
+    table td:nth-child(10) {
+        display:none;
+    }
+
+    .table-container {
+        width:100vw;
+        font-size: 10px;
+    }
+    table {
+        font-size: 8px;
+    }
+}
+
+@media(min-width:900px){
+     header {
+        height: 80px;
+        padding: 0 20px;
+    }
+
+    .nav-icons {
+        gap: 76px; /* увеличено расстояние между иконками */
+    }
+
+    .nav-icons a {
+        font-size: 22px;
+    }
+}
+</style>
+</head>
+<body>
+
+<header>
+    <div class="header-left">
+        <a href="start.html" class="home"><i class="fa-solid fa-house"></i>MG</a>
+    </div>
+
+    <nav class="nav-icons">
+        <a href="/visit.html" class="active"><i class="fa-solid fa-car"></i></a>
+        <a href="/calc.html"><i class="fa-solid fa-calculator"></i></a>
+        <a href="/generator.html"><i class="fa-solid fa-key"></i></a>
+        <a href="/barcode.html"><i class="fa-solid fa-barcode"></i></a>
+        <a href="/map.html"><i class="fa-solid fa-globe"></i></a>
+        <a href="/analyzers.html"><i class="fa-solid fa-book"></i></a>
+        <a href="/error.html"><i class="fa-solid fa-triangle-exclamation"></i></a>
+        <a href="/calendar.html"><i class="fa-regular fa-calendar"></i></a>
+        <a href="/devices.html"><i class="fa-solid fa-computer"></i></a>
+    </nav>
+
+    <div class="header-right">
+        <button class="logout-btn" id="logout">Выход</button>
+    </div>
+</header>
+
+<div class="filters-container">
+    <div class="group">
+        <label>Фильтр по специалистам</label>
+        <select id="filterSpecialist">
+        </select>
+    </div>
+    <div class="group">
+        <label>Фильтр по учреждениям</label>
+        <select id="filterInstitution">
+        </select>
+    </div>
+    <div class="group">
+        <label>Фильтр по приборам</label>
+        <select id="filterDevice">
+        </select>
+    </div>
+</div>
+
+<div class="year-buttons">
+    <button class="active" data-year="">Все</button>
+    <button data-year="2023">2023</button>
+    <button data-year="2024">2024</button>
+    <button data-year="2025">2025</button>
+    <button data-year="2026">2026</button>
+</div>
+
+<main>
+<div class="table-container">
+    <table id="visitTable">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Дата c</th>
+                <th>Дата по</th>
+                <th>Специалист</th>
+                <th>Учреждение</th>
+                <th>Прибор</th>
+                <th>Серийный №</th>
+                <th>Причина выезда</th>
+                <th>Выполненные работы</th>
+                <th>Акт</th>
+                <th>Удаление</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+</main>
+
+<script>
+// ===== Проверка авторизации =====
+if(localStorage.getItem('isLoggedIn') !== 'true') {
+    window.location.href = 'index.html';
+}
+document.getElementById('logout').addEventListener('click', ()=>{
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('user');
+    window.location.href = 'index.html';
+});
+
+// ===== ДАННЫЕ =====
+const specialists = [""];
+const institutions = [""];
+const devices = [""];
+
+function getFacilities() {
+    const url = `https://docs.google.com/spreadsheets/d/16ABEN54Ykbej-PhrbBjGlaHSXzNbD4PA8ecbpWc5QHQ/gviz/tq?gid=178416067`;
+    fetch(url)
+    .then(res => res.text())
+    .then(rep => {
+        const data2 = JSON.parse(rep.substr(47).slice(0,-2));
+        const length = data2.table.rows.length;
+        for (let i=1; i<length; i+=1) {
+            if(data2.table.rows[i].c[0] && data2.table.rows[i].c[0].v != null) institutions.push(data2.table.rows[i].c[0].v)
+            if(data2.table.rows[i].c[2] && data2.table.rows[i].c[2].v != null) specialists.push(data2.table.rows[i].c[2].v);
+            if(data2.table.rows[i].c[1] && data2.table.rows[i].c[1].v != null) devices.push(data2.table.rows[i].c[1].v);
+        }
+        fillSelect('filterSpecialist', specialists);
+        fillSelect('filterInstitution', institutions);
+        fillSelect('filterDevice', devices);
+    })
+}
+window.onload = getFacilities();
+
+
+const date1 = [];
+const date2 = [];
+const place = [];
+const machine = [];
+const sn = [];
+const applicator = [];
+const why = [];
+const done = [];
+const file = [];
+const deleteRow = [];
+let arr = {};
+function getListVisits() {
+    const url = `https://docs.google.com/spreadsheets/d/16ABEN54Ykbej-PhrbBjGlaHSXzNbD4PA8ecbpWc5QHQ/gviz/tq?gid=0`;
+    fetch(url)
+    .then(res => res.text())
+    .then(rep => {
+        const data2 = JSON.parse(rep.substr(47).slice(0,-2));
+        let data3=data2.table.rows;
+        const length = data3.length;
+        const localUser = localStorage.getItem('user');
+        for (let i=0; i<length; i+=1) {
+            (data3[i].c[0] && data3[i].c[0].v != null) ? date1.push(data3[i].c[0].v.split('Date(')[1].split(')')[0]) : date1.push('');
+            (data3[i].c[1] && data3[i].c[1].v != null) ? date2.push(data3[i].c[1].v.split('Date(')[1].split(')')[0]) : date2.push('');
+            (data3[i].c[2] && data3[i].c[2].v != null) ? place.push(data3[i].c[2].v) : place.push('');
+            (data3[i].c[3] && data3[i].c[3].v != null) ? machine.push(data3[i].c[3].v) : machine.push('');
+            (data3[i].c[4] && data3[i].c[4].v != null) ? sn.push(data3[i].c[4].v) : sn.push('');
+            (data3[i].c[5] && data3[i].c[5].v != null) ? applicator.push(data3[i].c[5].v) : applicator.push('');
+            (data3[i].c[6] && data3[i].c[6].v != null) ? why.push(data3[i].c[6].v) : why.push('');
+            (data3[i].c[7] && data3[i].c[7].v != null) ? done.push(data3[i].c[7].v) : done.push('');
+            (data3[i].c[8] && data3[i].c[8].v != null) ? file.push(data3[i].c[8].v) : file.push('');
+            (data3[i].c[10] && (data3[i].c[10].v == localUser) || localUser=='admin') ? deleteRow.push("X") : deleteRow.push('');
+        }
+        let testData = Array.from({length:date1.length},(_,i)=>({
+        id:i+1,
+        dateFrom:new Date(date1[i].split(',')[0],date1[i].split(',')[1],date1[i].split(',')[2]).toLocaleString('ru-RU', {year: 'numeric', month: '2-digit', day: '2-digit'}),
+        dateTo: new Date(date2[i].split(',')[0],date2[i].split(',')[1],date2[i].split(',')[2]).toLocaleString('ru-RU', {year: 'numeric', month: '2-digit', day: '2-digit'}),
+        specialist: applicator[i],
+        institution: place[i],
+        device: machine[i],
+        serial:sn[i],
+        reason:why[i],
+        work:done[i],
+        act:file[i],
+        change:deleteRow[i]
+        }));
+        arr = testData;
+        renderTable(testData);
+    })
+}
+window.onload = getListVisits();
+
+
+// ===== Заполнение селектов =====
+function fillSelect(id, array){
+    const sel = document.getElementById(id);
+    array.forEach(val=>{
+        const opt = document.createElement('option');
+        opt.value=val;
+        opt.textContent=val;
+        sel.appendChild(opt);
+    });
+}
+
+
+// ===== Таблица =====
+const tbody = document.querySelector('#visitTable tbody');
+function renderTable(data){
+    tbody.innerHTML = '';
+    data.forEach(row=>{
+        const tr = document.createElement('tr');
+        for(const key of ['id','dateFrom','dateTo','specialist','institution','device','serial','reason','work','act']){
+            const td = document.createElement('td');
+            td.textContent = row[key];
+            tr.appendChild(td);
+        }
+        for(const key of ['change']) {
+            const td = document.createElement('td');
+            if (row[key] == 'X') {
+                const deleteIcon = document.createElement('img');
+                deleteIcon.src = '/assets/img/deleteIcon2.png';
+                deleteIcon.classList.add('clickable');
+                deleteIcon.classList.add('icon');
+                deleteIcon.id = `img_${row['id']}`;
+                deleteIcon.width= 15;
+                deleteIcon.addEventListener('click', (e)=>{deleteVisitRow(e)})
+                td.appendChild(deleteIcon)
+            }
+            tr.appendChild(td)
+        }
+        tbody.appendChild(tr);
+    });
+}
+
+function deleteVisitRow(e) {
+    const row_number = e.target.id.split('img_')[1];
+    const date1 = new Date(`${arr[row_number-1].dateFrom.split('.')[2]}`,`${arr[row_number-1].dateFrom.split('.')[1]}`-1,`${Number(arr[row_number-1].dateFrom.split('.')[0])+1}`).toISOString().split('T')[0];
+    const date2 = new Date(`${arr[row_number-1].dateTo.split('.')[2]}`,`${arr[row_number-1].dateTo.split('.')[1]}`-1,`${Number(arr[row_number-1].dateTo.split('.')[0])+1}`).toISOString().split('T')[0];
+    const id = `${date1.replace(/[\.]/gi,'-')}_${date2.replace(/[\.]/gi,'-')}_${arr[row_number-1].institution}_${arr[row_number-1].device}_${arr[row_number-1].specialist}`
+    fetch(`https://sheetdb.io/api/v1/tkhtt2o9c61js/id/${id}?sheet=visits`, {
+        method: 'DELETE',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(res => res.text())
+    .then(rep => {
+        setTimeout(()=>{
+           window.location.reload(); 
+        },1500)
+    })
+}
+
+// ===== ФИЛЬТРАЦИЯ =====
+const filterSpecialist = document.getElementById('filterSpecialist');
+const filterInstitution = document.getElementById('filterInstitution');
+const filterDevice = document.getElementById('filterDevice');
+const yearButtons = document.querySelectorAll('.year-buttons button');
+
+function filterTable(){
+    const s = filterSpecialist.value;
+    const i = filterInstitution.value;
+    const d = filterDevice.value;
+    const year = document.querySelector('.year-buttons button.active').dataset.year;
+
+    const filtered = arr.filter(r=>{
+        return (!s || r.specialist===s)
+            && (!i || r.institution===i)
+            && (!d || r.device===d)
+            && (!year || r.dateFrom.endsWith(year));
+    });
+    renderTable(filtered);
+}
+
+filterSpecialist.addEventListener('change', filterTable);
+filterInstitution.addEventListener('change', filterTable);
+filterDevice.addEventListener('change', filterTable);
+
+yearButtons.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+        yearButtons.forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        filterTable();
+    });
+});
+</script>
+
+</body>
+</html>

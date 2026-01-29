@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>MG – Urine</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    background: #f3f3f3;
+}
+
+/* ===== HEADER ===== */
+header {
+    background: #111;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.header-left,
+.header-right {
+    flex: 0 0 auto;
+}
+
+.home {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: bold;
+    transition: transform 0.2s, color 0.2s;
+}
+
+/* Анимация наведения на MG */
+.home:hover {
+    color: #4caf50;
+    transform: scale(1.05);
+}
+
+.nav-icons {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    gap: 4%; /* увеличено расстояние между иконками на ПК */
+}
+
+.nav-icons a {
+    color: #aaa;
+    font-size: 14px;
+    text-decoration: none;
+    transition: color 0.2s, transform 0.2s;
+}
+
+/* Анимация наведения на иконки */
+.nav-icons a:hover {
+    color: #4caf50;
+    transform: scale(1.2);
+}
+
+.nav-icons a.active {
+    color: #4caf50;
+    transform: scale(1.2);
+}
+
+.logout-btn {
+    padding: 8px 14px;
+    background: #e74c3c;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+/* ===== MAIN ===== */
+main {
+    flex:1;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:16px;
+    overflow:auto;
+    background-image: url('/assets/img/button12.jpg');
+    background-size: cover;
+}
+
+/* ===== FORM CONTAINER ===== */
+.form-container {
+    width:100%;
+    max-width:1100px;
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(40px);
+    border-radius:16px;
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+}
+
+/* ===== FORM GRID ===== */
+.form-grid {
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap:12px;
+}
+
+.form-group {
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+}
+
+.form-group label {
+    font-weight:600;
+    color:#111;
+}
+
+.form-group input,
+.form-group select {
+    padding:10px 12px;
+    border-radius:8px;
+    border:none;
+    font-size:15px;
+}
+
+/* ===== BUTTONS ===== */
+.button-row {
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+}
+
+.button-row button {
+    flex:1;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:16px;
+    color:#fff;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.calc-btn { background:#4caf50; }
+.calc-btn:hover { background:#45a049; transform: scale(1.03); }
+
+.clear-form-btn { background:#ff9800; }
+.clear-form-btn:hover { background:#fb8c00; }
+
+.clear-result-btn { background:#e74c3c; }
+.clear-result-btn:hover { background:#d84335; }
+
+/* ===== TABLE ===== */
+.result-table {
+    margin-top:12px;
+    overflow-x:auto;
+}
+
+table {
+    width:100%;
+    border-collapse:collapse;
+    font-size:14px;
+}
+
+th, td {
+    padding:8px;
+    border-bottom:1px solid rgba(0,0,0,0.1);
+    text-align:center;
+}
+
+th {
+    background: rgba(0,0,0,0.05);
+    font-weight:600;
+}
+
+.red_status {
+    font-weight: 700;
+    color: red;
+    background-color: #fff;
+    text-align: center;
+    border-radius: 5px;
+}
+
+/* ===== MOBILE ===== */
+@media(max-width:700px){
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+@media (min-width: 900px) {
+    header {
+        height: 80px;
+        padding: 0 20px;
+    }
+
+    .nav-icons {
+        gap: 76px; /* увеличено расстояние между иконками */
+    }
+
+    .nav-icons a {
+        font-size: 22px;
+    }
+}
+</style>
+</head>
+<body>
+
+<header>
+    <div class="header-left">
+        <a href="/start.html" class="home"><i class="fa-solid fa-house"></i>MG</a>
+    </div>
+
+    <nav class="nav-icons">
+        <a href="/visit.html"><i class="fa-solid fa-car"></i></a>
+        <a href="/calc.html"  class="active"><i class="fa-solid fa-calculator"></i></a>
+        <a href="/generator.html"><i class="fa-solid fa-key"></i></a>
+        <a href="/barcode.html"><i class="fa-solid fa-barcode"></i></a>
+        <a href="/map.html"><i class="fa-solid fa-globe"></i></a>
+        <a href="/analyzers.html"><i class="fa-solid fa-book"></i></a>
+        <a href="/error.html"><i class="fa-solid fa-triangle-exclamation"></i></a>
+        <a href="/calendar.html"><i class="fa-regular fa-calendar"></i></a>
+        <a href="/devices.html"><i class="fa-solid fa-computer"></i></a>
+    </nav>
+
+    <div class="header-right">
+        <button class="logout-btn" id="logout">Выход</button>
+    </div>
+</header>
+
+<main>
+<div class="form-container">
+
+    <div class="form-grid">
+        <div class="form-group">
+            <label>Учреждение</label>
+            <input type="text" id="institution">
+        </div>
+
+        <div class="form-group">
+            <label>№ станций / приборов</label>
+            <input type="number" id="stations" value="1">
+        </div>
+
+        <div class="form-group">
+            <label>Сухой химии за период подсчета</label>
+            <input type="number" id="dryChem">
+        </div>
+
+        <div class="form-group">
+            <label>Микроскопий за период подсчета</label>
+            <input type="number" id="micro">
+        </div>
+
+        <div class="form-group">
+            <label>Рабочих дней в неделе</label>
+            <input type="number" id="workDays" value="5" max="7" min="1">
+        </div>
+
+        <div class="form-group">
+            <label>Подсчет на месяцев</label>
+            <input type="number" id="months" value="12">
+        </div>
+
+        <div class="form-group">
+            <label>Прибор</label>
+            <select id="device">
+                <option value="1">AX</option>
+                <option value="2">AX+IQ200</option>
+                <option value="3">Velocity</option>
+                <option value="4">Velocity+IQ200</option>
+                <option value="5">IQ200</option>
+                <option value="6">UA-5600</option>
+                <option value="7">EH-2090</option>
+                <option value="8">EU-8600</option>
+                <option value="9">EU-5300Pro</option>
+                <option value="10">EU-5600Pro</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>% повторов</label>
+            <input type="number" id="repeat" value="0">
+        </div>
+    </div>
+    <p class="red_status" id="confirmation_status"></p>
+    <div class="button-row">
+        <button class="calc-btn" id="calcBtn">Рассчитать</button>
+        <button class="clear-form-btn" id="clearFormBtn">Очистить форму</button>
+        <button class="clear-result-btn" id="clearResultBtn">Очистить результат</button>
+    </div>
+
+    <div class="result-table" id="result"></div>
+
+</div>
+</main>
+
+<script>
+// ===== AUTH =====
+if(localStorage.getItem('isLoggedIn') !== 'true'){
+    window.location.href = 'index.html';
+}
+document.getElementById('logout').onclick = ()=>{
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('user');
+    window.location.href = 'index.html';
+};
+
+function checkLogic() {
+    let criticalError = 0;
+    const device = document.getElementById('device');
+    const stations = document.getElementById('stations');
+    const dryChem = document.getElementById('dryChem');
+    const micro = document.getElementById('micro');
+    const alarm = document.getElementById('confirmation_status');
+    const days = document.getElementById('workDays');
+    const months = document.getElementById('months');
+    alarm.innerText = '';
+    if (Number(dryChem.value)== 0 && Number(micro.value)== 0) alarm.innerHTML = `Не указаны потоки. Проверьте правильность заполнения таблицы`
+    else if (Number(dryChem.value)< 0 || Number(micro.value)< 0) alarm.innerHTML = `Проверьте правильность заполнения годовых потоков`
+    else if (!Number(days.value)||Number(days.value)>7||Number(days.value)<1) alarm.innerHTML = `Проверьте правильность заполнения рабочих дней в неделе`
+    else if (!Number(months.value)||Number(months.value)<1) alarm.innerHTML = `Проверьте правильность заполнения количества месяцев для подсчета`
+    else if (!Number(stations.value)) alarm.innerHTML = `Проверьте правильность заполнения количества приборов/станций`
+    else if (device.value == 1 && Number(micro.value)!= 0) alarm.innerHTML = `Данный прибор не умеет делать микроскопию. <br/>Подсчет выполнен по параметрам сухой химии, для микроскопии выберете другой прибор/станцию`
+    else if (device.value == 3 && Number(micro.value)!= 0) alarm.innerHTML = `Данный прибор не умеет делать микроскопию. <br/>Подсчет выполнен по параметрам сухой химии, для микроскопии выберете другой прибор/станцию`
+    else if (device.value == 6 && Number(micro.value)!= 0) alarm.innerHTML = `Данный прибор не умеет делать микроскопию. <br/>Подсчет выполнен по параметрам сухой химии, для микроскопии выберете другой прибор/станцию`
+    else if (device.value == 5 && Number(dryChem.value)!= 0) alarm.innerHTML = `Данный прибор не умеет делать сухую химию. <br/>Подсчет выполнен по параметрам микроскопии, для сухой химии выберете другой прибор/станцию`
+    else if (device.value == 7 && Number(dryChem.value)!= 0) alarm.innerHTML = `Данный прибор не умеет делать сухую химию. <br/>Подсчет выполнен по параметрам микроскопии, для сухой химии выберете другой прибор/станцию`
+
+    if((Number(dryChem.value)== 0 && Number(micro.value)== 0) ||Number(dryChem.value)< 0 || Number(micro.value)< 0 || !Number(days.value) ||Number(days.value)>7||Number(days.value)<1|| !Number(months.value)||Number(months.value)<1|| !Number(stations.value)) criticalError = 1;
+    return criticalError;
+}
+
+// ===== CALC =====
+const resultDiv = document.getElementById('result');
+
+document.getElementById('calcBtn').onclick = ()=>{
+    const criticalError = checkLogic();
+    const device = document.getElementById('device');
+    const micro = document.getElementById('micro').value;
+    const chem = document.getElementById('dryChem').value;
+    const days = document.getElementById('workDays').value;
+    const months = document.getElementById('months').value;
+    const stations = document.getElementById('stations').value;
+    const repeat = Number((document.getElementById('repeat').value)/100)
+    const reagents = {
+        '1': [['Тест-полоски Aution Sticks 10EA, 100шт','Концентрированный моющий раствор, 1л','Контроль Biorad Liquichek Urine, 12x12мл'],['100563','79053','435 Bilevel']],
+        '2': [['Тест-полоски Aution Sticks 10EA, 100шт','Концентрированный моющий раствор, 1л','IQ Ламина, 2x7л','IQ Калибратор, 4x125мл','IQ Контроль/Фокус, 4x125мл','Контроль Biorad Liquichek Urine, 12x12мл','Iris Diluent, 4x475мл','Iris Cleanser, 4x425мл'],['100563','79053','800-3236','800-3103','800-3104','435 Bilevel','800-3202','800-3203']],
+        '3': [['Тест-полоски iChem Velocity Chemitry Strip, 100шт','Промывающий iChem Wash Solution, 2x7л', 'Контроли CA/CB/CC, 3x3x100мл', 'Калибратор CalChek Kit, 10x10мл, 2*5 полосок','Iris Diluent, 4x475мл','Iris Cleanser, 4x425мл'],['800-7204','800-7217','800-7702', '800-7703','800-3202','800-3203']],
+        '4': [['Тест-полоски iChem Velocity Chemitry Strip, 100шт','Промывающий iChem Wash Solution, 2x7л', 'Контроли CA/CB/CC, 3x3x100мл', 'Калибратор CalChek Kit, 10x10мл, 2*5 полосок', 'IQ Ламина, 2x7л','IQ Калибратор, 4x125мл','IQ Контроль/Фокус, 4x125мл','Iris Diluent, 4x475мл','Iris Cleanser, 4x425мл'],['800-7204','800-7217','800-7702', '800-7703','800-3236','800-3103','800-3104','800-3202','800-3203']],
+        '5': [['IQ Ламина, 2x7л','IQ Калибратор, 4x125мл','IQ Контроль/Фокус, 4x125мл','Iris Diluent, 4x475мл','Iris Cleanser, 4x425мл'],['800-3236','800-3103','800-3104','800-3202','800-3203']],
+        '6': [['Тест-полоски URS Strip 11 items, 1000шт','Промывающий EU-20, 2x5л', 'Probe Cleanser, 50мл', 'Контроль Biorad Liquichek Urine, 12x12мл'],['105-035331-00','105-039328-A0','105-002225-00', '435 Bilevel']],
+        '7': [['Промывающий EU-70, 2x5л', 'Probe Cleanser, 50мл', 'Контроль Biorad Liquichek Urine, 12x12мл'],['105-035270-A0','105-002225-00', '435 Bilevel']],
+        '8': [['Тест-полоски URS Strip 11 items, 1000шт','Промывающий EU-20, 2x5л','Промывающий EU-70, 2x5л', 'Probe Cleanser, 50мл', 'Контроль Biorad Liquichek Urine, 12x12мл'],['105-035331-00','105-039328-A0','105-035270-A0','105-002225-00', '435 Bilevel']],
+        '9': [['Тест-полоски URS Strip 11 items, 1000шт','Промывающий EU-50, 2x5л', 'Probe Cleanser, 50мл', 'Контроль Biorad Liquichek Urine, 12x12мл'],['105-035331-00','105-039227-A0','105-002225-00', '435 Bilevel']],
+        '10': [['Тест-полоски URS Strip 11 items, 1000шт','Промывающий EU-50, 2x5л', 'Probe Cleanser, 50мл', 'Контроль Biorad Liquichek Urine, 12x12мл'],['105-035331-00','105-039227-A0','105-002225-00', '435 Bilevel']],
+    }
+    if (criticalError == 0) {
+        let html = `
+        <table>
+            <thead>
+                <tr>
+                    <th>№</th>
+                    <th>Наименование</th>
+                    <th>Код</th>
+                    <th>Количество</th>
+                </tr>
+            </thead>
+            <tbody>
+        `;
+        let ax_stick = 0;
+        let ax_wash = 0;
+        let biorad = 0;
+        let ichem_stick = 0;
+        let ichem_wash = 0;
+        let ichem_control = 0;
+        let ichem_cal = 0;
+        let iq_wash = 0;
+        let iq_control = 0;
+        let iq_cal = 0;
+        let iris_dil = 0;
+        let iris_clean = 0;
+        let mindray_stick = 0;
+        let eu20 = 0;
+        let eu50 = 0;
+        let eu70 = 0;
+        let probe_cleanser = 0;
+        let result = []
+        if (device.value == 1){ 
+            ax_stick = Math.ceil((Number(chem)+Number(2*365/7*days*stations*months/12))/100*Number(1+repeat));
+            ax_wash = Math.ceil(chem/2500*Number(1+repeat));
+            biorad = Math.ceil(365/7*days*stations*months/12/8/6) //8 раз с бутылки, 6 бутылок каждого уровня
+            result.push([ax_stick,ax_wash,biorad])
+        } else if (device.value == 2){ 
+            ax_stick = Math.ceil((Number(chem)+Number(2*365/7*days*stations*months/12))/100*Number(1+repeat));
+            ax_wash = Math.ceil(chem/2500*Number(1+repeat));
+            iq_wash = Math.ceil((Number(micro)+Number(9*365/7*days*stations*months/12)+Number(stations*months/12*10))/485/2*Number(1+repeat));
+            iq_control = Math.ceil(Number(31/7*days*stations)<63?months:Number(365/7*days*stations*2*months/12/125));
+            iq_cal = Math.ceil(Number(Math.ceil(stations/4)/4*months))
+            iris_dil = Number(Math.ceil(months/12*stations));
+            iris_clean = Number(Math.ceil(months/12*stations));
+            biorad = Math.ceil(365/7*days*stations*months/12/8/6) //8 раз с бутылки, 6 бутылок каждого уровня
+            result.push([ax_stick,ax_wash,iq_wash, iq_cal,iq_control, biorad,iris_dil,iris_clean])
+        } else if (device.value == 3){ 
+            ichem_stick = Math.ceil((Number(chem)+Number(3*365/7*days*stations*months/12)+Number(stations*months*10))/100*Number(1+repeat));
+            ichem_wash = Math.ceil((Number(chem)+Number(3*365/7*days*stations*months/12)+Number(stations*months/12*10))/850/2*Number(1+repeat));
+            ichem_control = Math.ceil(Number(45/7*days*stations)<=90?months/1.5:Number(45/7*days*stations/90*months/1.5));
+            ichem_cal = Math.ceil(Number(Math.ceil(stations/3)/3*months))
+            iris_dil = Number(Math.ceil(months/12*stations));
+            iris_clean = Number(Math.ceil(months/12*stations));
+            result.push([ichem_stick,ichem_wash,ichem_control, ichem_cal,iris_dil,iris_clean])
+        } else if (device.value == 4){ 
+            ichem_stick = Math.ceil((Number(chem)+Number(3*365/7*days*stations*months/12)+Number(stations*months*10))/100*Number(1+repeat));
+            ichem_wash = Math.ceil((Number(chem)+Number(3*365/7*days*stations*months/12)+Number(stations*months/12*10))/850/2*Number(1+repeat));
+            ichem_control = Math.ceil(Number(45/7*days*stations)<=90?months/1.5:Number(45/7*days*stations/90*months/1.5));
+            ichem_cal = Math.ceil(Number(Math.ceil(stations/3)/3*months))
+            iq_wash = Math.ceil((Number(micro)+Number(9*365/7*days*stations*months/12)+Number(stations*months/12*10))/485/2*Number(1+repeat));
+            iq_control = Math.ceil(Number(31/7*days*stations)<63?months:Number(365/7*days*stations*2*months/12/125));
+            iq_cal = Math.ceil(Number(Math.ceil(stations/4)/4*months))
+            iris_dil = Number(Math.ceil(months/12*stations));
+            iris_clean = Number(Math.ceil(months/12*stations));
+            result.push([ichem_stick,ichem_wash,ichem_control, ichem_cal,iq_wash, iq_cal,iq_control,iris_dil,iris_clean])
+        } else if (device.value == 5){ 
+            iq_wash = Math.ceil((Number(micro)+Number(9*365/7*days*stations*months/12)+Number(stations*months/12*10))/485/2*Number(1+repeat));
+            iq_control = Math.ceil(Number(31/7*days*stations)<63?months:Number(365/7*days*stations*2*months/12/125));
+            iq_cal = Math.ceil(Number(Math.ceil(stations/4)/4*months))
+            iris_dil = Number(Math.ceil(months/12*stations));
+            iris_clean = Number(Math.ceil(months/12*stations));
+            result.push([iq_wash, iq_cal,iq_control,iris_dil,iris_clean])
+        } else if (device.value == 6){ 
+            mindray_stick = Math.ceil((Number(chem)+Number(2*365/7*days*stations*months/12))/1000*Number(1+repeat));
+            eu20 = Math.ceil(((Number(chem)+Number(2*365/7*days*stations*months/12))*4.5+30*Number(365/7*days*stations*months/12))/4830/2*Number(1+repeat));
+            probe_cleanser = Math.ceil(Number(365/7*days*stations/50*5*months/12));
+            biorad = Math.ceil(365/7*days*stations*months/12/8/6) //8 раз с бутылки, 6 бутылок каждого уровня
+            result.push([mindray_stick,eu20,probe_cleanser, biorad])
+        } else if (device.value == 7){ 
+            eu70 = Math.ceil(((Number(micro)+Number(2*365/7*days*stations*months/12))*14+135*Number(365/7*days*stations*months/12))/4750/2*Number(1+repeat));
+            probe_cleanser = Math.ceil(Number(365/7*days*stations/50*5*months/12));
+            biorad = Math.ceil(365/7*days*stations*months/12/8/6) //8 раз с бутылки, 6 бутылок каждого уровня
+            result.push([eu70,probe_cleanser, biorad])
+        } else if (device.value == 8){ 
+            mindray_stick = Math.ceil((Number(chem)+Number(2*365/7*days*stations*months/12))/1000*Number(1+repeat));
+            eu20 = Math.ceil(((Number(chem)+Number(2*365/7*days*stations*months/12))*4.5+30*Number(365/7*days*stations*months/12))/4830/2*Number(1+repeat));
+            eu70 = Math.ceil(((Number(micro)+Number(2*365/7*days*stations*months/12))*14+135*Number(365/7*days*stations*months/12))/4750/2*Number(1+repeat));
+            probe_cleanser = Math.ceil(Number(365/7*days*stations/50*10*months/12));
+            biorad = Math.ceil(365/7*days*stations*months/12/4/6) //4 раз с бутылки, 6 бутылок каждого уровня
+            result.push([mindray_stick,eu20,eu70,probe_cleanser, biorad])
+        } else if (device.value == 9){ 
+            mindray_stick = Math.ceil((Number(chem)+Number(2*365/7*days*stations*months/12))/1000*Number(1+repeat));
+            eu50 = Math.ceil(((Number(micro)+Number(2*365/7*days*stations*months/12))*16+(Number(chem)>Number(micro)?Number(chem)-Number(micro):0)*4 +92*Number(365/7*days*stations*months/12))/4830/2*Number(1+repeat));
+            probe_cleanser = Math.ceil(Number(365/7*days*stations/50*4*months/12));
+            biorad = Math.ceil(365/7*days*stations*months/12/6/6) //6 раз с бутылки, 6 бутылок каждого уровня
+            result.push([mindray_stick,eu50,probe_cleanser, biorad])
+        } else if (device.value == 10){ 
+            mindray_stick = Math.ceil((Number(chem)+Number(2*365/7*days*stations*months/12))/1000*Number(1+repeat));
+            eu50 = Math.ceil(((Number(micro)+Number(2*365/7*days*stations*months/12))*16+(Number(chem)>Number(micro)?Number(chem)-Number(micro):0)*4 +124*Number(365/7*days*stations*months/12))/4830/2*Number(1+repeat));
+            probe_cleanser = Math.ceil(Number(365/7*days*stations/50*6*months/12));
+            biorad = Math.ceil(365/7*days*stations*months/12/6/6) //6 раз с бутылки, 6 бутылок каждого уровня
+            result.push([mindray_stick,eu50,probe_cleanser, biorad])
+        }
+        for(let i=0;i<reagents[device.value][0].length;i++){
+            html += `
+            <tr>
+                <td>${i+1}</td>
+                <td>${reagents[device.value][0][i]}</td>
+                <td>${reagents[device.value][1][i]}</td>
+                <td>${result[0][i]}</td>
+            </tr>`;
+        }
+        html += '</tbody></table>';
+        resultDiv.innerHTML = html;
+    }
+    
+};
+
+// ===== CLEAR FORM =====
+document.getElementById('clearFormBtn').onclick = ()=>{
+    document.querySelectorAll('.form-grid input').forEach(inp=>{
+        if(inp.id !== 'months' && inp.id !== "stations" && inp.id !== "repeat") inp.value = '';
+        if(inp.id == "repeat") inp.value = 0;
+        if(inp.id == "months") inp.value = 12;
+        if(inp.id == "stations") inp.value = 1;
+    });
+    document.getElementById('device').selectedIndex = 0;
+};
+
+// ===== CLEAR RESULT =====
+document.getElementById('clearResultBtn').onclick = ()=>{
+    resultDiv.innerHTML = '';
+};
+</script>
+
+</body>
+</html>

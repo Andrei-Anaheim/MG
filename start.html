@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>MG – Start</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    background: #f3f3f3;
+}
+
+/* ===== HEADER ===== */
+header {
+    height: 80px;
+    background: #111;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    flex-shrink: 0;
+}
+
+header h1 {
+    font-size: 36px;
+    letter-spacing: 4px;
+}
+
+/* SEARCH */
+.header-search {
+    position: absolute;
+    right: 140px; /* слева от кнопки выхода */
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    outline: none;
+}
+
+.header-search:focus {
+    border-color: #e74c3c;
+}
+
+/* LOGOUT */
+.logout-btn {
+    position: absolute;
+    right: 24px;
+    padding: 10px 20px;
+    background: #e74c3c;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.logout-btn:hover {
+    background: #c0392b;
+}
+
+/* ===== MAIN ===== */
+main {
+    flex: 1;
+    padding: 12px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+}
+
+/* ===== TILE ===== */
+.tile {
+    position: relative;
+    display: block;
+    text-decoration: none;
+    color: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    height: 140px;
+}
+
+.tile::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+}
+
+.tile span {
+    position: relative;
+    z-index: 1;
+    display: block;
+    padding: 18px;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+/* ===== ПЛАНШЕТ ===== */
+@media (min-width: 600px) and (max-width: 899px) {
+    main {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+    }
+
+    .tile {
+        height: 220px;
+    }
+}
+
+/* ===== ПК ===== */
+@media (min-width: 900px) {
+    main {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+        height: calc(100vh - 80px);
+        padding: 24px;
+    }
+
+    .tile {
+        height: calc((100vh - 100px - 24px * 3) / 3);
+    }
+
+    .tile span {
+        font-size: 42px;
+    }
+
+    .tile:hover {
+        transform: scale(1.02);
+        box-shadow: 0 14px 32px rgba(0, 0, 0, 0.35);
+    }
+}
+
+/* ===== ФОНЫ ===== */
+.exits { background-image: url("/assets/img/button1.jpg"); }
+.calc  { background-image: url("/assets/img/button2.jpg"); }
+.pass  { background-image: url("/assets/img/button3.jpg"); }
+.bar   { background-image: url("/assets/img/button4.jpg"); }
+.map   { background-image: url("/assets/img/button5.jpg"); }
+.dev   { background-image: url("/assets/img/button6.jpg"); }
+.err   { background-image: url("/assets/img/button8_1.jpg"); }
+.calendar   { background-image: url("/assets/img/button8_2.jpg"); }
+.book   { background-image: url("/assets/img/button7.jpg"); }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>MG</h1>
+
+    <input
+        type="search"
+        class="header-search"
+        placeholder="Поиск ошибки по коду..."
+        aria-label="Поиск"
+    />
+
+    <button class="logout-btn" id="logout">Выход</button>
+</header>
+
+<main>
+    <a href="/visit.html" class="tile exits"><span>Выезды</span></a>
+    <a href="/calc.html" class="tile calc"><span>Калькуляторы</span></a>
+    <a href="/generator.html" class="tile pass"><span>Пароль</span></a>
+    <a href="/barcode.html" class="tile bar"><span>Штрихкод</span></a>
+    <a href="/map.html" class="tile map"><span>Карта</span></a>
+    <a href="/analyzers.html" class="tile book"><span>Энциклопедия</span></a>
+    <a href="/error.html" class="tile err"><span>Ошибки</span></a>
+    <a href="/calendar.html" class="tile calendar"><span>Календарь</span></a>
+    <a href="/devices.html" class="tile dev"><span>Приборы</span></a>
+</main>
+
+<script>
+    // Проверка авторизации
+    if (localStorage.getItem("isLoggedIn") !== "true") {
+        window.location.href = "index.html";
+    }
+
+    // Выход
+    document.getElementById("logout").addEventListener("click", () => {
+        localStorage.removeItem("isLoggedIn");
+        localStorage.removeItem("user");
+        window.location.href = "index.html";
+    });
+
+    // Поиск → переход на error.html
+    const searchInput = document.querySelector(".header-search");
+
+    searchInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            const value = searchInput.value.trim();
+            if (!value) return;
+
+            window.location.href =
+                "/error.html?error=" + encodeURIComponent(value);
+        }
+    });
+</script>
+
+</body>
+</html>

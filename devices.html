@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>MG – Список</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    background: #f3f3f3;
+}
+
+/* ===== HEADER ===== */
+header {
+    background: #111;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.header-left,
+.header-right {
+    flex: 0 0 auto;
+}
+
+.home {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: bold;
+    transition: transform 0.2s, color 0.2s;
+}
+
+/* Анимация наведения на MG */
+.home:hover {
+    color: #4caf50;
+    transform: scale(1.05);
+}
+
+.nav-icons {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    gap: 4%; /* увеличено расстояние между иконками на ПК */
+}
+
+.nav-icons a {
+    color: #aaa;
+    font-size: 14px;
+    text-decoration: none;
+    transition: color 0.2s, transform 0.2s;
+}
+
+/* Анимация наведения на иконки */
+.nav-icons a:hover {
+    color: #4caf50;
+    transform: scale(1.2);
+}
+
+.nav-icons a.active {
+    color: #4caf50;
+    transform: scale(1.2);
+}
+
+.logout-btn {
+    padding: 8px 14px;
+    background: #e74c3c;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+/* ===== FILTERS ===== */
+.filters-container {
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    justify-content:center;
+    padding:12px;
+    background:#aaa;
+}
+.filters-container select {
+    padding:8px 12px;
+    border-radius:8px;
+    border:none;
+    font-size:14px;
+    min-width:150px;
+}
+
+.filters-container input{
+    margin-top: 23px;
+    height: 34px;
+    border-radius: 8px;
+    border: none;
+    font-size: 16px;
+}
+.searchButton {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+.searchButton button {
+    height: 48px;
+    background: #e74c3c;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 25%;
+    margin: 5px auto;
+}
+
+.searchButton button:hover {
+    background: #c0392b;
+}
+
+/* ===== TABLE ===== */
+main { flex:1; display:flex; flex-direction:column; overflow:auto; }
+.table-container {
+    width:100%;
+    flex:1;
+    overflow-x:auto;
+}
+
+/* .device-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+} */
+
+/* .device-table th,
+.device-table td {
+  border: 1px solid #ddd;
+  padding: 6px 8px;
+  vertical-align: top;
+  word-wrap: break-word;
+} */
+
+/* .device-table th {
+  background: #f5f5f5;
+  text-align: left;
+}
+
+Ширины колонок */
+.col-id { width: 3%; }
+.col-device { width: 7%; text-align: center;}
+.col-sn { width: 10%; text-align: center;}
+.col-install { width: 5%; text-align: center;}
+.col-todate { width: 10%; text-align: center;}
+.col-buttons { width: 5%; text-align: center;}
+
+.col-facility { width: 18%; }
+.col-status { width: 15%; text-align: center;}
+.col-lasttext { width: 27%; }
+
+/* Кнопки */
+/* .col-buttons button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-right: 6px;
+  font-size: 16px;
+}
+
+.col-buttons button:hover {
+  color: #007bff;
+}  */
+
+/*____________________*/
+table {
+    width:100%;
+    border-collapse: collapse;
+    color:#111;
+    font-size:14px;
+}
+
+thead th {
+    background: rgba(0,0,0,0.75);
+    color: white;
+    padding:8px;
+    position: sticky;
+    top:0;
+    z-index:1;
+}
+
+tbody td {
+    padding:8px;
+    border-bottom:1px solid rgba(0,0,0,0.1);
+}
+.group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.group label {
+    font-weight:bold;
+    margin-bottom:4px;
+    display:block;
+    color:#534242;
+}
+
+
+/*Popup*/
+
+
+.popup {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.popup.hidden {
+  display: none;
+}
+
+.popup-content {
+  position: relative;   /* ← ВАЖНО */
+  background: #fff;
+  width: 70%;
+  max-height: 80%;
+  overflow-y: auto;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.popup-close {
+  position: absolute;
+  right: 20px;
+  top: 15px;
+  font-size: 22px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.history-block {
+  margin-top: 16px;
+}
+
+.history-block h4 {
+  margin-bottom: 6px;
+}
+
+.history-row {
+  padding-left: 16px;
+  font-size: 14px;
+}
+
+.popup-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.popup-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.popup-field label {
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+.popup-field input,
+.popup-field select,
+.popup-field textarea {
+  padding: 8px;
+  font-size: 14px;
+}
+
+.popup-field textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.popup-submit {
+  padding: 10px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.popup-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.errors {
+  background-color: #db7266;
+}
+
+.waiting_problems {
+  background-color: #dbd966;
+}
+.stopped {
+  background-color: #c5c5bf;
+}
+.not_started {
+  background-color: #84c5ce;
+}
+.popup-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.popup-table th,
+.popup-table td {
+  padding: 8px 10px;
+  text-align: center;
+  vertical-align: top;
+}
+
+.popup-table th {
+  background: #382626;
+  font-weight: 600;
+}
+
+.popup-table tbody tr:nth-child(even) {
+  background: #fafafa;
+}
+
+.icon {
+    cursor: pointer;
+}
+
+.code_1 {
+    background-color: #db7266;
+}
+
+.code_2 {
+    background-color: #ebe96f;
+}
+
+
+
+/* ===== MOBILE HIDE COLUMNS ===== */
+@media(max-width:899px){
+    table th:nth-child(1),
+    table th:nth-child(5),
+    table th:nth-child(7),
+    table th:nth-child(8) {
+        display:none;
+    }
+
+    table td:nth-child(1),
+    table td:nth-child(5),
+    table td:nth-child(7),
+    table td:nth-child(8) {
+        display:none;
+    }
+table {max-width: 100vw; font-size: 8px; text-align: center;}
+.col-device { width: 10%;}
+.col-sn { width: 10%; }
+.col-buttons { width: 15%; }
+.col-facility { width: 40%; text-align: left;}
+.col-status { width: 25%; }
+}
+
+@media(min-width:900px){
+     header {
+        height: 80px;
+        padding: 0 20px;
+    }
+
+    .nav-icons {
+        gap: 76px; /* увеличено расстояние между иконками */
+    }
+
+    .nav-icons a {
+        font-size: 22px;
+    }
+    .searchButton button {
+    width: 10%;
+}
+}
+</style>
+</head>
+<body>
+
+<header>
+    <div class="header-left">
+        <a href="start.html" class="home"><i class="fa-solid fa-house"></i>MG</a>
+    </div>
+
+    <nav class="nav-icons">
+        <a href="/visit.html"><i class="fa-solid fa-car"></i></a>
+        <a href="/calc.html"><i class="fa-solid fa-calculator"></i></a>
+        <a href="/generator.html"><i class="fa-solid fa-key"></i></a>
+        <a href="/barcode.html"><i class="fa-solid fa-barcode"></i></a>
+        <a href="/map.html"><i class="fa-solid fa-globe"></i></a>
+        <a href="/analyzers.html"><i class="fa-solid fa-book"></i></a>
+        <a href="/error.html"><i class="fa-solid fa-triangle-exclamation"></i></a>
+        <a href="/calendar.html"><i class="fa-regular fa-calendar"></i></a>
+        <a href="/devices.html" class="active"><i class="fa-solid fa-computer"></i></a>
+    </nav>
+
+    <div class="header-right">
+        <button class="logout-btn" id="logout">Выход</button>
+    </div>
+</header>
+
+<div class="filters-container">
+    <input type="text" id="snInput" placeholder="Введите SN прибора">
+    <div class="group">
+        <label>Фильтр по учреждениям</label>
+        <select id="filterInstitution">
+        </select>
+    </div>
+    <div class="group">
+        <label>Фильтр по приборам</label>
+        <select id="filterDevice">
+        </select>
+    </div>
+</div>
+<div class="searchButton">
+    <button onclick=openWIP()>График ТО</button>
+    <button id="reloadButton">Обновить</button>
+    <button onclick=openProblems()>Список проблем</button>
+</div>
+
+<main>
+<div class="table-container">
+    <table id="deviceTable" class="device-table">
+        <thead>
+            <tr>
+            <th class="col-id">№</th>
+            <th class="col-facility">Учреждение</th>
+            <th class="col-device">Прибор</th>
+            <th class="col-sn">SN</th>
+            <th class="col-install">Инсталляция</th>
+            <th class="col-status">Статус</th>
+            <th class="col-todate">Дата ТО</th>
+            <th class="col-lasttext">Последний комментарий</th>
+            <th class="col-buttons">Управление</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<div id="historyPopup" class="popup hidden">
+  <div class="popup-content">
+    <button class="popup-close" onclick="closeHistory()">×</button>
+    <div id="historyContent"></div>
+  </div>
+</div>
+
+<div id="workInProgressPopup" class="popup hidden">
+  <div class="popup-content">
+    <button class="popup-close" onclick="closeWIP()">×</button>
+    <div id="WIPContent"></div>
+  </div>
+</div>
+
+<div id="tablePopup" class="popup hidden">
+  <div class="popup-content popup-large">
+    <button class="popup-close" onclick="closeTablePopup()">×</button>
+
+    <h3>Отчет по проблемным приборам по состоянию на:</h3><input type="date" id="dateFilterProblems">
+
+    <table class="popup-table">
+      <thead>
+        <tr>
+          <th>№</th>
+          <th>Учреждение</th>
+          <th>Прибор</th>
+          <th>Серийный</th>
+          <th>Статус</th>
+          <th>Дата создания</th>
+          <th>Комментарии</th>
+        </tr>
+      </thead>
+      <tbody id="popupTableBody">
+        <!-- строки добавляются из JS -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div id="addPopup" class="popup hidden">
+  <div class="popup-content">
+    <button class="popup-close" onclick="closeAddPopup()">×</button>
+    <div class="popup-row">
+      <div class="popup-field">
+        <label>Дата</label>
+        <input type="date" id="addDate">
+      </div>
+
+      <div class="popup-field">
+        <label>Выберите статус прибора</label>
+        <select id="addStatusSelect"></select>
+      </div>
+    </div>
+
+    <div class="popup-field">
+      <label>Комментарий</label>
+      <textarea
+        id="addComment"
+        placeholder="Введите комментарий о текущих изменениях"
+      ></textarea>
+    </div>
+
+    <button id="addSubmitBtn" class="popup-submit" disabled>
+      Внести изменения
+    </button>
+  </div>
+</div>
+</main>
+
+<script>
+// ===== Проверка авторизации =====
+if(localStorage.getItem('isLoggedIn') !== 'true') {
+    window.location.href = 'index.html';
+}
+document.getElementById('logout').addEventListener('click', ()=>{
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('user');
+    window.location.href = 'index.html';
+});
+
+// ===== ДАННЫЕ =====
+const specialists = [""];
+const institutions = [""];
+const devices = [""];
+
+const today = new Date().toISOString().slice(0, 10);
+document.getElementById("dateFilterProblems").value = today;
+
+document.getElementById('reloadButton').addEventListener('click', ()=>{window.location.reload()})
+
+function getFacilities() {
+    const url = `https://docs.google.com/spreadsheets/d/16ABEN54Ykbej-PhrbBjGlaHSXzNbD4PA8ecbpWc5QHQ/gviz/tq?gid=178416067`;
+    fetch(url)
+    .then(res => res.text())
+    .then(rep => {
+        const data2 = JSON.parse(rep.substr(47).slice(0,-2));
+        const length = data2.table.rows.length;
+        for (let i=1; i<length; i+=1) {
+            if(data2.table.rows[i].c[0] && data2.table.rows[i].c[0].v != null) institutions.push(data2.table.rows[i].c[0].v);
+            if(data2.table.rows[i].c[1] && data2.table.rows[i].c[1].v != null) devices.push(data2.table.rows[i].c[1].v);
+        }
+        fillSelect('filterInstitution', institutions);
+        fillSelect('filterDevice', devices);
+    })
+}
+// window.onload = getFacilities();
+
+
+
+const place = [];
+const machine = [];
+const sn = [];
+const installDate = [];
+const status = [];
+let arr = [];
+let arrFiltered = [];
+let history = [];
+function getListVisits() {
+    const url = `https://docs.google.com/spreadsheets/d/16ABEN54Ykbej-PhrbBjGlaHSXzNbD4PA8ecbpWc5QHQ/gviz/tq?gid=369401196`;
+    fetch(url)
+    .then(res => res.text())
+    .then(rep => {
+        const data2 = JSON.parse(rep.substr(47).slice(0,-2));
+        let data3=data2.table.rows;
+        for (let i=0; i<data3.length; i+=1) {
+            arr.push({
+                facility: (data3[i].c[1] && data3[i].c[1].v != null) ? data3[i].c[1].v : '',
+                device: (data3[i].c[3] && data3[i].c[3].v != null) ? data3[i].c[3].v : '',
+                sn: (data3[i].c[4] && data3[i].c[4].v != null) ? data3[i].c[4].v : '',
+                installDate: (data3[i].c[2] && data3[i].c[2].v != null) ? data3[i].c[2].v : '',
+                toDate:  (data3[i].c[6] && data3[i].c[6].v != null) ? data3[i].c[6].v : '', 
+                status: (data3[i].c[5] && data3[i].c[5].v != null) ? data3[i].c[5].v : '',
+            });
+        }
+        arrFiltered = arr.filter(e=>e.status != "Н/А");
+        return arr
+        // console.log(arr);
+        // console.log(arr.filter(e=>e.status != "Н/А"));
+        // renderTable(arr.filter(e=>e.status != "Н/А"));
+    })
+}
+
+function getDevicesHistory() {
+    const url = `https://docs.google.com/spreadsheets/d/16ABEN54Ykbej-PhrbBjGlaHSXzNbD4PA8ecbpWc5QHQ/gviz/tq?gid=440589172`;
+    fetch(url)
+    .then(res => res.text())
+    .then(rep => {
+        const data2 = JSON.parse(rep.substr(47).slice(0,-2));
+        let data3=data2.table.rows;
+        for (let i=0; i<data3.length; i+=1) {
+            history.push({
+                facility: (data3[i].c[0] && data3[i].c[0].v != null) ? data3[i].c[0].v : '',
+                device: (data3[i].c[1] && data3[i].c[1].v != null) ? data3[i].c[1].v : '',
+                sn: (data3[i].c[2] && data3[i].c[2].v != null) ? data3[i].c[2].v : '',
+                changeDate: (data3[i].c[3] && data3[i].c[3].v != null) ? data3[i].c[3].v : '',
+                deviceStatus:  (data3[i].c[4] && data3[i].c[4].v != null) ? data3[i].c[4].v : '', 
+                statusInfo: (data3[i].c[5] && data3[i].c[5].v != null) ? data3[i].c[5].v : '',
+            });
+        }
+    })
+}
+
+function getAllImportantInfo() {
+    getListVisits();
+    getFacilities();
+    getDevicesHistory();
+    setTimeout(()=>{renderTable(arrFiltered,history)},2500)
+}
+// window.onload = getListVisits();
+window.onload = getAllImportantInfo();
+
+function buildHistoryMap(history) {
+  const map = {};
+
+  history.forEach(item => {
+    map[item.sn] = item; // перезаписываем → остаётся последняя
+  });
+
+  return map;
+}
+
+// ===== Заполнение селектов =====
+function fillSelect(id, array){
+    const sel = document.getElementById(id);
+    array.forEach(val=>{
+        const opt = document.createElement('option');
+        opt.value=val;
+        opt.textContent=val;
+        sel.appendChild(opt);
+    });
+}
+
+
+// ===== Таблица =====
+// const tbody = document.querySelector('#visitTable tbody');
+const statusOptions = [
+  "В работе",
+  "В работе, мониторинг проблемы",
+  "В работе, ждет ремонта",
+  "В работе, задача на ТО",
+  "В работе, мониторинг после ремонта",
+  "В работе, требуется обновление",
+  "В работе, требуется перемещение",
+  "Не в работе",
+  "Не в работе, ждет ремонта",
+  "Не в работе, ждет замены прибора",
+  "Законсервирован",
+  "Законсервирован, ждет вывоза",
+  "Законсервирован, ждет реагентов",
+  "У клиента, не запущен",
+  "Перемещен на склад",
+  "Другое"
+];
+
+function renderTable(devices, history) {
+  const tbody = document.querySelector("#deviceTable tbody");
+  tbody.innerHTML = "";
+
+  const historyMap = buildHistoryMap(history);
+  devices.forEach((item, index) => {
+    const h = historyMap[item.sn] || {};
+
+    const tr = document.createElement("tr");
+    if (h[h.length-1]) {
+      let colorCode = (statusOptions.indexOf(h[h.length-1].deviceStatus) == 7 || statusOptions.indexOf(h[h.length-1].deviceStatus) == 8|| statusOptions.indexOf(h[h.length-1].deviceStatus) == 9)? 'code_1' : (statusOptions.indexOf(h[h.length-1].deviceStatus) == 2? 'code_2' : "");
+      tr.className = colorCode;
+    }
+    // if(index == 0) console.log(h[h.length-1].facility, h[h.length-1].deviceStatus,h[h.length-1].statusInfo)
+    tr.innerHTML = `
+      <td class="col-id">${index + 1}</td>
+      <td class="col-facility">${item.facility}</td>
+      <td class="col-device">${item.device}</td>
+      <td class="col-sn">${item.sn}</td>
+      <td class="col-install">${item.installDate}</td>
+      <td class="col-status">${!h[h.length-1]? "В работе" : h[h.length-1].deviceStatus}</td>
+      <td class="col-todate">${item.toDate}</td>
+      <td class="col-lasttext">${h[h.length-1]? h[h.length-1].statusInfo : ""}</td>
+      <td class="col-buttons">
+        <button title="История" onclick="openHistory('${item.sn}')"">
+            <i class="fa-solid fa-clipboard-list"></i>
+        </button>
+        <button title="Добавить" onclick="openAddPopup('${item.sn}')"">
+            <i class="fa-solid fa-square-plus"></i>
+        </button>
+      </td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+}
+
+function createStatusSelect(selectedStatus) {
+  return `
+    <select>
+      ${statusOptions.map(opt => `
+        <option value="${opt}" ${opt === selectedStatus ? "selected" : ""}>
+          ${opt}
+        </option>
+      `).join("")}
+    </select>
+  `;
+}
+
+
+// ===== ФИЛЬТРАЦИЯ =====
+const filterInstitution = document.getElementById('filterInstitution');
+const filterDevice = document.getElementById('filterDevice');
+const snInput = document.getElementById('snInput');
+function filterTable() {
+  const i = filterInstitution.value;
+  const d = filterDevice.value;
+  const s = snInput.value.trim().toLowerCase();
+
+  const filtered = arr
+    .filter(e => e.status !== "Н/А")
+    .filter(r => {
+      return (!i || r.facility === i)
+        && (!d || r.device === d)
+        && (!s || String(r.sn).toLowerCase().includes(s));
+    });
+
+  renderTable(filtered, history);
+}
+snInput.addEventListener('input', filterTable);
+filterInstitution.addEventListener('change', filterTable);
+filterDevice.addEventListener('change', filterTable);
+
+function changeDate(str) {
+    if(str) return new Date(str.split('Date(')[1].split(')')[0].split(',')[0],str.split('Date(')[1].split(')')[0].split(',')[1],str.split('Date(')[1].split(')')[0].split(',')[2]).toLocaleString('ru-RU', {year: 'numeric', month: '2-digit', day: '2-digit'})
+}
+
+function countDate(str) {
+    if(str) return Number(str.split('Date(')[1].split(')')[0].split(',')[0])*10000 + Number(str.split('Date(')[1].split(')')[0].split(',')[1])*100 +Number(str.split('Date(')[1].split(')')[0].split(',')[2])
+}
+
+function dateDiff(dateStr1, dateStr2) {
+  const parse = str => {
+    if (str) {
+      const [, y, m, d] = str.match(/Date\((\d+),\s*(\d+),\s*(\d+)\)/);
+      return new Date(+y, +m, +d);
+    } else {
+      return new Date(2000,0,1);
+    }
+    
+  };
+
+  const d1 = parse(dateStr1);
+  const d2 = parse(dateStr2);
+
+  const diffMs = (d2 - d1);
+  return Math.floor(diffMs / (1000 * 60 * 60 * 24));
+}
+
+function openHistory(sn) {
+  const popup = document.getElementById("historyPopup");
+  const container = document.getElementById("historyContent");
+    
+  const deviceItem = arr.filter(d => String(d.sn) === String(sn));
+  const historyBySn = history.filter(h => String(h.sn) === String(sn));
+//   if (!deviceItem || historyBySn.length === 0) {
+//     container.innerHTML = "<p>История не найдена</p>";
+//     popup.classList.remove("hidden");
+//     return;
+//   }
+console.log(arr)
+console.log(deviceItem)
+  console.log(historyBySn)
+  const lastHistory = historyBySn[historyBySn.length - 1];
+  // группировка по facility
+  const grouped = historyBySn.reduce((acc, item) => {
+    acc[item.facility] = acc[item.facility] || [];
+    acc[item.facility].push(item);
+    return acc;
+  }, {});
+  console.log(grouped)
+  let html = `
+    <p><strong>${deviceItem[deviceItem.length-1].device} - ${sn}</strong></p>
+    <p>Текущее расположение: <strong>${deviceItem[deviceItem.length-1].facility}</strong></p>
+    <p>История расположения прибора: <strong>${deviceItem.map(e => e.facility).join(", ")}</strong></p>
+    <p>Текущий статус: <strong>${lastHistory?lastHistory.deviceStatus:"В работе"}</strong></p> 
+    <p>Последнее изменение: ${lastHistory?changeDate(lastHistory.changeDate):"-"}</p>
+  `;
+
+  let index = 1;
+  if (deviceItem.length == 0 || historyBySn.length === 0) {
+    container.innerHTML = html;
+    container.innerHTML +="<br/><p>История проблем прибора не найдена</p>";
+  } else {
+    for (const facility in grouped) {
+        html += `<div class="history-block">
+        <h4>${index}. ${facility}</h4>
+        `;
+
+        grouped[facility].forEach(item => {
+        html += `
+            <div class="history-row">
+            ${changeDate(item.changeDate)} — ${item.deviceStatus} — ${item.statusInfo}
+            </div>
+        `;
+        });
+
+        html += `</div>`;
+        index++;
+        container.innerHTML = html;
+    }
+  }
+  popup.classList.remove("hidden");
+}
+
+function openWIP() {
+  const popup = document.getElementById("workInProgressPopup");
+  const container = document.getElementById("WIPContent");
+
+  let html = `<p><strong>Работа над разделом будет продолжена, когда МТС предоставит текущий список выполненных ТО</strong></p>`
+  container.innerHTML = html;
+  popup.classList.remove("hidden");
+}
+
+function toDateString(str) {
+  const [y, m, d] = str.split("-");
+  return `Date(${y},${Number(m) - 1},${d})`;
+}
+document.getElementById("dateFilterProblems").addEventListener('change', openProblems);
+
+function filterNotWorkingAfterWorkingBySn(historyMap) {
+  const result = {};
+
+  for (const [sn, records] of Object.entries(historyMap)) {
+    let lastWorkingIndex = -1;
+    records.forEach((r, i) => {
+      if (r.deviceStatus === "В работе"||r.deviceStatus === "В работе, мониторинг проблемы") {
+        lastWorkingIndex = i;
+      }
+    });
+    const lastRecord = records[records.length - 1];
+    if (lastRecord.deviceStatus !== "Не в работе"&&lastRecord.deviceStatus !== "Не в работе, ждет ремонта"&&lastRecord.deviceStatus !== "Не в работе, ждет замены прибора") continue;
+    const filtered = records.filter(
+      (r, i) =>
+        (r.deviceStatus==="Не в работе"||r.deviceStatus==="Не в работе, ждет ремонта"||r.deviceStatus==="Не в работе, ждет замены прибора") &&
+        i > lastWorkingIndex
+    );
+
+    if (filtered.length) {
+      result[sn] = filtered;
+    }
+  }
+  return result;
+}
+
+
+function filterWaitingForHelpBySn(historyMap) {
+  const result = {};
+
+  for (const [sn, records] of Object.entries(historyMap)) {
+    let lastWorkingIndex = -1;
+    records.forEach((r, i) => {
+      if (r.deviceStatus === "В работе"||r.deviceStatus === "В работе, мониторинг проблемы") {
+        lastWorkingIndex = i;
+      }
+    });
+    const lastRecord = records[records.length - 1];
+    if (lastRecord.deviceStatus !== "В работе, ждет ремонта"&&lastRecord.deviceStatus !== "В работе, требуется обновление"&&lastRecord.deviceStatus !== "В работе, требуется перемещение") continue;
+    const filtered = records.filter(
+      (r, i) =>
+        (r.deviceStatus==="В работе, ждет ремонта"||r.deviceStatus==="В работе, требуется обновление"||r.deviceStatus==="В работе, требуется перемещение") &&
+        i > lastWorkingIndex
+    );
+
+    if (filtered.length) {
+      result[sn] = filtered;
+    }
+  }
+  return result;
+}
+
+function filterConservatedBySn(historyMap) {
+  const result = {};
+
+  for (const [sn, records] of Object.entries(historyMap)) {
+    let lastWorkingIndex = -1;
+    records.forEach((r, i) => {
+      if (r.deviceStatus === "В работе"||r.deviceStatus === "В работе, мониторинг проблемы") {
+        lastWorkingIndex = i;
+      }
+    });
+    const lastRecord = records[records.length - 1];
+    if (lastRecord.deviceStatus !== "Законсервирован"&&lastRecord.deviceStatus !== "Законсервирован, ждет вывоза"&&lastRecord.deviceStatus !== "Законсервирован, ждет реагентов") continue;
+    const filtered = records.filter(
+      (r, i) =>
+        (r.deviceStatus==="Законсервирован"||r.deviceStatus==="Законсервирован, ждет вывоза"||r.deviceStatus==="Законсервирован, ждет реагентов") &&
+        i > lastWorkingIndex
+    );
+
+    if (filtered.length) {
+      result[sn] = filtered;
+    }
+  }
+  return result;
+}
+
+function filterNotInstalledBySn(historyMap) {
+  const result = {};
+
+  for (const [sn, records] of Object.entries(historyMap)) {
+    let lastWorkingIndex = -1;
+    records.forEach((r, i) => {
+      if (r.deviceStatus === "В работе"||r.deviceStatus === "В работе, мониторинг проблемы") {
+        lastWorkingIndex = i;
+      }
+    });
+    const lastRecord = records[records.length - 1];
+    if (lastRecord.deviceStatus !== "У клиента, не запущен") continue;
+    const filtered = records.filter(
+      (r, i) =>
+        (r.deviceStatus==="У клиента, не запущен") &&
+        i > lastWorkingIndex
+    );
+
+    if (filtered.length) {
+      result[sn] = filtered;
+    }
+  }
+  return result;
+}
+
+let historyMap;
+function buildHistoryMap(history) {
+  return history.reduce((acc, item) => {
+    acc[item.sn] ??= [];
+    acc[item.sn].push(item);
+    return acc;
+  }, {});
+}
+
+function openProblems() {
+  // console.log(devices, history);
+  // console.log(toDateString(document.getElementById("dateFilterProblems").value))
+  const popup = document.getElementById("tablePopup");
+  const container = document.getElementById("popupTableBody");
+  const historyFilteredByDate = history.filter(i=>dateDiff((i.changeDate),toDateString(document.getElementById("dateFilterProblems").value))>=0)
+  const historyMap = buildHistoryMap(historyFilteredByDate);
+  let filtered = Object.entries(filterNotWorkingAfterWorkingBySn(historyMap))
+  let filtered2 = Object.entries(filterWaitingForHelpBySn(historyMap))
+  let filtered3 = Object.entries(filterConservatedBySn(historyMap))
+  let filtered4 = Object.entries(filterNotInstalledBySn(historyMap))
+  // console.log(filtered);
+  let html = ``;
+  if (filtered.length>0) {
+    html += `<tr><td class="errors" colspan="7"><strong>Приборы не в работе</strong></td></tr>`
+    for (let i=0; i<filtered.length; i+=1) {
+      let text = '';
+      for (let j=0;j<filtered[i][1].length;j+=1) { text+= `${changeDate(filtered[i][1][j].changeDate)}: `; text += filtered[i][1][j].statusInfo; text += "<br/>"}
+      html += `<tr><td>${i + 1}</td><td>${filtered[i][1][0].facility}</td><td>${filtered[i][1][0].device}</td><td>${filtered[i][1][0].sn}</td><td>${filtered[i][1][0].deviceStatus}</td><td>${changeDate(filtered[i][1][0].changeDate)}</td><td style="text-align:left">${text}</td></tr>`
+    }
+  }
+  if (filtered2.length>0) {
+    html += `<tr><td class="waiting_problems" colspan="7"><strong>Приборы в работе, ожидающие ремонта</strong></td></tr>`
+    for (let i=0; i<filtered2.length; i+=1) {
+      let text = '';
+      for (let j=0;j<filtered2[i][1].length;j+=1) { text+= `${changeDate(filtered2[i][1][j].changeDate)}: `; text += filtered2[i][1][j].statusInfo; text += "<br/>"}
+      html += `<tr><td>${i + 1}</td><td>${filtered2[i][1][0].facility}</td><td>${filtered2[i][1][0].device}</td><td>${filtered2[i][1][0].sn}</td><td>${filtered2[i][1][0].deviceStatus}</td><td>${changeDate(filtered2[i][1][0].changeDate)}</td><td style="text-align:left">${text}</td></tr>`
+    }
+  }
+  if (filtered3.length>0) {
+    html += `<tr><td class="stopped" colspan="7"><strong>Законсервированные у пользователя приборы</strong></td></tr>`
+    for (let i=0; i<filtered3.length; i+=1) {
+      let text = '';
+      for (let j=0;j<filtered3[i][1].length;j+=1) { text+= `${changeDate(filtered3[i][1][j].changeDate)}: `; text += filtered3[i][1][j].statusInfo; text += "<br/>"}
+      html += `<tr><td>${i + 1}</td><td>${filtered3[i][1][0].facility}</td><td>${filtered3[i][1][0].device}</td><td>${filtered3[i][1][0].sn}</td><td>${filtered3[i][1][0].deviceStatus}</td><td>${changeDate(filtered3[i][1][0].changeDate)}</td><td style="text-align:left">${text}</td></tr>`
+    }
+  }
+  if (filtered4.length>0) {
+    html += `<tr><td class="not_started" colspan="7"><strong>Незапущенные у пользователя приборы</strong></td></tr>`
+    for (let i=0; i<filtered4.length; i+=1) {
+      let text = '';
+      for (let j=0;j<filtered4[i][1].length;j+=1) { text+= `${changeDate(filtered4[i][1][j].changeDate)}: `; text += filtered4[i][1][j].statusInfo; text += "<br/>"}
+      html += `<tr><td>${i + 1}</td><td>${filtered4[i][1][0].facility}</td><td>${filtered4[i][1][0].device}</td><td>${filtered4[i][1][0].sn}</td><td>${filtered4[i][1][0].deviceStatus}</td><td>${changeDate(filtered4[i][1][0].changeDate)}</td><td style="text-align:left">${text}</td></tr>`
+    }
+  }
+  container.innerHTML = html;
+  popup.classList.remove("hidden");
+}
+
+function closeHistory() {
+  document.getElementById("historyPopup").classList.add("hidden");
+}
+
+function closeWIP() {
+  document.getElementById("workInProgressPopup").classList.add("hidden");
+}
+
+function  closeTablePopup() {
+  document.getElementById("tablePopup").classList.add("hidden");
+}
+
+let currentAddContext = null;
+
+function openAddPopup(sn) {
+  const dateInput = document.getElementById("addDate");
+  dateInput.value = new Date().toISOString().slice(0, 10);
+
+  const popup = document.getElementById("addPopup");
+  const select = document.getElementById("addStatusSelect");
+  const textarea = document.getElementById("addComment");
+  const submitBtn = document.getElementById("addSubmitBtn");
+
+  textarea.value = "";
+  submitBtn.disabled = true;
+
+  const deviceItem = arrFiltered.find(d => String(d.sn) === String(sn));
+  const historyBySn = history.filter(h => String(h.sn) === String(sn));
+  const lastStatus = historyBySn.at(-1)?.currentStatus || "";
+
+  // наполняем select
+  select.innerHTML = statusOptions.map(s =>
+    `<option value="${s}" ${s === lastStatus ? "selected" : ""}>${s}</option>`
+  ).join("");
+
+  // сохраняем контекст
+  currentAddContext = {
+    facility: deviceItem?.facility || "",
+    device: deviceItem?.device || "",
+    sn: sn
+  };
+
+  popup.classList.remove("hidden");
+}
+
+function closeAddPopup() {
+  document.getElementById("addPopup").classList.add("hidden");
+}
+
+function validateAddForm() {
+  const select = document.getElementById("addStatusSelect");
+  const textarea = document.getElementById("addComment");
+  const submitBtn = document.getElementById("addSubmitBtn");
+
+  submitBtn.disabled = !select.value || !textarea.value.trim();
+}
+
+document.getElementById("addStatusSelect")
+  .addEventListener("change", validateAddForm);
+
+document.getElementById("addComment")
+  .addEventListener("input", validateAddForm);
+
+document.getElementById("addSubmitBtn").addEventListener("click", () => {
+  if (!currentAddContext) return;
+
+  const status = document.getElementById("addStatusSelect").value;
+  const text = document.getElementById("addComment").value.trim();
+
+  if (!status || !text) return;
+
+  const now = new Date();
+  const date =
+    String(now.getDate()).padStart(2, "0") + "." +
+    String(now.getMonth() + 1).padStart(2, "0") + "." +
+    now.getFullYear();
+
+  const result = {
+    facility: currentAddContext.facility,
+    device: currentAddContext.device,
+    sn: currentAddContext.sn,
+    toDate: date,
+    currentStatus: status,
+    lastText: text
+  };
+  fetch("https://script.google.com/macros/s/AKfycbzrvsmKW7acX0S5xIDv0g_4n0IXdBJFxa-79IeEICOYNmcWSNJjyrNu0O-uWkXr9OPu/exec", {
+  method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: "data=" + encodeURIComponent(JSON.stringify(result))
+  })
+  closeAddPopup();
+  setTimeout(()=>{window.location.reload()},2500)
+});
+
+
+</script>
+
+</body>
+</html>

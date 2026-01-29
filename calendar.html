@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Calendar</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+<style>
+:root {
+    --accent: #6366f1;
+    --bg: #f4f6fb;
+    --card: #ffffff;
+    --week: #92bbe4;
+}
+
+* { box-sizing: border-box; font-family: Inter, Arial; }
+
+body { margin: 0; background: var(--bg); }
+
+/* ===== HEADER ===== */
+header {
+    background: #111;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.header-left,
+.header-right {
+    flex: 0 0 auto;
+}
+
+.home {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: bold;
+    transition: transform 0.2s, color 0.2s;
+}
+
+/* Анимация наведения на MG */
+.home:hover {
+    color: #4caf50;
+    transform: scale(1.05);
+}
+
+.nav-icons {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    gap: 4%; /* увеличено расстояние между иконками на ПК */
+}
+
+.nav-icons a {
+    color: #aaa;
+    font-size: 14px;
+    text-decoration: none;
+    transition: color 0.2s, transform 0.2s;
+}
+
+/* Анимация наведения на иконки */
+.nav-icons a:hover {
+    color: #4caf50;
+    transform: scale(1.2);
+}
+
+.nav-icons a.active {
+    color: #4caf50;
+    transform: scale(1.2);
+}
+
+.logout-btn {
+    padding: 8px 14px;
+    background: #e74c3c;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+/* ===== MAIN ===== */
+main { display: flex; height: calc(100vh - 60px); }
+
+/* ===== CALENDAR ===== */
+.calendar-wrapper { width: 50%; padding: 20px; }
+.calendar-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 16px;
+    height: 100%;
+    overflow: auto;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.calendar-header button {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.weekdays {
+    display: grid;
+    grid-template-columns: repeat(7,1fr);
+    margin-top: 12px;
+    text-align: center;
+    font-weight: 600;
+    color: #6b7280;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7,1fr);
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.day {
+    background: #c5dffa;
+    border-radius: 10px;
+    padding: 4px;
+    min-height: 70px;
+    position: relative;
+}
+
+.day.empty { background: transparent; }
+
+.day.today { outline: 5px solid var(--accent); }
+
+.day.current-week { background: var(--week); }
+
+.day-number { font-size: 13px; font-weight: 600; }
+
+.badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    margin-top: 4px;
+}
+
+.badge {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    font-size: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.АТ {
+    background: #305375;
+}
+.ВИ {
+    background: #9a29db;
+}
+.ВЛ {
+    background: #0e3333;
+}
+.ТО {
+    background: #45831c;
+}
+.СМ {
+    background: #85920d;
+}
+.ВГ {
+    background: #471469;
+}
+.ЕС {
+    background: #691047;
+}
+.ЕР {
+    background: #a5791c;
+}
+.tooltip {
+    display: none;
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    background: #111;
+    color: white;
+    padding: 6px;
+    font-size: 14px;
+    border-radius: 6px;
+    white-space: nowrap;
+}
+
+.day.has-badges:hover .tooltip { display: block; }
+
+/* ===== YEAR VIEW ===== */
+.year-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+}
+
+.month-mini h4 {
+    margin: 6px 0;
+    text-align: center;
+}
+
+/* ===== TODO ===== */
+.todo-wrapper { width: 50%; padding: 20px; }
+
+.todo-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 16px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.todo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.todo-header button {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.todo-list { margin-top: 16px; flex-grow: 1; }
+
+.todo-item {
+    /* background: var(--week); */
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+.todo-item i {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.todo-date {
+    font-size: 16px;
+}
+
+
+/* ===== POPUP ===== */
+.popup {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.4);
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.popup-content {
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
+    width: 320px;
+}
+
+.popup-content input,
+.popup-content select,
+.popup-content button {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+}
+.popup-content label,
+.popup-content button {
+    width: 100%;
+    margin-top: 10px;
+    padding: 8px;
+}
+
+.red_status {
+    color: red;
+}
+
+
+@media (min-width: 900px) {
+    header {
+        height: 80px;
+        padding: 0 20px;
+    }
+    .nav-icons {
+        gap: 76px; /* увеличено расстояние между иконками */
+    }
+
+    .nav-icons a {
+        font-size: 22px;
+    }
+}
+
+@media (max-width: 760px) {
+    
+    main {
+        flex-direction: column;
+    }
+    .calendar-wrapper{
+        width:100%
+    }
+    .todo-wrapper {
+        width:100%
+    }
+    .todo-list, .todo-date {
+        font-size: 12px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="header-left">
+        <a href="/start.html" class="home"><i class="fa-solid fa-house"></i>MG</a>
+    </div>
+
+    <nav class="nav-icons">
+        <a href="/visit.html"><i class="fa-solid fa-car"></i></a>
+        <a href="/calc.html"><i class="fa-solid fa-calculator"></i></a>
+        <a href="/generator.html"><i class="fa-solid fa-key"></i></a>
+        <a href="/barcode.html"><i class="fa-solid fa-barcode"></i></a>
+        <a href="/map.html"><i class="fa-solid fa-globe"></i></a>
+        <a href="/analyzers.html"><i class="fa-solid fa-book"></i></a>
+        <a href="/error.html"><i class="fa-solid fa-triangle-exclamation"></i></a>
+        <a href="/calendar.html"class="active"><i class="fa-regular fa-calendar"></i></a>
+        <a href="/devices.html"><i class="fa-solid fa-computer"></i></a>
+    </nav>
+
+    <div class="header-right">
+        <button class="logout-btn" id="logout">Выход</button>
+    </div>
+</header>
+
+<main>
+
+<div class="calendar-wrapper">
+<div class="calendar-card">
+    <div class="calendar-header">
+        <h2 id="calendarTitle"></h2>
+        <div>
+            <button id="prevBtn">◀</button>
+            <button id="toggleView">Год</button>
+            <button id="nextBtn">▶</button>
+        </div>
+    </div>
+
+    <div id="calendarContainer"></div>
+</div>
+</div>
+
+<div class="todo-wrapper">
+<div class="todo-card">
+    <div class="todo-header">
+        <h3 id="weekTitle"></h3>
+        <div>
+            <button id="prevWeek">◀</button>
+            <button id="nextWeek">▶</button>
+            <button id="addTask">+ Задача</button>
+            <button id="updateTask">Обновить</button>
+        </div>
+    </div>
+    <div class="todo-list" id="todoList"></div>
+</div>
+</div>
+
+</main>
+
+<div class="popup" id="popup">
+<div class="popup-content">
+    <input id="taskPlace" placeholder="Учреждение">
+    <input id="taskDevice" placeholder="Прибор">
+    <input id="taskText" placeholder="Задача">
+    
+    <label>Начальная дата с<input type="date" id="taskStart"></label>
+    <label>Крайний срок до<input type="date" id="taskEnd"></label>
+    <label>Приоритет<select id="selectStatus">
+        <option>Обычный</option>
+        <option>Высокий</option>
+    </select></label>
+    <label>Назначено для:<select id="taskUser">
+        <option>Андрей Т.</option>
+        <option>Вадим Г.</option>
+        <option>Вадим И.</option>
+        <option>Влад Л.</option>
+        <option>Евгений Р.</option>
+        <option>Елизавета С.</option>
+        <option>Саша М.</option>
+        <option>Татьяна О.</option>
+    </select></label>
+    <button onclick="addTask()">Добавить</button>
+    <p class="red_status" id="confirmationStatus"></p>
+</div>
+</div>
+
+<script>
+if(localStorage.getItem('isLoggedIn') !== 'true') {
+    window.location.href = 'index.html';
+}
+document.getElementById('logout').addEventListener('click', ()=>{
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('user');
+    window.location.href = 'index.html';
+});
+
+const date1 = [];
+const date2 = [];
+const place = [];
+const machine = [];
+const sn = [];
+const applicator = [];
+const why = [];
+const done = [];
+const file = [];
+const deleteRow = [];
+let arr = {};
+let badgesData = {};
+let badgesDataISO = {};
+function parseDate(str) {
+    const [day, month, year] = str.split('.').map(Number);
+    return new Date(year, month - 1, day);
+}
+
+function formatDate(date) {
+    return date.toLocaleDateString('ru-RU');
+}
+
+function expandDatesUnique(date1, date2, place, specialist, device, reason) {
+    const result = [];
+
+    for (let i = 0; i < date1.length; i++) {
+        const start = parseDate(new Date(date1[i].split(',')[0],date1[i].split(',')[1],date1[i].split(',')[2]).toLocaleString('ru-RU', {year: 'numeric', month: '2-digit', day: '2-digit'}));
+        const end = parseDate(new Date(date2[i].split(',')[0],date2[i].split(',')[1],date2[i].split(',')[2]).toLocaleString('ru-RU', {year: 'numeric', month: '2-digit', day: '2-digit'}));
+
+        let current = new Date(start);
+
+        while (current <= end) {
+            result.push({
+                date: formatDate(current),
+                man: specialist[i],
+                instrument: device[i],
+                work: reason[i],
+                facility: place[i]
+            });
+
+            current.setDate(current.getDate() + 1);
+        }
+    }
+
+    const uniqueMap = new Map();
+
+    for (const item of result) {
+        const key = `${item.date}|${item.man}|${item.instrument}|${item.work}|${item.facility}`;
+        uniqueMap.set(key, item);
+    }
+
+    return [...uniqueMap.values()];
+
+}
+
+
+function getListVisits() {
+    const url = `https://docs.google.com/spreadsheets/d/16ABEN54Ykbej-PhrbBjGlaHSXzNbD4PA8ecbpWc5QHQ/gviz/tq?gid=0`;
+    fetch(url)
+    .then(res => res.text())
+    .then(rep => {
+        const data2 = JSON.parse(rep.substr(47).slice(0,-2));
+        let data3=data2.table.rows;
+        const length = data3.length;
+        const localUser = localStorage.getItem('user');
+        for (let i=0; i<length; i+=1) {
+            (data3[i].c[0] && data3[i].c[0].v != null) ? date1.push(data3[i].c[0].v.split('Date(')[1].split(')')[0]) : date1.push('');
+            (data3[i].c[1] && data3[i].c[1].v != null) ? date2.push(data3[i].c[1].v.split('Date(')[1].split(')')[0]) : date2.push('');
+            (data3[i].c[2] && data3[i].c[2].v != null) ? place.push(data3[i].c[2].v) : place.push('');
+            (data3[i].c[3] && data3[i].c[3].v != null) ? machine.push(data3[i].c[3].v) : machine.push('');
+            (data3[i].c[4] && data3[i].c[4].v != null) ? sn.push(data3[i].c[4].v) : sn.push('');
+            (data3[i].c[5] && data3[i].c[5].v != null) ? applicator.push(data3[i].c[5].v) : applicator.push('');
+            (data3[i].c[6] && data3[i].c[6].v != null) ? why.push(data3[i].c[6].v) : why.push('');
+            (data3[i].c[7] && data3[i].c[7].v != null) ? done.push(data3[i].c[7].v) : done.push('');
+            (data3[i].c[8] && data3[i].c[8].v != null) ? file.push(data3[i].c[8].v) : file.push('');
+            (data3[i].c[10] && (data3[i].c[10].v == localUser) || localUser=='admin') ? deleteRow.push("X") : deleteRow.push('');
+        }
+        const expanded = expandDatesUnique(date1, date2, place, applicator, machine, why);
+        arr = expanded;
+        badgesData = arr.reduce((acc, { date, man }) => {
+        if (!acc[date]) {
+            acc[date] = [];
+        }
+
+        // чтобы man не дублировались внутри одной даты
+        if (!acc[date].includes(man)) {
+            acc[date].push(man);
+        }
+
+        return acc;
+    }, {});
+    badgesDataISO = Object.fromEntries(
+    Object.entries(badgesData).map(([date, men]) => [
+        ruToIso(date),
+        men
+    ])
+    );
+    setTimeout(()=>{drawCalendar()},100);
+        
+        // renderTable(testData);
+    })
+}
+window.onload = getListVisits();
+function getListToDo() {
+    fetch('https://script.google.com/macros/s/AKfycbzknwrBxES7STrNQrMYnXsrRfdzkhdj0dQLBlwwLIFPwk4XJAyyVTelqgQEfUijJXlb/exec')
+  .then(r => r.json())
+  .then(rep=>{
+    tasks = rep.filter(i => {
+  return i.created == localStorage.getItem('user') || i.assigned == localStorage.getItem('user');
+});
+    drawTasks()
+  });
+
+}
+window.onload = getListToDo();
+
+let view = "month";
+let current = new Date();
+const today = new Date();
+
+let tasks = [];
+
+const calendarContainer = document.getElementById("calendarContainer");
+const title = document.getElementById("calendarTitle");
+
+/* ===== HELPERS ===== */
+const normalize = d => {
+    const r = new Date(d);
+    r.setHours(0, 0, 0, 0);
+    return r;
+};
+
+// Ключ в формате YYYY-MM-DD (БЕЗ UTC)
+const key = d => {
+    const n = normalize(d);
+    const y = n.getFullYear();
+    const m = String(n.getMonth() + 1).padStart(2, "0");
+    const day = String(n.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+};
+
+// Начало недели (понедельник)
+const startOfWeek = d => {
+    const r = normalize(d);
+    const day = (r.getDay() + 6) % 7; // пн = 0
+    r.setDate(r.getDate() - day);
+    return r;
+};
+
+const sameWeek = (a, b) =>
+    key(startOfWeek(a)) === key(startOfWeek(b));
+function ruToIso(date) {
+    const [d, m, y] = date.split(".");
+    return `${y}-${m}-${d}`;
+}
+
+const manApp = {"Андрей Т.":"AT","Вадим И.":"ВИ","Вадим Г.":"ВГ","Влад Л.":"ВЛ","Саша М.":"СМ","Юрий К.":"ЮК","Евгений Р.":"ЕР","Татьяна О.":"ТО","Елизавета С.":"ЕС"};
+const manApp2 = {"at":"Андрей Т.","vi":"Вадим И.","vg":"Вадим Г.","vl":"Влад Л.","sm":"Саша М.","er":"Евгений Р.","to":"Татьяна О.","es":"Елизавета С."};
+/* ===== DRAW ===== */
+function drawMonth(date, small = false) {
+    const base = normalize(date);
+    const y = base.getFullYear();
+    const m = base.getMonth();
+
+    const firstDay = new Date(y, m, 1);
+    const offset = (firstDay.getDay() + 6) % 7;
+    const daysInMonth = new Date(y, m + 1, 0).getDate();
+
+    let html = `
+        <div class="weekdays">
+            ${["Пн","Вт","Ср","Чт","Пт","Сб","Вс"]
+                .map(d => `<div>${d}</div>`)
+                .join("")}
+        </div>
+        <div class="calendar-grid">
+    `;
+
+    // пустые ячейки перед первым днём месяца
+    for (let i = 0; i < offset; i++) {
+        html += `<div class="day empty"></div>`;
+    }
+
+    for (let d = 1; d <= daysInMonth; d++) {
+        const dateObj = new Date(y, m, d);
+        const dateKey = key(dateObj);
+        let arr2 = arr.filter((el)=>el.date.split(".").join("-") == dateKey.split("-").reverse().join("-"));
+        const classes = [
+            "day",
+            dateKey === key(today) ? "today" : "",
+            sameWeek(dateObj, today) ? "current-week" : "",
+            badgesDataISO[dateKey] ? "has-badges" : ""
+        ].filter(Boolean).join(" ");
+        html += `
+            <div class="${classes}">
+                <div class="day-number">${d}</div>
+
+                ${
+                    badgesDataISO[dateKey]
+                        ? `
+                            <div class="badges">
+                                ${badgesDataISO[dateKey]
+                                    .map(man =>
+                                        `<div class="badge ${manApp[man]}">${manApp[man]}</div>`
+                                    )
+                                    .join("")}
+                            </div>
+                            <div class="tooltip">
+                                ${arr2.map(item => `${item.man} — ${item.facility} — ${item.instrument} — ${item.work}`).join("<br>")}
+                            </div>
+                          `
+                        : ""
+                }
+            </div>
+        `;
+    }
+
+    html += `</div>`;
+    return html;
+}
+
+
+function drawCalendar(){
+    calendarContainer.innerHTML="";
+    title.textContent=current.toLocaleString("ru",{month:"long",year:"numeric"});
+
+    if(view==="month"){
+        calendarContainer.innerHTML=drawMonth(current);
+    } else {
+        const y=current.getFullYear();
+        calendarContainer.innerHTML=`<div class="year-grid">${
+            Array.from({length:12},(_,i)=>`
+                <div class="month-mini">
+                    <h4>${new Date(y,i).toLocaleString("ru",{month:"long"})}</h4>
+                    ${drawMonth(new Date(y,i),true)}
+                </div>
+            `).join("")
+        }</div>`;
+    }
+}
+
+/* ===== TASKS ===== */
+function drawTasks() {
+    const list = document.getElementById("todoList");
+    list.innerHTML = "";
+
+    const start = startOfWeek(new Date());
+    start.setDate(start.getDate() + weekOffset * 7);
+    const end = new Date(start);
+    end.setDate(start.getDate() + 6);
+
+    document.getElementById("weekTitle").textContent =
+        `Неделя ${start.toLocaleDateString()} – ${end.toLocaleDateString()}`;
+
+    tasks
+        .filter(t => {
+            const s = new Date(t.dateFrom);
+            const e = new Date(t.dateTo);
+            return s <= end && e >= start;
+        })
+        .sort((a, b) => {
+            if (a.status !== b.status) {
+            return Number(a.status) - Number(b.status); 
+            }
+            const priorityOrder = {
+            "Высокий": 0,
+            "Обычный": 1};
+            return (priorityOrder[a.priority] ?? 99)
+         - (priorityOrder[b.priority] ?? 99);
+        })
+        .forEach(t => {
+            const today = new Date();
+            const endDate = new Date(t.dateTo);
+            const diffDays = Math.ceil((endDate - today) / (1000 * 60 * 60 * 24));
+            const alarmIcon = diffDays <= 2 ? `<i class="fa-regular fa-clock" style="width:6%"></i>` : '<i style="width:6%"></i>';
+            const alarmIcon2 = t.priority == "Высокий"? `<i class="fa-solid fa-fire"style="width:6%"></i>`: '<i style="width:6%"></i>';
+            // const alarmIcon3 = `<i id="${t.order}_delete" class="fa-solid fa-trash"style="width:6%; cursor: pointer; margin-left:10px"></i>`;
+            const taskHTML = `
+                <div id="${t.order}" class="todo-item" style="display:flex; align-items:center; justify-content:space-between;${t.status==0? "background: #dd9494":"background: #abc9ab" }">
+                    <div style="display:flex; align-items:center; gap:16px;;font-size:16px;width:30%;">
+                        ${alarmIcon}
+                        ${alarmIcon2}
+                        <div class="todo-date" style="padding:0 10px; width:88%">
+                            <div><strong>Старт: </strong>${t.dateFrom.split('-').reverse().join('-')}</div>
+                            <div><strong>Срок: </strong>${t.dateTo.split('-').reverse().join('-')}</div>
+                        </div>
+                    </div>
+                    <div style="width:64%; padding:0 10px;">
+                        <div><strong>Учреждение:</strong> ${t.facility || '-'}</div>
+                        <div><strong>Прибор:</strong> ${t.device || '-'}</div>
+                        <div><strong>Суть:</strong> ${t.text}</div>
+                    </div>
+                    <div>
+                        <input type="checkbox" class="checkboxClass" id="${t.order}_${t.dateFrom}_${t.dateTo}_${t.priority}" ${t.status == 1 ? "checked" : ""}>
+                    </div>
+                </div>
+            `;
+            list.innerHTML += taskHTML;
+        });
+
+        const checkboxes = document.querySelectorAll('.checkboxClass');
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const parentDiv = this.closest('.todo-item');
+                let order = this.id.split('_')[0];
+                let dFrom = this.id.split('_')[1];
+                let dTo = this.id.split('_')[2];
+                let facility = parentDiv.innerHTML.split('Учреждение:</strong> ')[1].split('</div>')[0];
+                let device = parentDiv.innerHTML.split('Прибор:</strong> ')[1].split('</div>')[0];
+                let text = parentDiv.innerHTML.split('Суть:</strong> ')[1].split('</div>')[0];
+                let priority = this.id.split('_')[3];
+                if (this.checked) {
+                    parentDiv.style.backgroundColor = '#abc9ab';
+                    editTask(order,"1",dFrom,dTo,facility,device,text,priority)
+                } else {
+                    parentDiv.style.backgroundColor = '#dd9494';
+                    editTask(order,"0",dFrom,dTo,facility,device,text,priority)
+                }
+            });
+        });
+        
+}
+
+/* ===== EVENTS ===== */
+document.getElementById("toggleView").onclick=()=>{
+    view=view==="month"?"year":"month";
+    document.getElementById("toggleView").innerText = (view==="month"? "Год": "Месяц");
+    drawCalendar();
+};
+
+document.getElementById("prevBtn").onclick=()=>{
+    current.setMonth(current.getMonth()+(view==="month"?-1:-12));
+    drawCalendar();
+};
+document.getElementById("nextBtn").onclick=()=>{
+    current.setMonth(current.getMonth()+(view==="month"?1:12));
+    drawCalendar();
+};
+
+let weekOffset=0;
+document.getElementById("prevWeek").onclick=()=>{weekOffset--;drawTasks();}
+document.getElementById("nextWeek").onclick=()=>{weekOffset++;drawTasks();};
+
+document.getElementById("addTask").onclick=()=>{
+    popup.style.display="flex";
+    document.getElementById("taskText").value = '';
+    document.getElementById("taskDevice").value = '';
+    document.getElementById("taskPlace").value = '';
+    const today = new Date().toISOString().slice(0, 10);
+    document.getElementById("taskStart").value = today;
+    document.getElementById('taskUser').value = manApp2[localStorage.getItem('user')];
+}
+
+function addTask() {
+    document.getElementById('confirmationStatus').innerText = 'Задание добавляется...';
+  const payload = {
+    dateFrom: document.getElementById("taskStart").value,
+    dateTo: document.getElementById("taskEnd").value,
+    organization: document.getElementById("taskPlace").value,
+    device: document.getElementById("taskDevice").value,
+    text: document.getElementById("taskText").value,
+    created: localStorage.getItem('user'),
+    assigned: Object.entries(manApp2).find(([k, v]) => v === document.getElementById("taskUser").value)?.[0],
+    priority: document.getElementById("selectStatus").value,
+    status: "0"
+  };
+
+  fetch('https://script.google.com/macros/s/AKfycbzknwrBxES7STrNQrMYnXsrRfdzkhdj0dQLBlwwLIFPwk4XJAyyVTelqgQEfUijJXlb/exec', { 
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: "data=" + encodeURIComponent(JSON.stringify(payload))
+  })
+  .then(res => res.json())
+  .then(data => {
+    getListToDo();
+    setTimeout(() => {
+        popup.style.display="none";
+      document.getElementById('confirmationStatus').innerText = '';
+    }, 1000);
+  })
+  .catch(err => {
+    console.error(err);
+    document.getElementById('confirmationStatus').innerText = 'Ошибка добавления';
+  });
+}
+
+function editTask(divId,statusChecked,dateFrom,dateTo,organization,device,text,priority){
+  const payload = {
+    order: divId,
+    dateFrom: dateFrom,
+    dateTo: dateTo,
+    organization: organization,
+    device: device,
+    text: text,
+    created: localStorage.getItem('user'),
+    assigned: Object.entries(manApp2).find(([k, v]) => v === document.getElementById("taskUser").value)?.[0],
+    priority: priority,
+    status: statusChecked
+  };
+
+  fetch('https://script.google.com/macros/s/AKfycbzknwrBxES7STrNQrMYnXsrRfdzkhdj0dQLBlwwLIFPwk4XJAyyVTelqgQEfUijJXlb/exec', { 
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: "data=" + encodeURIComponent(JSON.stringify(payload))
+  })
+  .then(res => res.json())
+  .then(data => {
+    getListToDo();
+    setTimeout(() => {
+        popup.style.display="none";
+      document.getElementById('confirmationStatus').innerText = '';
+    }, 1000);
+  })
+  .catch(err => {
+    console.error(err);
+    document.getElementById('confirmationStatus').innerText = 'Ошибка добавления';
+  });
+}
+
+function deleteTask(taskId) {
+  fetch('https://script.google.com/macros/s/AKfycbzknwrBxES7STrNQrMYnXsrRfdzkhdj0dQLBlwwLIFPwk4XJAyyVTelqgQEfUijJXlb/exec', {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: "action=delete&id=" + encodeURIComponent(taskId)
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.status === "deleted") {
+      console.log(`Удалено строк: ${data.count}`);
+      getListToDo();
+    } else {
+      console.error("Ошибка удаления", data);
+    }
+  })
+  .catch(err => console.error("Delete error", err));
+}
+
+document.getElementById('updateTask').addEventListener('click', ()=> {window.location.reload()})
+/* INIT */
+// drawCalendar();
+drawTasks();
+
+</script>
+
+</body>
+</html>

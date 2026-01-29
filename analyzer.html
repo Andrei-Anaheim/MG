@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+    <title>MG - Анализатор</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+</head>
+<style>
+    
+    * {
+  box-sizing: border-box;
+}
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+}
+
+/* HEADER */
+header {
+    background: #111;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.header-left,
+.header-right {
+    flex: 0 0 auto;
+}
+
+.home {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: bold;
+    transition: transform 0.2s, color 0.2s;
+}
+
+/* Анимация наведения на MG */
+.home:hover {
+    color: #4caf50;
+    transform: scale(1.05);
+}
+
+.nav-icons {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    gap: 4%; /* увеличено расстояние между иконками на ПК */
+}
+
+.nav-icons a {
+    color: #aaa;
+    font-size: 14px;
+    text-decoration: none;
+    transition: color 0.2s, transform 0.2s;
+}
+
+/* Анимация наведения на иконки */
+.nav-icons a:hover {
+    color: #4caf50;
+    transform: scale(1.2);
+}
+
+.nav-icons a.active {
+    color: #4caf50;
+    transform: scale(1.2);
+}
+
+.logout-btn {
+    padding: 8px 14px;
+    background: #e74c3c;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+/* MAIN */
+.main {
+  width: 100%;
+  padding: 20px;
+}
+
+/* TOP SECTION */
+.top-section {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: 20px;
+}
+
+/* DEVICE */
+.device,
+.info,
+.data,
+.links {
+  min-width: 0;
+}
+
+.device {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.device img {
+  width: 50%;
+  margin: 0 25%;
+  height: auto;
+}
+
+/* INFO */
+.info {
+  display: grid;
+  grid-template-rows: 2fr 1fr;
+  gap: 20px;
+}
+
+.data,
+.links {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+/* LINKS */
+.links {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.links a {
+  text-decoration: none;
+  color: #007bff;
+  font-weight: bold;
+}
+
+/* GALLERY */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 15px;
+}
+
+.gallery-item {
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.lightbox.active {
+  display: flex;
+}
+
+.lightbox__image {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+}
+
+/* Buttons */
+.lightbox button {
+  position: absolute;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 40px;
+  cursor: pointer;
+  padding: 10px;
+}
+
+.lightbox__close {
+  top: 20px;
+  right: 30px;
+  font-size: 50px;
+}
+
+.lightbox__prev {
+  left: 20px;
+}
+
+.lightbox__next {
+  right: 20px;
+}
+
+.displayNone {
+    display: none;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .lightbox button {
+    font-size: 30px;
+  }
+  .top-section {
+    grid-template-columns: 1fr;
+  }
+
+  .info {
+    grid-template-rows: auto;
+  }
+  .links a {
+    font-size: 10px;
+}
+}
+
+
+@media (min-width: 900px) {
+    header {
+        height: 80px;
+        padding: 0 20px;
+    }
+
+    .nav-icons {
+        gap: 76px; /* увеличено расстояние между иконками */
+    }
+
+    .nav-icons a {
+        font-size: 22px;
+    }
+  }
+
+</style>
+<body>
+  <header>
+    <div class="header-left">
+        <a href="start.html" class="home">
+            <i class="fa-solid fa-house"></i>
+            MG
+        </a>
+    </div>
+
+    <nav class="nav-icons">
+        <a href="/visit.html" ><i class="fa-solid fa-car"></i></a>
+        <a href="/calc.html"><i class="fa-solid fa-calculator"></i></a>
+        <a href="/generator.html"><i class="fa-solid fa-key"></i></a>
+        <a href="/barcode.html"><i class="fa-solid fa-barcode"></i></a>
+        <a href="/map.html"><i class="fa-solid fa-globe"></i></a>
+        <a href="/analyzers.html" class="active"><i class="fa-solid fa-book"></i></a>
+        <a href="/error.html"><i class="fa-solid fa-triangle-exclamation"></i></a>
+        <a href="/calendar.html"><i class="fa-regular fa-calendar"></i></a>
+        <a href="/devices.html"><i class="fa-solid fa-computer"></i></a>
+    </nav>
+
+    <div class="header-right">
+        <button class="logout-btn" id="logout">Выход</button>
+    </div>
+</header>
+
+  <!-- 2. MAIN -->
+  <main class="main">
+
+    <section class="top-section">
+      <div class="device">
+        <img id="device_img">
+      </div>
+      <div class="info">
+        <div class="data">
+          <h2 id="analyzer_name"></h2>
+          <ul>
+            <li id="analyzer_info_1"></li>
+            <li id="analyzer_info_2"></li>
+            <li id="analyzer_info_3"></li>
+            <li id="analyzer_info_4"></li>
+            <li id="analyzer_info_5"></li>
+            <li id="analyzer_info_6"></li>
+          </ul>
+        </div>
+        <div class="links">
+          <a href="#" id="link1"> <i class="fa-solid fa-screwdriver-wrench"></i> Сервисная инструкция</a>
+          <a href="#" id="link2"> <i class="fa-solid fa-hospital-user"></i> Пользовательская инструкция</a>
+          <a href="#" id="link3"> <i class="fa-solid fa-book-medical"></i> Краткая инструкция</a>
+          <a href="#" id="link4"> <i class="fa-solid fa-network-wired"></i> LIS</a>
+        </div>
+
+      </div>
+    </section>
+    <section class="gallery" id="gallery_box">
+    </section>
+
+  </main>
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox__close">&times;</button>
+    <button class="lightbox__prev">&#10094;</button>
+
+    <img class="lightbox__image" src="" alt="">
+
+    <button class="lightbox__next">&#10095;</button>
+  </div>
+  <script>
+if(localStorage.getItem('isLoggedIn') !== 'true'){
+    window.location.href = 'index.html';
+}
+document.getElementById('logout').onclick = ()=>{
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('user');
+    window.location.href = 'index.html';
+};
+    
+const analyzer = [];
+const picture = [];
+const photoQuantity = [];
+let serviceLink = [];
+let userLink = [];
+let userShortLink = [];
+let lisLink = [];
+let title1 = [];
+let text1= [];
+let title2 = [];
+let text2= [];
+let title3 = [];
+let text3= [];
+let title4 = [];
+let text4= [];
+let title5 = [];
+let text5= [];
+let title6 = [];
+let text6= [];
+function getAnalyzerInfo() {
+    const url = `https://docs.google.com/spreadsheets/d/16ABEN54Ykbej-PhrbBjGlaHSXzNbD4PA8ecbpWc5QHQ/gviz/tq?gid=920903231`;
+    fetch(url)
+    .then(res => res.text())
+    .then(rep => {
+        const data2 = JSON.parse(rep.substr(47).slice(0,-2));
+        const length = data2.table.rows.length;
+        console.log(data2,length)
+        for (let i=0; i<length; i+=1) {
+            if(data2.table.rows[i].c[1] && data2.table.rows[i].c[1].v != null) analyzer.push(data2.table.rows[i].c[1].v)
+            if(data2.table.rows[i].c[2] && data2.table.rows[i].c[2].v != null) picture.push(data2.table.rows[i].c[2].v);
+            if(data2.table.rows[i].c[3] && data2.table.rows[i].c[3].v != null) photoQuantity.push(data2.table.rows[i].c[3].v);
+            if(data2.table.rows[i].c[4] && data2.table.rows[i].c[4].v != null) serviceLink.push(data2.table.rows[i].c[4].v)
+            if(data2.table.rows[i].c[5] && data2.table.rows[i].c[5].v != null) userLink.push(data2.table.rows[i].c[5].v);
+            if(data2.table.rows[i].c[6] && data2.table.rows[i].c[6].v != null) userShortLink.push(data2.table.rows[i].c[6].v);
+            if(data2.table.rows[i].c[7] && data2.table.rows[i].c[7].v != null) lisLink.push(data2.table.rows[i].c[7].v);
+            if(data2.table.rows[i].c[8] && data2.table.rows[i].c[8].v != null) title1.push(data2.table.rows[i].c[8].v)
+            if(data2.table.rows[i].c[9] && data2.table.rows[i].c[9].v != null) text1.push(data2.table.rows[i].c[9].v);
+            if(data2.table.rows[i].c[10] && data2.table.rows[i].c[10].v != null) title2.push(data2.table.rows[i].c[10].v);
+            if(data2.table.rows[i].c[11] && data2.table.rows[i].c[11].v != null) text2.push(data2.table.rows[i].c[11].v)
+            if(data2.table.rows[i].c[12] && data2.table.rows[i].c[12].v != null) title3.push(data2.table.rows[i].c[12].v);
+            if(data2.table.rows[i].c[13] && data2.table.rows[i].c[13].v != null) text3.push(data2.table.rows[i].c[13].v);
+            if(data2.table.rows[i].c[14] && data2.table.rows[i].c[14].v != null) title4.push(data2.table.rows[i].c[14].v);
+            if(data2.table.rows[i].c[15] && data2.table.rows[i].c[15].v != null) text4.push(data2.table.rows[i].c[15].v);
+            if(data2.table.rows[i].c[16] && data2.table.rows[i].c[16].v != null) title5.push(data2.table.rows[i].c[16].v);
+            if(data2.table.rows[i].c[17] && data2.table.rows[i].c[17].v != null) text5.push(data2.table.rows[i].c[17].v);
+            if(data2.table.rows[i].c[18] && data2.table.rows[i].c[18].v != null) title6.push(data2.table.rows[i].c[18].v);
+            if(data2.table.rows[i].c[19] && data2.table.rows[i].c[19].v != null) text6.push(data2.table.rows[i].c[19].v);
+        }
+        const index = analyzer.indexOf(location.href.split('=')[1])
+        console.log(index, title1, title1[index])
+        document.getElementById('device_img').src = picture[index]
+        document.getElementById('analyzer_name').innerHTML = `${analyzer[index]}`
+        document.getElementById('analyzer_info_1').innerHTML = `<b>${title1[index]}</b>: ${text1[index]}`
+        document.getElementById('analyzer_info_2').innerHTML = `<b>${title2[index]}</b>: ${text2[index]}`
+        document.getElementById('analyzer_info_3').innerHTML = `<b>${title3[index]}</b>: ${text3[index]}`
+        document.getElementById('analyzer_info_4').innerHTML = `<b>${title4[index]}</b>: ${text4[index]}`
+        document.getElementById('analyzer_info_5').innerHTML = `<b>${title5[index]}</b>: ${text5[index]}`
+        document.getElementById('analyzer_info_6').innerHTML = `<b>${title6[index]}</b>: ${text6[index]}`
+        console.log(serviceLink[index], userLink[index], userShortLink[index],lisLink[index])
+        if (!serviceLink[index]||serviceLink[index]=='-') document.getElementById('link1').className = 'displayNone';
+        else document.getElementById('link1').href = serviceLink[index];
+        if (!userLink[index]||userLink[index]=='-') document.getElementById('link2').className = 'displayNone';
+        else document.getElementById('link2').href = userLink[index];
+        if (!userShortLink[index]||userShortLink[index]=='-') document.getElementById('link3').className = 'displayNone';
+        else document.getElementById('link3').href = userShortLink[index];
+        if (!lisLink[index]||lisLink[index]=='-') document.getElementById('link4').className = 'displayNone';
+        else document.getElementById('link4').href = lisLink[index]; 
+        for (let j=0; j<photoQuantity[index];j+=1) {
+            console.log(j)
+            const container = document.createElement('div');
+            container.className = 'gallery-item';
+            container.innerHTML = `<img src="/assets/img/${String(analyzer[index]).toLowerCase()}_${j+1}.jpg">`;
+            document.getElementById('gallery_box').appendChild(container);
+        }
+
+        const images = Array.from(document.querySelectorAll(".gallery img"));
+    const lightbox = document.getElementById("lightbox");
+    const lightboxImg = lightbox.querySelector(".lightbox__image");
+
+    const btnClose = lightbox.querySelector(".lightbox__close");
+    const btnPrev = lightbox.querySelector(".lightbox__prev");
+    const btnNext = lightbox.querySelector(".lightbox__next");
+
+    let currentIndex = 0;
+
+    // Открытие
+    images.forEach((img, index) => {
+    img.addEventListener("click", () => {
+        currentIndex = index;
+        openLightbox();
+    });
+    });
+
+    function openLightbox() {
+    lightbox.classList.add("active");
+    updateImage();
+    document.body.style.overflow = "hidden";
+    }
+
+    function closeLightbox() {
+    lightbox.classList.remove("active");
+    document.body.style.overflow = "";
+    }
+
+    function updateImage() {
+    lightboxImg.src = images[currentIndex].src;
+    }
+
+    // Навигация
+    btnNext.addEventListener("click", () => {
+    currentIndex = (currentIndex + 1) % images.length;
+    updateImage();
+    });
+
+    btnPrev.addEventListener("click", () => {
+    currentIndex = (currentIndex - 1 + images.length) % images.length;
+    updateImage();
+    });
+
+    // Закрытие
+    btnClose.addEventListener("click", closeLightbox);
+
+    lightbox.addEventListener("click", (e) => {
+    if (e.target === lightbox) closeLightbox();
+    });
+
+    // Клавиатура
+    document.addEventListener("keydown", (e) => {
+    if (!lightbox.classList.contains("active")) return;
+
+    if (e.key === "Escape") closeLightbox();
+    if (e.key === "ArrowRight") btnNext.click();
+    if (e.key === "ArrowLeft") btnPrev.click();
+    });
+
+    // Конец слайдера
+    
+    })
+}
+window.onload = getAnalyzerInfo();
+
+
+</script>
+</body>
+</html>

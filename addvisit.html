@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>MG – Добавить выезд</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+<style>
+* { box-sizing:border-box; margin:0; padding:0; font-family:Arial, Helvetica, sans-serif; }
+html, body { height:100%; }
+body { display:flex; flex-direction:column; background:#f3f3f3; }
+
+/* ===== HEADER ===== */
+header {
+    background: #111;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.header-left,
+.header-right {
+    flex: 0 0 auto;
+}
+
+.home {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: bold;
+    transition: transform 0.2s, color 0.2s;
+}
+
+/* Анимация наведения на MG */
+.home:hover {
+    color: #4caf50;
+    transform: scale(1.05);
+}
+
+.nav-icons {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    gap: 4%; /* увеличено расстояние между иконками на ПК */
+}
+
+.nav-icons a {
+    color: #aaa;
+    font-size: 14px;
+    text-decoration: none;
+    transition: color 0.2s, transform 0.2s;
+}
+
+/* Анимация наведения на иконки */
+.nav-icons a:hover {
+    color: #4caf50;
+    transform: scale(1.2);
+}
+
+.nav-icons a.active {
+    color: #4caf50;
+    transform: scale(1.2);
+}
+
+.logout-btn {
+    padding: 8px 14px;
+    background: #e74c3c;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+/* ===== MAIN ===== */
+main { flex:1; display:flex; justify-content:center; align-items:flex-start; padding:12px; overflow-y:auto; background: url(/assets/img/button11.jpg); background-size: cover;}
+
+/* ===== FORM CONTAINER ===== */
+.form-container {
+    width:100%;
+    max-width:1000px;
+    background: rgba(41, 39, 39, 0.9);
+    backdrop-filter: blur(40px);
+    padding:24px;
+    border-radius:16px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+}
+
+/* ===== FORM ELEMENTS ===== */
+.form-container label {
+    font-weight:bold;
+    margin-bottom:4px;
+    display:block;
+    color:#fff;
+}
+.form-container input,
+.form-container select,
+.form-container textarea {
+    width:100%;
+    padding:8px 10px;
+    border-radius:8px;
+    border:none;
+    font-size:16px;
+}
+
+/* ===== TEXTAREAS ===== */
+textarea {
+    resize:none;
+    min-height:120px;
+}
+
+/* ===== FORM ROWS ===== */
+.form-row { flex:1 1 100%; display:flex; flex-wrap:wrap; gap:12px; }
+
+.form-row .half { flex:1 1 calc(50% - 12px); }
+.form-row .third { flex:1 1 calc(33.33% - 12px); }
+.form-row .full { flex:1 1 100%; }
+
+/* ===== BUTTON ===== */
+.submit-btn {
+    margin-top:12px;
+    width:100%;
+    padding:14px;
+    font-size:18px;
+    background:#4caf50;
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    transition: transform 0.2s, background 0.2s;
+}
+.submit-btn:hover { background:#45a049; transform: scale(1.03); }
+#serialNumber {
+    height: 80%;
+}
+.red_status {
+    color:red
+}
+.green_status {
+    color:greenyellow
+}
+
+/* ===== ПК VERSION ===== */
+@media(min-width:900px){
+     header {
+        height: 80px;
+        padding: 0 20px;
+    }
+
+    .nav-icons {
+        gap: 76px; /* увеличено расстояние между иконками */
+    }
+
+    .nav-icons a {
+        font-size: 22px;
+    }
+    .form-row .half { flex:1 1 calc(50% - 12px); }
+    .form-row .third { flex:1 1 calc(33.33% - 12px); }
+}
+</style>
+</head>
+<body>
+
+<header>
+    <div class="header-left">
+        <a href="start.html" class="home"><i class="fa-solid fa-house"></i>MG</a>
+    </div>
+
+    <nav class="nav-icons">
+        <a href="/visit.html" class="active"><i class="fa-solid fa-car"></i></a>
+        <a href="/calc.html"><i class="fa-solid fa-calculator"></i></a>
+        <a href="/generator.html"><i class="fa-solid fa-key"></i></a>
+        <a href="/barcode.html"><i class="fa-solid fa-barcode"></i></a>
+        <a href="/map.html"><i class="fa-solid fa-globe"></i></a>
+        <a href="/analyzers.html"><i class="fa-solid fa-book"></i></a>
+        <a href="/error.html"><i class="fa-solid fa-triangle-exclamation"></i></a>
+        <a href="/calendar.html"><i class="fa-regular fa-calendar"></i></a>
+        <a href="/devices.html"><i class="fa-solid fa-computer"></i></a>
+    </nav>
+
+    <div class="header-right">
+        <button class="logout-btn" id="logout">Выход</button>
+    </div>
+</header>
+
+<main>
+<div class="form-container">
+
+    <div class="form-row">
+        <div class="half">
+            <label>Дата с</label>
+            <input type="date" id="dateFrom">
+        </div>
+        <div class="half">
+            <label>Дата по</label>
+            <input type="date" id="dateTo">
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="half">
+            <label>Специалист</label>
+            <select id="specialist"></select>
+        </div>
+        <div class="half">
+            <label>Учреждение</label>
+            <select id="institution"></select>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="half">
+            <label>Прибор</label>
+            <select id="device" multiple></select>
+        </div>
+        <div class="half">
+            <label>Серийный номер</label>
+            <input type="text" id="serialNumber">
+        </div>
+    </div>
+
+    <div class="form-row full">
+        <div class="full">
+            <label>Причина выезда</label>
+            <textarea id="reason"></textarea>
+        </div>
+    </div>
+
+    <div class="form-row full">
+        <div class="full">
+            <label>Выполненные работы</label>
+            <textarea id="workDone"></textarea>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="half">
+            <label>Акт</label>
+            <select id="act"></select>
+        </div>
+        <div class="half">
+            <label>Тип выезда</label>
+            <select id="visitType"></select>
+        </div>
+    </div>
+
+    <button class="submit-btn" id="submitVisit">Подтвердить выезд</button>
+    <p id="confirmation_status" class="red_status"></p>
+
+</div>
+</main>
+
+<script>
+// ===== Проверка авторизации =====
+if(localStorage.getItem('isLoggedIn') !== 'true') {
+    window.location.href = 'index.html';
+}
+document.getElementById('logout').addEventListener('click', ()=>{
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('user');
+    window.location.href = 'index.html';
+});
+
+// ===== Данные для селектов =====
+const specialists = [""];
+const institutions = [""];
+const devices = [];
+const acts = ['','есть','нет','акт МТС', 'акт BC', 'акт Mindray'];
+const visitTypes = ['','Обучение','Настройка','Ремонт', 'Плановый', 'Диагностика','Консультация','Калибровка','Другое'];
+
+function getFacilities() {
+    const url = `https://docs.google.com/spreadsheets/d/16ABEN54Ykbej-PhrbBjGlaHSXzNbD4PA8ecbpWc5QHQ/gviz/tq?gid=178416067`;
+    fetch(url)
+    .then(res => res.text())
+    .then(rep => {
+        const data2 = JSON.parse(rep.substr(47).slice(0,-2));
+        const length = data2.table.rows.length;
+        for (let i=1; i<length; i+=1) {
+            if(data2.table.rows[i].c[0] && data2.table.rows[i].c[0].v != null) institutions.push(data2.table.rows[i].c[0].v)
+            if(data2.table.rows[i].c[2] && data2.table.rows[i].c[2].v != null) specialists.push(data2.table.rows[i].c[2].v);
+            if(data2.table.rows[i].c[1] && data2.table.rows[i].c[1].v != null) devices.push(data2.table.rows[i].c[1].v);
+        }
+        fillSelect('specialist', specialists);
+        fillSelect('institution', institutions);
+        fillSelect('device', devices);
+        fillSelect('act', acts);
+        fillSelect('visitType', visitTypes);
+    })
+}
+window.onload = getFacilities();
+
+
+
+// ===== Заполняем селекты =====
+function fillSelect(id, array){
+    const sel = document.getElementById(id);
+    array.forEach(val=>{
+        const opt = document.createElement('option');
+        opt.value=val;
+        opt.textContent=val;
+        sel.appendChild(opt);
+    });
+}
+
+
+
+// ===== Отправка =====
+document.getElementById('submitVisit').addEventListener('click', ()=>{
+    const date = document.getElementById('dateFrom').value;
+    const date2 = document.getElementById('dateTo').value;
+    const application = document.getElementById('specialist').value;
+    const facility = document.getElementById('institution').value;
+    const instrument = [];
+    const x = document.getElementById('device');
+    for (let i=0; i<x.options.length; i++){
+        if(x.options[i].selected == true) {
+            instrument.push(x.options[i].value)
+        }
+    }
+    const sn = document.getElementById('serialNumber').value;
+    const reason = document.getElementById('reason').value;
+    const work = document.getElementById('workDone').value;
+    const report = document.getElementById('act').value;
+    const type = document.getElementById('visitType').value;
+    if (date === "") document.getElementById('confirmation_status').innerText='Выберите дату начала';
+    else if (date2 === "") document.getElementById('confirmation_status').innerText='Выберите дату конца визита';
+    else if (application === "") document.getElementById('confirmation_status').innerText='Выберите аппликатора';
+    else if (facility === "") document.getElementById('confirmation_status').innerText='Выберите учреждение';
+    else if (instrument.length === 0) document.getElementById('confirmation_status').innerText='Выберите прибор(ы)';
+    else if (reason === "") document.getElementById('confirmation_status').innerText='Укажите причину выезда';
+    else if (work === "") document.getElementById('confirmation_status').innerText='Укажите выполненные работы';
+    else if (report === "") document.getElementById('confirmation_status').innerText='Выберите статус акта';
+    else if (type === "") document.getElementById('confirmation_status').innerText='Выберите тип выезда';
+    else {
+        document.getElementById('confirmation_status').classList.remove('red_status');
+        document.getElementById('confirmation_status').classList.add('green_status');
+        document.getElementById('confirmation_status').innerText='Выезд добавляется в базу';
+        downloadVisitToDatabase(date, date2, application, facility, instrument, sn, reason, work, report, type);
+    }
+    console.log('Данные для отправки:', data);
+});
+const chat_id_admin = 343428684;
+const chat_id_admin_sasha = 54722461;
+let token = '';
+function getToken() {
+    const url = `https://docs.google.com/spreadsheets/d/16ABEN54Ykbej-PhrbBjGlaHSXzNbD4PA8ecbpWc5QHQ/gviz/tq?gid=1629634911`;
+    fetch(url)
+    .then(res => res.text())
+    .then(rep => {
+        const data2 = JSON.parse(rep.substr(47).slice(0,-2));
+        token = data2.table.rows[1].c[0].v;
+    })
+}
+window.onload = getToken();
+function downloadVisitToDatabase(date, date2, application, facility, instrument, sn, reason, work, report, type) {
+    if (type=="Обучение") {
+        fetch('https://sheetdb.io/api/v1/tkhtt2o9c61js?sheet=learning', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                data: [
+                    {
+                        'Date_from': `${date}`,
+                        'Date_to': `${date2}`,
+                        'Facility': `${facility}`,
+                        'Instrument': `${instrument}`,
+                        'SN': `${sn}`,
+                        'Application': `${application}`,
+                        'Author': `${localStorage.getItem('user')}`,
+                        'id': `${date}_${date2}_${facility}_${instrument}_${application}`
+                    }
+                ]
+            })
+        }) 
+    }
+    fetch('https://sheetdb.io/api/v1/tkhtt2o9c61js?sheet=visits', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            data: [
+                {
+                    'Date_from': `${date}`,
+                    'Date_to': `${date2}`,
+                    'Facility': `${facility}`,
+                    'Instrument': `${instrument}`,
+                    'SN': `${sn}`,
+                    'Application': `${application}`,
+                    'Reason': `${reason}`,
+                    'Works': `${work}`,
+                    'Report': `${report}`,
+                    'Work_type': `${type}`,
+                    'Author': `${localStorage.getItem('user')}`,
+                    'id': `${date}_${date2}_${facility}_${instrument}_${application}`
+                }
+            ]
+        })
+    })
+    .then(res => res.text())
+    .then(rep => {
+        document.getElementById('confirmation_status').innerText='Выезд добавлен в базу';
+        let request3 = new XMLHttpRequest();
+        request3.open('POST', `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id_admin}&text={${application} добавил(а) новый выезд: ${date} - ${date2}: ${facility}- ${instrument}. Причина:${reason}. Работа: ${work}}`);
+        request3.send();
+        // console.log(["BC-20s", "BC-30s", "BC-700", "BC-720", "BC-760", "BC-780", "BC-5100", "ВС-5150", "BC-5300", "BC-5380", "BC-5800", "BC-6000", "BC-6200", "BC-6800Plus", "CAL-6000", "CAL-8000", "SC-120", "MC-80", "BS-240Pro", "BS-380", "BS-480", "BS-620", "BS-800M", "BS-2000M", "CL-1200i", "CL-2000i", "CL-6000i"].indexOf(instrument[0]), instrument)
+        if(["BC-20s", "BC-30s", "BC-700", "BC-720", "BC-760", "BC-780", "BC-5100", "ВС-5150", "BC-5300", "BC-5380", "BC-5800", "BC-6000", "BC-6200", "BC-6800Plus", "CAL-6000", "CAL-8000", "SC-120", "MC-80", "BS-240Pro", "BS-380", "BS-480", "BS-620", "BS-800M", "BS-2000M", "BS-2800M", "CL-1200i", "CL-2000i", "CL-6000i", "CL-8000i", "UA-5600", "EH-2090B", "EH-2090C", "EU8600", "EU-5300", "EU-5600", "MT8000","CX-6010","CX-9000"].indexOf(instrument[0])!=-1) {
+            // console.log('пошли отправлять')
+            let request2 = new XMLHttpRequest();
+            request2.open('POST', `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id_admin_sasha}&text={${application} добавил(а) новый выезд: ${date} - ${date2}: ${facility}- ${instrument}. Причина:${reason}. Работа: ${work}}`);
+            request2.send();
+            // console.log('закончили отправлять')
+        }
+        setTimeout(()=>{
+           window.location.reload(); 
+        },1500)
+    })
+}
+</script>
+</body>
+</html>
