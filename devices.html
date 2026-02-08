@@ -329,6 +329,10 @@ tbody td {
 .not_started {
   background-color: #84c5ce;
 }
+.waiting_details {
+  background-color: #61858a;
+}
+
 .popup-table {
   width: 100%;
   border-collapse: collapse;
@@ -361,6 +365,10 @@ tbody td {
 
 .code_2 {
     background-color: #ebe96f;
+}
+
+.code_3 {
+    background-color: #61858a;
 }
 
 
@@ -683,12 +691,14 @@ const statusOptions = [
   "В работе",
   "В работе, мониторинг проблемы",
   "В работе, ждет ремонта",
+  "В работе, ждет запчастей",
   "В работе, задача на ТО",
   "В работе, мониторинг после ремонта",
   "В работе, требуется обновление",
   "В работе, требуется перемещение",
   "Не в работе",
   "Не в работе, ждет ремонта",
+  "Не в работе, ждет запчастей",
   "Не в работе, ждет замены прибора",
   "Законсервирован",
   "Законсервирован, ждет вывоза",
@@ -708,7 +718,7 @@ function renderTable(devices, history) {
 
     const tr = document.createElement("tr");
     if (h[h.length-1]) {
-      let colorCode = (statusOptions.indexOf(h[h.length-1].deviceStatus) == 7 || statusOptions.indexOf(h[h.length-1].deviceStatus) == 8|| statusOptions.indexOf(h[h.length-1].deviceStatus) == 9)? 'code_1' : (statusOptions.indexOf(h[h.length-1].deviceStatus) == 2? 'code_2' : "");
+      let colorCode = (statusOptions.indexOf(h[h.length-1].deviceStatus) == 11 || statusOptions.indexOf(h[h.length-1].deviceStatus) == 8|| statusOptions.indexOf(h[h.length-1].deviceStatus) == 9)? 'code_1' : (statusOptions.indexOf(h[h.length-1].deviceStatus) == 2? 'code_2' : ((statusOptions.indexOf(h[h.length-1].deviceStatus) == 3 || statusOptions.indexOf(h[h.length-1].deviceStatus) == 10)? 'code_3' : ""));
       tr.className = colorCode;
     }
     // if(index == 0) console.log(h[h.length-1].facility, h[h.length-1].deviceStatus,h[h.length-1].statusInfo)
@@ -969,6 +979,31 @@ function filterNotInstalledBySn(historyMap) {
   return result;
 }
 
+function filterWaitingForDetailsBySn(historyMap) {
+  const result = {};
+
+  for (const [sn, records] of Object.entries(historyMap)) {
+    let lastWorkingIndex = -1;
+    records.forEach((r, i) => {
+      if (r.deviceStatus === "В работе"||r.deviceStatus === "В работе, мониторинг проблемы") {
+        lastWorkingIndex = i;
+      }
+    });
+    const lastRecord = records[records.length - 1];
+    if (lastRecord.deviceStatus !== "В работе, ждет запчастей"&&lastRecord.deviceStatus !== "Не в работе, ждет запчастей") continue;
+    const filtered = records.filter(
+      (r, i) =>
+        (r.deviceStatus==="В работе, ждет запчастей" || r.deviceStatus==="Не в работе, ждет запчастей") &&
+        i > lastWorkingIndex
+    );
+
+    if (filtered.length) {
+      result[sn] = filtered;
+    }
+  }
+  return result;
+}
+
 let historyMap;
 function buildHistoryMap(history) {
   return history.reduce((acc, item) => {
@@ -989,6 +1024,7 @@ function openProblems() {
   let filtered2 = Object.entries(filterWaitingForHelpBySn(historyMap))
   let filtered3 = Object.entries(filterConservatedBySn(historyMap))
   let filtered4 = Object.entries(filterNotInstalledBySn(historyMap))
+  let filtered5 = Object.entries(filterWaitingForDetailsBySn(historyMap))
   // console.log(filtered);
   let html = ``;
   if (filtered.length>0) {
@@ -1021,6 +1057,14 @@ function openProblems() {
       let text = '';
       for (let j=0;j<filtered4[i][1].length;j+=1) { text+= `${changeDate(filtered4[i][1][j].changeDate)}: `; text += filtered4[i][1][j].statusInfo; text += "<br/>"}
       html += `<tr><td>${i + 1}</td><td>${filtered4[i][1][0].facility}</td><td>${filtered4[i][1][0].device}</td><td>${filtered4[i][1][0].sn}</td><td>${filtered4[i][1][0].deviceStatus}</td><td>${changeDate(filtered4[i][1][0].changeDate)}</td><td style="text-align:left">${text}</td></tr>`
+    }
+  }
+  if (filtered5.length>0) {
+    html += `<tr><td class="waiting_details" colspan="7"><strong>Ожидающие запчастей приборы</strong></td></tr>`
+    for (let i=0; i<filtered5.length; i+=1) {
+      let text = '';
+      for (let j=0;j<filtered5[i][1].length;j+=1) { text+= `${changeDate(filtered5[i][1][j].changeDate)}: `; text += filtered5[i][1][j].statusInfo; text += "<br/>"}
+      html += `<tr><td>${i + 1}</td><td>${filtered5[i][1][0].facility}</td><td>${filtered5[i][1][0].device}</td><td>${filtered5[i][1][0].sn}</td><td>${filtered5[i][1][0].deviceStatus}</td><td>${changeDate(filtered5[i][1][0].changeDate)}</td><td style="text-align:left">${text}</td></tr>`
     }
   }
   container.innerHTML = html;
