@@ -451,31 +451,31 @@ document.getElementById('calcBtn').onclick = ()=>{
         } else if (device.value == 6){ 
             mindray_stick = Math.ceil((Number(chem)+Number(2*365/7*days*stations*months/12))/1000*Number(1+repeat));
             eu20 = Math.ceil(((Number(chem)+Number(2*365/7*days*stations*months/12))*4.5+30*Number(365/7*days*stations*months/12))/4830/2*Number(1+repeat));
-            probe_cleanser = Math.ceil(Number(365/7*days*stations/50*5*months/12));
+            probe_cleanser = Math.ceil(Number(365/7*days*stations/50*5/3*months/12));
             biorad = Math.ceil(365/7*days*stations*months/12/8/6) //8 раз с бутылки, 6 бутылок каждого уровня
             result.push([mindray_stick,eu20,probe_cleanser, biorad])
         } else if (device.value == 7){ 
             eu70 = Math.ceil(((Number(micro)+Number(2*365/7*days*stations*months/12))*14+135*Number(365/7*days*stations*months/12))/4750/2*Number(1+repeat));
-            probe_cleanser = Math.ceil(Number(365/7*days*stations/50*5*months/12));
+            probe_cleanser = Math.ceil(Number(365/7*days*stations/50*5/3*months/12));
             biorad = Math.ceil(365/7*days*stations*months/12/8/6) //8 раз с бутылки, 6 бутылок каждого уровня
             result.push([eu70,probe_cleanser, biorad])
         } else if (device.value == 8){ 
             mindray_stick = Math.ceil((Number(chem)+Number(2*365/7*days*stations*months/12))/1000*Number(1+repeat));
             eu20 = Math.ceil(((Number(chem)+Number(2*365/7*days*stations*months/12))*4.5+30*Number(365/7*days*stations*months/12))/4830/2*Number(1+repeat));
             eu70 = Math.ceil(((Number(micro)+Number(2*365/7*days*stations*months/12))*14+135*Number(365/7*days*stations*months/12))/4750/2*Number(1+repeat));
-            probe_cleanser = Math.ceil(Number(365/7*days*stations/50*10*months/12));
+            probe_cleanser = Math.ceil(Number(365/7*days*stations/50*10/3*months/12));
             biorad = Math.ceil(365/7*days*stations*months/12/4/6) //4 раз с бутылки, 6 бутылок каждого уровня
             result.push([mindray_stick,eu20,eu70,probe_cleanser, biorad])
         } else if (device.value == 9){ 
             mindray_stick = Math.ceil((Number(chem)+Number(2*365/7*days*stations*months/12))/1000*Number(1+repeat));
             eu50 = Math.ceil(((Number(micro)+Number(2*365/7*days*stations*months/12))*16+(Number(chem)>Number(micro)?Number(chem)-Number(micro):0)*4 +92*Number(365/7*days*stations*months/12))/4830/2*Number(1+repeat));
-            probe_cleanser = Math.ceil(Number(365/7*days*stations/50*4*months/12));
+            probe_cleanser = Math.ceil(Number(365/7*days*stations/50*4/3*months/12));
             biorad = Math.ceil(365/7*days*stations*months/12/6/6) //6 раз с бутылки, 6 бутылок каждого уровня
             result.push([mindray_stick,eu50,probe_cleanser, biorad])
         } else if (device.value == 10){ 
             mindray_stick = Math.ceil((Number(chem)+Number(2*365/7*days*stations*months/12))/1000*Number(1+repeat));
             eu50 = Math.ceil(((Number(micro)+Number(2*365/7*days*stations*months/12))*16+(Number(chem)>Number(micro)?Number(chem)-Number(micro):0)*4 +124*Number(365/7*days*stations*months/12))/4830/2*Number(1+repeat));
-            probe_cleanser = Math.ceil(Number(365/7*days*stations/50*6*months/12));
+            probe_cleanser = Math.ceil(Number(365/7*days*stations/50*6/3*months/12));
             biorad = Math.ceil(365/7*days*stations*months/12/6/6) //6 раз с бутылки, 6 бутылок каждого уровня
             result.push([mindray_stick,eu50,probe_cleanser, biorad])
         }
