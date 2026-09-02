@@ -118,6 +118,127 @@ main {
     gap:16px;
 }
 
+/* ===== FLOW PERIOD SWITCH ===== */
+
+.flow-switch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 7px;
+    margin-left: auto;
+}
+
+.flow-switch-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #111;
+    text-align: center;
+}
+
+.flow-switch-control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    font-size: 14px;
+}
+
+/* Подписи "день" и "год" */
+
+.flow-switch-control > span {
+    min-width: 30px;
+    color: #b8b8b8;
+    font-weight: 400;
+    transition: color 0.2s ease, font-weight 0.2s ease;
+}
+
+.flow-switch-control > span:first-child {
+    text-align: right;
+}
+
+.flow-switch-control > span:last-child {
+    text-align: left;
+}
+
+
+/* ========================================
+   АКТИВНЫЙ ВАРИАНТ
+   По умолчанию checked = "год"
+   ======================================== */
+
+/* Выбран "год" */
+.flow-switch-control:has(input:checked) > span:last-child {
+    color: #111;
+    font-weight: 700;
+}
+
+/* Выбран "день" */
+.flow-switch-control:has(input:not(:checked)) > span:first-child {
+    color: #111;
+    font-weight: 700;
+}
+
+
+/* ===== Сам переключатель ===== */
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 26px;
+    flex-shrink: 0;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    inset: 0;
+    cursor: pointer;
+    background: #999;
+    border-radius: 26px;
+    transition: background 0.25s ease;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.slider::before {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    left: 3px;
+    top: 3px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+    transition: transform 0.25s ease;
+}
+
+/* Правое положение — год */
+
+.switch input:checked + .slider {
+    background: #4caf50;
+}
+
+.switch input:checked + .slider::before {
+    transform: translateX(22px);
+}
+
+/* Левое положение — день */
+
+.switch input:not(:checked) + .slider {
+    background: #999;
+}
+
+.switch input:focus-visible + .slider {
+    outline: 2px solid #4caf50;
+    outline-offset: 2px;
+}
+
 /* ===== FORM GRID ===== */
 .form-grid {
     display:grid;
@@ -251,7 +372,20 @@ th {
 
 <main>
 <div class="form-container">
+    <div class="flow-switch">
+        <div class="flow-switch-title">Потоки тестов указаны в:</div>
 
+        <div class="flow-switch-control">
+            <span>день</span>
+
+            <label class="switch">
+                <input type="checkbox" id="flowPeriod" checked>
+                <span class="slider"></span>
+            </label>
+
+            <span>год</span>
+        </div>
+    </div>
     <div class="form-grid">
         <div class="form-group">
             <label>Учреждение</label>
@@ -327,6 +461,18 @@ document.getElementById('logout').onclick = ()=>{
     window.location.href = 'index.html';
 };
 
+function getFlowValue(id) {
+    const flowPeriod = document.getElementById('flowPeriod').checked;
+    const days = Number(document.getElementById('workDays').value);
+    const value = document.getElementById(id).value;
+    console.log(id,value,flowPeriod)
+    return {
+        value: flowPeriod
+            ? value
+            : Number(value) * 365 * days / 7
+    };
+}
+
 function checkLogic() {
     let criticalError = 0;
     const device = document.getElementById('device');
@@ -358,8 +504,8 @@ const resultDiv = document.getElementById('result');
 document.getElementById('calcBtn').onclick = ()=>{
     const criticalError = checkLogic();
     const device = document.getElementById('device');
-    const micro = document.getElementById('micro').value;
-    const chem = document.getElementById('dryChem').value;
+    const micro = getFlowValue('micro').value;
+    const chem = getFlowValue('dryChem').value;
     const days = document.getElementById('workDays').value;
     const months = document.getElementById('months').value;
     const stations = document.getElementById('stations').value;

@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>MG – Urine</title>
+<title>MG – Hem</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
@@ -116,6 +116,127 @@ main {
     display:flex;
     flex-direction:column;
     gap:16px;
+}
+
+/* ===== FLOW PERIOD SWITCH ===== */
+
+.flow-switch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 7px;
+    margin-left: auto;
+}
+
+.flow-switch-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #111;
+    text-align: center;
+}
+
+.flow-switch-control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    font-size: 14px;
+}
+
+/* Подписи "день" и "год" */
+
+.flow-switch-control > span {
+    min-width: 30px;
+    color: #b8b8b8;
+    font-weight: 400;
+    transition: color 0.2s ease, font-weight 0.2s ease;
+}
+
+.flow-switch-control > span:first-child {
+    text-align: right;
+}
+
+.flow-switch-control > span:last-child {
+    text-align: left;
+}
+
+
+/* ========================================
+   АКТИВНЫЙ ВАРИАНТ
+   По умолчанию checked = "год"
+   ======================================== */
+
+/* Выбран "год" */
+.flow-switch-control:has(input:checked) > span:last-child {
+    color: #111;
+    font-weight: 700;
+}
+
+/* Выбран "день" */
+.flow-switch-control:has(input:not(:checked)) > span:first-child {
+    color: #111;
+    font-weight: 700;
+}
+
+
+/* ===== Сам переключатель ===== */
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 26px;
+    flex-shrink: 0;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    inset: 0;
+    cursor: pointer;
+    background: #999;
+    border-radius: 26px;
+    transition: background 0.25s ease;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.slider::before {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    left: 3px;
+    top: 3px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+    transition: transform 0.25s ease;
+}
+
+/* Правое положение — год */
+
+.switch input:checked + .slider {
+    background: #4caf50;
+}
+
+.switch input:checked + .slider::before {
+    transform: translateX(22px);
+}
+
+/* Левое положение — день */
+
+.switch input:not(:checked) + .slider {
+    background: #999;
+}
+
+.switch input:focus-visible + .slider {
+    outline: 2px solid #4caf50;
+    outline-offset: 2px;
 }
 
 /* ===== FORM GRID ===== */
@@ -251,7 +372,20 @@ th {
 
 <main>
 <div class="form-container">
+    <div class="flow-switch">
+        <div class="flow-switch-title">Потоки тестов указаны в:</div>
 
+        <div class="flow-switch-control">
+            <span>день</span>
+
+            <label class="switch">
+                <input type="checkbox" id="flowPeriod" checked>
+                <span class="slider"></span>
+            </label>
+
+            <span>год</span>
+        </div>
+    </div>
     <div class="form-grid">
         <div class="form-group">
             <label>Учреждение</label>
@@ -342,6 +476,18 @@ document.getElementById('logout').onclick = ()=>{
     window.location.href = 'index.html';
 };
 
+function getFlowValue(id) {
+    const flowPeriod = document.getElementById('flowPeriod').checked;
+    const days = Number(document.getElementById('workDays').value);
+    const value = document.getElementById(id).value;
+    console.log(id,value,flowPeriod)
+    return {
+        value: flowPeriod
+            ? value
+            : Number(value) * 365 * days / 7
+    };
+}
+
 function checkLogic() {
     let criticalError = 0;
     const device = document.getElementById('device');
@@ -355,6 +501,7 @@ function checkLogic() {
     const alarm = document.getElementById('confirmation_status');
     const days = document.getElementById('workDays');
     const months = document.getElementById('months');
+
     alarm.innerText = '';
     if (Number(CBC.value)== 0 && Number(CD.value)== 0 && Number(CDR.value)== 0 && Number(CR.value)== 0 && Number(Ret.value)== 0 && Number(ESR.value)== 0) alarm.innerHTML = `Не указаны потоки. Проверьте правильность заполнения таблицы`
     else if (Number(CBC.value)< 0 || Number(CD.value)< 0 || Number(CDR.value)< 0 || Number(CR.value)< 0 || Number(Ret.value)< 0 || Number(ESR.value)< 0) alarm.innerHTML = `Проверьте правильность заполнения годовых потоков`
@@ -374,12 +521,12 @@ const resultDiv = document.getElementById('result');
 document.getElementById('calcBtn').onclick = ()=>{
     const criticalError = checkLogic();
     const device = document.getElementById('device');
-    const CBC = document.getElementById('CBC').value;
-    const CD = document.getElementById('CD').value;
-    const CDR = document.getElementById('CDR').value;
-    const CR = document.getElementById('CR').value;
-    const Ret = document.getElementById('Ret').value;
-    const ESR = document.getElementById('ESR').value;
+    const CBC = getFlowValue('CBC').value;
+    const CD = getFlowValue('CD').value;
+    const CDR = getFlowValue('CDR').value;
+    const CR = getFlowValue('CR').value;
+    const Ret = getFlowValue('Ret').value;
+    const ESR = getFlowValue('ESR').value;
     const days = document.getElementById('workDays').value;
     const months = document.getElementById('months').value;
     const stations = document.getElementById('stations').value;
@@ -461,7 +608,7 @@ document.getElementById('calcBtn').onclick = ()=>{
             dxh800_clean = Math.ceil((365*days/7*stations*months/12)/28); /*Делим на 28, закладывая 2 доп промывки */
             dxh800_control = Math.ceil(months*Math.ceil(stations/2)/2);
             latron = Math.ceil(months/4)*stations;
-            dxh800_retcontrol = Math.ceil(months/4)*Math.ceil(stations/2)
+            dxh800_retcontrol = Number(CDR)+Number(CR)+Number(Ret) == 0 ? 0: Math.ceil(months/4)*Math.ceil(stations/2)
             dxh800_cal = 1*stations*Math.ceil(months/12);
             result.push([dxh800_dil,dxh800_lyse,dxh800_diff, dxh800_ret,dxh800_clean, dxh800_control,dxh800_retcontrol, latron,dxh800_cal])
         } else if (device.value == 3){ 
